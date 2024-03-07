@@ -47,6 +47,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textEmailAddress"
+            android:hint="Correo electrónico"
             app:layout_constraintBottom_toTopOf="@+id/editTextTextPassword"
             tools:layout_editor_absoluteX="100dp"
             tools:ignore="MissingConstraints" />
@@ -57,6 +58,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPassword"
+            android:hint="Contraseña"
             tools:layout_editor_absoluteX="100dp"
             tools:layout_editor_absoluteY="351dp"
             tools:ignore="MissingConstraints" />
@@ -69,6 +71,14 @@
             tools:layout_editor_absoluteX="143dp"
             tools:layout_editor_absoluteY="559dp"
             tools:ignore="MissingConstraints" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="?android:attr/actionModeCloseDrawable"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
