@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:srcCompat="@drawable/sample_map" />
+
+    <EditText
+        android:id="@+id/textInputUbication"
+        android:layout_width="330dp"
+        android:layout_height="54dp"
+        android:drawableStart="?android:attr/actionModeWebSearchDrawable"
+        android:text="Ubicación"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.064" />
+
+    <Button
+        android:id="@+id/addEventButton"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/textInputUbication"
+        android:text="AÑADIR"
+        android:backgroundTint="#99E1BC"
+        tools:layout_editor_absoluteX="291dp"
+        tools:layout_editor_absoluteY="114dp"
+        tools:ignore="MissingConstraints" />
+
+    <!-- Bottom menu -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageButton
+            android:id="@+id/menuTimeline"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:backgroundTint="#99E1BC"
+            app:srcCompat="@drawable/timeline_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/menuMap"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:backgroundTint="#99E1BC"
+            app:srcCompat="@drawable/map_icon"
+            app:layout_constraintEnd_toStartOf="@+id/menuCamera"
+            app:layout_constraintStart_toEndOf="@+id/menuTimeline"
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/menuCamera"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:backgroundTint="#99E1BC"
+            app:srcCompat="@drawable/camera_icon"
+            app:layout_constraintEnd_toStartOf="@+id/menuProfile"
+            app:layout_constraintStart_toEndOf="@+id/menuMap"
+            app:layout_constraintWidth_percent="0.25"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/menuProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:backgroundTint="#99E1BC"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.25"
+            app:srcCompat="@drawable/person_icon" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
