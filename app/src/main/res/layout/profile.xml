@@ -28,14 +28,14 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="111dp"
+        android:layout_height="103dp"
         android:layout_marginTop="108dp"
+        android:src="@drawable/sample_user"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Switch
         android:id="@+id/switch1"
@@ -159,12 +159,11 @@
                     android:layout_width="69dp"
                     android:layout_height="66dp"
                     android:layout_marginTop="92dp"
-                    android:src="@tools:sample/avatars"
+                    android:src="@drawable/sample_user"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:srcCompat="@tools:sample/avatars[0]" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/textView10"
@@ -194,12 +193,11 @@
                     android:layout_width="69dp"
                     android:layout_height="66dp"
                     android:layout_marginTop="180dp"
-                    android:src="@tools:sample/avatars"
+                    android:src="@drawable/sample_user"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:srcCompat="@tools:sample/avatars[0]" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/textView20"
@@ -227,12 +225,11 @@
                     android:id="@+id/imageView4"
                     android:layout_width="69dp"
                     android:layout_height="66dp"
-                    android:src="@tools:sample/avatars"
+                    android:src="@drawable/sample_user"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:srcCompat="@tools:sample/avatars[0]" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/textView22"

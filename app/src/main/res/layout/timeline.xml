@@ -58,12 +58,12 @@
                             android:layout_width="69dp"
                             android:layout_height="66dp"
                             android:layout_marginTop="22dp"
-                            android:src="@tools:sample/avatars"
+                            android:src="@drawable/sample_user"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/imageView4"
-                            tools:srcCompat="@tools:sample/avatars[0]" />
+                             />
 
                         <TextView
                             android:id="@+id/textView10"
@@ -93,12 +93,12 @@
                             android:layout_width="69dp"
                             android:layout_height="66dp"
                             android:layout_marginTop="22dp"
-                            android:src="@tools:sample/avatars"
+                            android:src="@drawable/sample_user"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/imageView5"
-                            tools:srcCompat="@tools:sample/avatars[0]" />
+                             />
 
                         <TextView
                             android:id="@+id/textView20"
@@ -126,12 +126,12 @@
                             android:id="@+id/imageView4"
                             android:layout_width="69dp"
                             android:layout_height="66dp"
-                            android:src="@tools:sample/avatars"
+                            android:src="@drawable/sample_user"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:srcCompat="@tools:sample/avatars[0]" />
+                             />
 
                         <TextView
                             android:id="@+id/textView22"
@@ -161,12 +161,12 @@
                             android:layout_width="69dp"
                             android:layout_height="66dp"
                             android:layout_marginTop="22dp"
-                            android:src="@tools:sample/avatars"
+                            android:src="@drawable/sample_user"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/imageView6"
-                            tools:srcCompat="@tools:sample/avatars[0]" />
+                            />
 
                         <TextView
                             android:id="@+id/textView100"
@@ -196,12 +196,12 @@
                             android:layout_width="69dp"
                             android:layout_height="66dp"
                             android:layout_marginTop="300dp"
-                            android:src="@tools:sample/avatars"
+                            android:src="@drawable/sample_user"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/imageView5"
-                            tools:srcCompat="@tools:sample/avatars[0]" />
+                            />
 
                         <TextView
                             android:id="@+id/textView103"
@@ -231,12 +231,12 @@
                             android:layout_width="69dp"
                             android:layout_height="66dp"
                             android:layout_marginTop="356dp"
-                            android:src="@tools:sample/avatars"
+                            android:src="@drawable/sample_user"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:srcCompat="@tools:sample/avatars[0]" />
+                            />
 
                         <TextView
                             android:id="@+id/textView106"

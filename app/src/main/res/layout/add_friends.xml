@@ -109,7 +109,7 @@
                 android:layout_height="96dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
-                android:src="@tools:sample/avatars"
+                android:src="@drawable/sample_user"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -154,7 +154,7 @@
                 android:layout_height="96dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="120dp"
-                android:src="@tools:sample/avatars"
+                android:src="@drawable/sample_user"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -199,7 +199,7 @@
                 android:layout_height="96dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="364dp"
-                android:src="@tools:sample/avatars"
+                android:src="@drawable/sample_user"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -244,7 +244,7 @@
                 android:layout_height="96dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="488dp"
-                android:src="@tools:sample/avatars"
+                android:src="@drawable/sample_user"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -289,7 +289,7 @@
                 android:layout_height="96dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="244dp"
-                android:src="@tools:sample/avatars"
+                android:src="@drawable/sample_user"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
