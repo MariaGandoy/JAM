@@ -24,5 +24,15 @@ class MainActivity : ComponentActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
+
+        // Obtener referencia al botón de "Crear cuenta"
+        val button3 = findViewById<Button>(R.id.button3)
+
+        // Configurar el Listener para manejar el clic del botón
+        button3.setOnClickListener {
+            // Iniciar otra actividad al hacer click
+            val intent = Intent(this, SignUpActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

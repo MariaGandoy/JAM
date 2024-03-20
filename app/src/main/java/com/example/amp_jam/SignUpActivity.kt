@@ -1,16 +1,19 @@
+
 package com.example.amp_jam
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.ComponentActivity
+class SignUpActivity  : ComponentActivity() {
 
-class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.login)
+        setContentView(R.layout.sign_up)
+
+
         // Obtener referencia al botón de "Crear cuenta"
-        val button = findViewById<Button>(R.id.button)
+        val button = findViewById<Button>(R.id.button7)
 
         // Configurar el Listener para manejar el clic del botón
         button.setOnClickListener {
@@ -19,5 +22,7 @@ class LoginActivity : ComponentActivity() {
             startActivity(intent)
         }
 
-    }
+        }
+
+
 }
