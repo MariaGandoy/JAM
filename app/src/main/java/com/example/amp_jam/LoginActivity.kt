@@ -2,6 +2,7 @@ package com.example.amp_jam
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.activity.ComponentActivity
 
@@ -15,6 +16,7 @@ class LoginActivity : ComponentActivity() {
         // Configurar el Listener para manejar el clic del botón
         button.setOnClickListener {
             // Iniciar otra actividad al hacer click
+            Log.d("JAM_NAVIGATION", "[LoginActivity] Click ADD EVENT button");
             val intent = Intent(this, MapActivity::class.java)
             startActivity(intent)
         }
