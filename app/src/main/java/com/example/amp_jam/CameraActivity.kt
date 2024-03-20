@@ -20,26 +20,22 @@ class CameraActivity : ComponentActivity() {
     private fun setupCameraButtons() {
         val folderBtn = findViewById<ImageButton>(R.id.imageButton2)
         folderBtn.setOnClickListener {
-            Log.d(TAG, "[Camera] Click FOLDER button")
+            Log.d("JAM_NAVIGATION", "[Camera] Click FOLDER button")
         }
 
         val pictureBtn = findViewById<ImageButton>(R.id.imageButton4)
         pictureBtn.setOnClickListener {
-            Log.d(TAG, "[Camera] Click TAKE PICTURE button")
+            Log.d("JAM_NAVIGATION", "[Camera] Click TAKE PICTURE button")
         }
 
         val filtersBtn = findViewById<ImageButton>(R.id.imageButton3)
         filtersBtn.setOnClickListener {
-            Log.d(TAG, "[Camera] Click FILTERS button")
+            Log.d("JAM_NAVIGATION", "[Camera] Click FILTERS button")
         }
 
         val settingsBtn = findViewById<ImageButton>(R.id.imageButton5)
         settingsBtn.setOnClickListener {
-            Log.d(TAG, "[Camera] Click SETTINGS button")
+            Log.d("JAM_NAVIGATION", "[Camera] Click SETTINGS button")
         }
-    }
-
-    companion object {
-        private val TAG: String = CameraActivity::class.java.simpleName
     }
 }

@@ -83,8 +83,12 @@
                 android:layout_below="@id/eventName"
                 android:layout_marginLeft="20dp"
                 android:ems="10"
-                android:inputType="time"
-                android:text="Fecha del evento" />
+                android:focusable="false"
+                android:clickable="true"
+                android:focusableInTouchMode="false"
+                android:inputType="none"
+                android:text="Fecha del evento"
+                android:onClick="showDatePickerDialog" />
 
 
             <!-- Friends to notify of event -->
