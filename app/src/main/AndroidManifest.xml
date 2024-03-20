@@ -55,25 +55,10 @@
             android:exported="true"
             android:theme="@style/Theme.AMP_JAM" >
         </activity>
-        <activity android:name=".AddFriendsActivity"
+        <activity
+            android:name=".AddFriendsActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.AMP_JAM" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".ProfileActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.AMP_JAM" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
