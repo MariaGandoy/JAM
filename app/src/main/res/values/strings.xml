@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">AMP_JAM</string>
     <string name="registrate">Registrate con</string>
+    <string name="google_map_api_key">AIzaSyAqg4aXzPcLriABMGE0ZmXvZ9v_6-7iK3w</string>
 </resources>
