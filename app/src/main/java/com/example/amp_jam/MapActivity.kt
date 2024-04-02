@@ -8,14 +8,21 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 
-class MapActivity : ComponentActivity() {
+class MapActivity : AppCompatActivity(), OnMapReadyCallback {
+    private var mGoogleMap:GoogleMap? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.map)
 
         setupAddEventButton()
         setUpUbicationListener()
+        createMapFragment()
 
         val navigationMenu = NavigationMenu()
         navigationMenu.setupBottomMenu(this)
@@ -40,5 +47,15 @@ class MapActivity : ComponentActivity() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
+    }
+
+    private fun createMapFragment() {
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.mapFragment) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mGoogleMap = googleMap
     }
 }
