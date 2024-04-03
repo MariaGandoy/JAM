@@ -8,8 +8,9 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.ComponentActivity
+import androidx.fragment.app.FragmentActivity
 
-class MapActivity : ComponentActivity() {
+class MapActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.map)
@@ -24,8 +25,9 @@ class MapActivity : ComponentActivity() {
     private fun setupAddEventButton() {
         val addBtn = findViewById<Button>(R.id.addEventButton)
         addBtn.setOnClickListener {
-            val intent = Intent(this, MapEventActivity::class.java)
-            startActivity(intent)
+            val eventDialog = MapEventFragment()
+
+            eventDialog.show(supportFragmentManager, "MapEvent")
         }
     }
 

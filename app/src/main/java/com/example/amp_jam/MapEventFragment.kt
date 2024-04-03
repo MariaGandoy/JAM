@@ -1,44 +1,49 @@
 package com.example.amp_jam
 
-import android.annotation.SuppressLint
 import android.app.DatePickerDialog
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import androidx.activity.ComponentActivity
+import androidx.fragment.app.DialogFragment
 import java.util.Calendar
 
-class MapEventActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.map_event)
+class MapEventFragment: DialogFragment() {
 
-        setupAddEventButton()
-        setUpNameEventListener()
-        setUpDatePickerDialog()
-        setUpRadioGroupListener()
-
-        val navigationMenu = NavigationMenu()
-        navigationMenu.setupBottomMenu(this)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.map_event, container, false)
     }
 
-    private fun setupAddEventButton() {
-        val addBtn = findViewById<Button>(R.id.idBtnAdd)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupAddEventButton(view)
+        setUpNameEventListener(view)
+        setUpDatePickerDialog(view)
+        setUpRadioGroupListener(view)
+    }
+
+    private fun setupAddEventButton(view: View) {
+        val addBtn = view.findViewById<Button>(R.id.idBtnAdd)
         addBtn.setOnClickListener {
             Log.d("JAM_NAVIGATION", "[MapEvent] Click ADD EVENT button")
-            val intent = Intent(this, MapActivity::class.java)
-            startActivity(intent)
+            dismiss()
         }
     }
 
-    private fun setUpNameEventListener() {
-        val textInputName = findViewById<EditText>(R.id.eventName)
+    private fun setUpNameEventListener(view: View) {
+        val textInputName = view.findViewById<EditText>(R.id.eventName)
         textInputName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -50,8 +55,8 @@ class MapEventActivity : ComponentActivity() {
         })
     }
 
-    private fun setUpDatePickerDialog() {
-        val textInputDate = findViewById<EditText>(R.id.eventDate)
+    private fun setUpDatePickerDialog(view: View) {
+        val textInputDate = view.findViewById<EditText>(R.id.eventDate)
         textInputDate.setOnClickListener{
             val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR)
@@ -59,10 +64,13 @@ class MapEventActivity : ComponentActivity() {
             val day = calendar.get(Calendar.DAY_OF_MONTH)
 
             val datePickerDialog = DatePickerDialog(
-                this,
-                DatePickerDialog.OnDateSetListener { _, yearValue, monthValue, dayValue ->
+                requireContext(),
+                { _, yearValue, monthValue, dayValue ->
                     textInputDate.setText("$dayValue/$monthValue/$yearValue")
-                    Log.d("JAM_NAVIGATION", "[MapEvent] Event date changed to: $dayValue/$monthValue/$yearValue")
+                    Log.d(
+                        "JAM_NAVIGATION",
+                        "[MapEvent] Event date changed to: $dayValue/$monthValue/$yearValue"
+                    )
                 },
                 year, month, day
             )
@@ -71,10 +79,10 @@ class MapEventActivity : ComponentActivity() {
         }
     }
 
-    private fun setUpRadioGroupListener() {
-        val radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
+    private fun setUpRadioGroupListener(view: View) {
+        val radioGroup = view.findViewById<RadioGroup>(R.id.radioGroup)
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
-            val radioButton = findViewById<RadioButton>(checkedId)
+            val radioButton = view.findViewById<RadioButton>(checkedId)
             Log.d("JAM_NAVIGATION", "[MapEvent] Notify radio group selection changed to: $checkedId")
         }
     }

@@ -56,11 +56,6 @@
             android:theme="@style/Theme.AMP_JAM" >
         </activity>
         <activity
-            android:name=".MapEventActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AMP_JAM" >
-        </activity>
-        <activity
             android:name=".AddFriendsActivity"
             android:exported="true"
             android:theme="@style/Theme.AMP_JAM" >

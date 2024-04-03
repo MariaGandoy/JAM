@@ -1,188 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="2dp"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/imageView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:srcCompat="@drawable/sample_map" />
-
-    <EditText
-        android:id="@+id/textInput"
-        android:layout_width="330dp"
-        android:layout_height="54dp"
-        android:drawableStart="?android:attr/actionModeWebSearchDrawable"
-        android:text="Ubicación"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.064" />
-
-    <Button
-        android:id="@+id/addButton"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:text="AÑADIR"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.882"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.142" />
-
-    <!-- New event card -->
-    <androidx.cardview.widget.CardView
+    <TextView
+        android:id="@+id/newEventTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_margin="20dp"
+        android:text="Nuevo evento"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <!-- New event form -->
+    <EditText
+        android:id="@+id/eventName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/newEventTitle"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints">
+        android:ems="10"
+        android:inputType="text"
+        android:text="Nombre del evento" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/eventDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/eventName"
+        android:layout_marginLeft="20dp"
+        android:ems="10"
+        android:focusable="false"
+        android:clickable="true"
+        android:focusableInTouchMode="false"
+        android:inputType="none"
+        android:text="Fecha del evento"
+        android:onClick="showDatePickerDialog" />
+
+
+    <!-- Friends to notify of event -->
+    <TextView
+        android:id="@+id/newEventNotify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/eventDate"
+        android:layout_margin="20dp"
+        android:text="Notificar"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/newEventNotify"
+        android:layout_marginLeft="20dp"
+        android:background="#024CAF50"
+        app:layout_constraintVertical_bias="0.24000001">
+
+        <RadioButton
+            android:id="@+id/radioButton1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="2dp">
+            android:checked="false"
+            android:text="Amigos" />
 
-            <TextView
-                android:id="@+id/newEventTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:text="Nuevo evento"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Familia" />
 
-            <!-- New event form -->
-            <EditText
-                android:id="@+id/eventName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/newEventTitle"
-                android:layout_marginLeft="20dp"
-                android:ems="10"
-                android:inputType="text"
-                android:text="Nombre del evento" />
+        <RadioButton
+            android:id="@+id/radioButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Equipo" />
 
-            <EditText
-                android:id="@+id/eventDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/eventName"
-                android:layout_marginLeft="20dp"
-                android:ems="10"
-                android:focusable="false"
-                android:clickable="true"
-                android:focusableInTouchMode="false"
-                android:inputType="none"
-                android:text="Fecha del evento"
-                android:onClick="showDatePickerDialog" />
+    </RadioGroup>
 
+    <!-- Add image to event -->
+    <TextView
+        android:id="@+id/newEventPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/radioGroup"
+        android:layout_margin="20dp"
+        android:text="Asociar imagen a evento"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-            <!-- Friends to notify of event -->
-            <TextView
-                android:id="@+id/newEventNotify"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/eventDate"
-                android:layout_margin="20dp"
-                android:text="Notificar"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+    <ImageView
+        android:id="@+id/addFromCamera"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@id/newEventPhoto"
+        android:layout_margin="10dp"
+        android:src="@android:drawable/ic_menu_camera" />
 
-            <RadioGroup
-                android:id="@+id/radioGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/newEventNotify"
-                android:layout_marginLeft="20dp"
-                android:background="#024CAF50"
-                app:layout_constraintVertical_bias="0.24000001">
+    <ImageView
+        android:id="@+id/addFromFiles"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@id/newEventPhoto"
+        android:layout_margin="10dp"
+        android:layout_toEndOf="@id/addFromCamera"
+        android:src="@android:drawable/ic_menu_gallery" />
 
-                <RadioButton
-                    android:id="@+id/radioButton1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="false"
-                    android:text="Amigos" />
+    <!-- Add event button -->
+    <Button
+        android:id="@+id/idBtnAdd"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/addFromCamera"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="Crear evento"
+        android:textAllCaps="false" />
 
-                <RadioButton
-                    android:id="@+id/radioButton2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="Familia" />
-
-                <RadioButton
-                    android:id="@+id/radioButton3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="false"
-                    android:text="Equipo" />
-
-            </RadioGroup>
-
-            <!-- Add image to event -->
-            <TextView
-                android:id="@+id/newEventPhoto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/radioGroup"
-                android:layout_margin="20dp"
-                android:text="Asociar imagen a evento"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/addFromCamera"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_below="@id/newEventPhoto"
-                android:layout_margin="10dp"
-                android:src="@android:drawable/ic_menu_camera" />
-
-            <ImageView
-                android:id="@+id/addFromFiles"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_below="@id/newEventPhoto"
-                android:layout_margin="10dp"
-                android:layout_toEndOf="@id/addFromCamera"
-                android:src="@android:drawable/ic_menu_gallery" />
-
-            <!-- Add event button -->
-            <Button
-                android:id="@+id/idBtnAdd"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/addFromCamera"
-                android:layout_centerHorizontal="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:text="Crear evento"
-                android:textAllCaps="false" />
-
-        </RelativeLayout>
-
-    </androidx.cardview.widget.CardView>
-
-    <!-- Bottom menu -->
-    <include layout="@layout/bottom_navigation" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
