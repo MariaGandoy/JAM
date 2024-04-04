@@ -18,7 +18,6 @@ class LoginActivity : ComponentActivity() {
             // Iniciar otra actividad al hacer click
             Log.d("JAM_NAVIGATION", "[LoginActivity] Click ADD EVENT button");
             val intent = Intent(this, EnterActivity::class.java)
-            Log.d("PROBANDOKLK", "llamo")
             startActivity(intent)
         }
 
