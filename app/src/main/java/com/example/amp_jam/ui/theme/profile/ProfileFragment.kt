@@ -1,6 +1,5 @@
 package com.example.amp_jam.ui.theme.profile
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import com.example.amp_jam.AddFriendsActivity
 import com.example.amp_jam.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -54,8 +52,7 @@ class ProfileFragment : Fragment() {
         val addBtn = view.findViewById<Button>(R.id.button5)
         addBtn.setOnClickListener {
             Log.d("JAM_NAVIGATION", "[ProfileFragment] Click ADD FRIENDS MENU EVENT button")
-            val intent = Intent(context, AddFriendsActivity::class.java)
-            startActivity(intent)
+
         }
     }
 }

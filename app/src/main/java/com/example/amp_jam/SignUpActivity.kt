@@ -18,7 +18,7 @@ class SignUpActivity : ComponentActivity() {
         // Configurar el Listener para manejar el clic del botón
         button.setOnClickListener {
             Log.d("JAM_NAVIGATION", "[SignUpActivity] Click ADD EVENT button")
-            val intent = Intent(this, EnterActivity::class.java)
+            val intent = Intent(this, MapActivity::class.java)
             startActivity(intent)
         }
 
