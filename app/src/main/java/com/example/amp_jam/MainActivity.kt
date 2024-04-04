@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         button.setOnClickListener {
             // Iniciar otra actividad al hacer click
             val intent = Intent(this, LoginActivity::class.java)
-            Log.d("JAM_NAVIGATION", "[MapEvent] Click ADD EVENT button")
+            Log.d("JAM_NAVIGATION", "[LoginActivity] Click ADD EVENT button")
             startActivity(intent)
         }
 
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
         // Configurar el Listener para manejar el clic del botón
         button3.setOnClickListener {
             // Iniciar otra actividad al hacer click
-            Log.d("JAM_NAVIGATION", "[MainActivity] Click ADD EVENT button")
+            Log.d("JAM_NAVIGATION", "[SignUpActivity] Click ADD EVENT button")
             val intent = Intent(this, SignUpActivity::class.java)
 
             startActivity(intent)
