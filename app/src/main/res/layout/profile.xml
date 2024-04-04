@@ -9,14 +9,6 @@
     tools:ignore="MissingDefaultResource">
 
     <!-- Top menu -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/lightGreen"
-        app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@android:color/white">
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize">
@@ -30,13 +22,6 @@
                 android:layout_centerVertical="true"/>
 
             <ImageView
-                android:id="@+id/toolbarLogo"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/logo"
-                android:layout_centerInParent="true"/>
-
-            <ImageView
                 android:id="@+id/toolbarLogout"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
@@ -46,9 +31,6 @@
                 android:layout_marginEnd="16dp"/>
 
         </RelativeLayout>
-
-    </androidx.appcompat.widget.Toolbar>
-
     <!-- Activity content -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -94,6 +76,7 @@
             android:layout_marginTop="16dp"
             android:text="Nombre Completo"
             android:textSize="30sp"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView3" />
@@ -138,8 +121,8 @@
             android:layout_width="268dp"
             android:layout_height="35dp"
             android:layout_marginTop="20dp"
-            android:textSize="25sp"
             android:text="Localización: $Estado"
+            android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
@@ -284,9 +267,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
-
-        <!-- Bottom menu -->
-        <include layout="@layout/bottom_navigation" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_timeline"
+        android:icon="@drawable/timeline_icon"
+        android:title="timeline" />
+
+    <item
+        android:id="@+id/navigation_map"
+        android:icon="@drawable/map_icon"
+        android:title="map" />
+
+    <item
+        android:id="@+id/navigation_camera"
+        android:icon="@drawable/camera_icon"
+        android:title="camera" />
+
+    <item
+        android:id="@+id/navigation_profile"
+        android:icon="@drawable/person_icon"
+        android:title="profile" />
+
+</menu>

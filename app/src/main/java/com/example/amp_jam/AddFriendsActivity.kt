@@ -3,7 +3,6 @@ package com.example.amp_jam
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.ComponentActivity
@@ -20,9 +19,7 @@ class AddFriendsActivity : ComponentActivity(){
         setupAddFriend3()
         setupAddFriend4()
         setupAddFriend5()
-        
-        val navigationMenu = NavigationMenu()
-        navigationMenu.setupBottomMenu(this)
+
     }
 
     private fun setupBackButton() {

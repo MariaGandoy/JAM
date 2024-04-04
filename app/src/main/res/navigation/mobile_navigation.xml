@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_map">
+
+    <fragment
+        android:id="@+id/navigation_timeline"
+        android:name="com.example.amp_jam.ui.theme.timeline.TimelineFragment"
+        android:label="timeline"
+        tools:layout="@layout/fragment_timeline" />
+
+    <fragment
+        android:id="@+id/navigation_map"
+        android:name="com.example.amp_jam.ui.theme.map.MapFragment"
+        android:label="map"
+        tools:layout="@layout/fragment_map" />
+
+    <fragment
+        android:id="@+id/navigation_camera"
+        android:name="com.example.amp_jam.ui.theme.camera.CameraFragment"
+        android:label="camera"
+        tools:layout="@layout/fragment_camera" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.amp_jam.ui.theme.profile.ProfileFragment"
+        android:label="profile"
+        tools:layout="@layout/fragment_profile" />
+</navigation>

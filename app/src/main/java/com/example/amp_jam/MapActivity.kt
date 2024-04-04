@@ -1,15 +1,12 @@
 package com.example.amp_jam
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import androidx.activity.ComponentActivity
 import androidx.fragment.app.FragmentActivity
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -24,9 +21,6 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
         setupAddEventButton()
         setUpUbicationListener()
         createMapFragment()
-
-        val navigationMenu = NavigationMenu()
-        navigationMenu.setupBottomMenu(this)
     }
 
     private fun setupAddEventButton() {

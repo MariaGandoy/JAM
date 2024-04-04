@@ -1,44 +1,46 @@
-package com.example.amp_jam
+package com.example.amp_jam.ui.theme.timeline
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.ImageButton
-import androidx.activity.ComponentActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.amp_jam.Post
+import com.example.amp_jam.R
+import com.example.amp_jam.RecyclerAdapter
 
-class TimelineActivity : ComponentActivity() {
-    lateinit var mRecyclerView : RecyclerView
-    val mAdapter : RecyclerAdapter = RecyclerAdapter()
+// TODO: Rename parameter arguments, choose names that match
+// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM2 = "param2"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.timeline)
+/**
+ * A simple [Fragment] subclass.
+ * Use the [TimelineFragment.newInstance] factory method to
+ * create an instance of this fragment.
+ */
+class TimelineFragment : Fragment() {
+    lateinit var mRecyclerView: RecyclerView
+    val mAdapter: RecyclerAdapter = RecyclerAdapter()
 
-        setUpRecyclerView()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.timeline, container, false)
 
-        setUpSeeMapButton()
+        setUpRecyclerView(view)
 
-        val navigationMenu = NavigationMenu()
-        navigationMenu.setupBottomMenu(this)
+        return view
     }
 
-    private fun setUpSeeMapButton() {
-        val addBtn = findViewById<Button>(R.id.verMapaButton)
-        addBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[TimelineActivity] Click SEE MAP button")
-            val intent = Intent(this, MapActivity::class.java)
-            startActivity(intent)
-        }
-    }
-
-    private fun setUpRecyclerView() {
-        mRecyclerView = findViewById<RecyclerView>(R.id.postsList)
+    private fun setUpRecyclerView(view: View) {
+        mRecyclerView = view.findViewById<RecyclerView>(R.id.postsList)
         mRecyclerView.setHasFixedSize(true)
-        mRecyclerView.layoutManager = LinearLayoutManager(this)
-        mAdapter.RecyclerAdapter(getPosts(), this)
+        mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        mAdapter.RecyclerAdapter(getPosts(), requireContext())
         mRecyclerView.adapter = mAdapter
     }
 

@@ -12,9 +12,6 @@
         android:layout_height="match_parent"
         tools:ignore="MissingClass">
 
-        <!-- Bottom menu -->
-        <include layout="@layout/bottom_navigation" />
-
         <ImageView
             android:id="@+id/imageView8"
             android:layout_width="wrap_content"

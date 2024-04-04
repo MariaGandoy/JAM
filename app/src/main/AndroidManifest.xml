@@ -40,22 +40,7 @@
             android:theme="@style/Theme.AMP_JAM" >
         </activity>
         <activity
-            android:name=".TimelineActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AMP_JAM" >
-        </activity>
-        <activity
             android:name=".MapActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AMP_JAM" >
-        </activity>
-        <activity
-            android:name=".CameraActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AMP_JAM" >
-        </activity>
-        <activity
-            android:name=".ProfileActivity"
             android:exported="true"
             android:theme="@style/Theme.AMP_JAM" >
         </activity>
@@ -63,6 +48,10 @@
             android:name=".AddFriendsActivity"
             android:exported="true"
             android:theme="@style/Theme.AMP_JAM" >
+        </activity>
+        <activity
+            android:name=".EnterActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
     </application>
 

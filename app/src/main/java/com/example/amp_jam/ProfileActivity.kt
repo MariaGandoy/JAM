@@ -18,8 +18,6 @@ class ProfileActivity : ComponentActivity() {
         setupLogOut()
         setupAddFriends()
 
-        val navigationMenu = NavigationMenu()
-        navigationMenu.setupBottomMenu(this)
     }
 
     private fun setupBackButton() {

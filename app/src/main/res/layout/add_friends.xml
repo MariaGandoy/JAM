@@ -323,9 +323,6 @@
 
         </ScrollView>
 
-        <!-- Bottom menu -->
-        <include layout="@layout/bottom_navigation" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>
