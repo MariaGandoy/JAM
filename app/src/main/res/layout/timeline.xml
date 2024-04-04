@@ -33,7 +33,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/postsList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="1000dp" />
 
         </RelativeLayout>
 
