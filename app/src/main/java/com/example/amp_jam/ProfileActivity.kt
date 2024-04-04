@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageView
 import androidx.activity.ComponentActivity
 
 class ProfileActivity : ComponentActivity() {
@@ -22,8 +23,8 @@ class ProfileActivity : ComponentActivity() {
     }
 
     private fun setupBackButton() {
-        val addBtn = findViewById<Button>(R.id.button)
-        addBtn.setOnClickListener {
+        val toolbarBack = findViewById<ImageView>(R.id.toolbarBack)
+        toolbarBack.setOnClickListener {
             Log.d("JAM_NAVIGATION", "[ProfileActivity] Click BACK EVENT button")
             val intent = Intent(this, MapActivity::class.java)
             startActivity(intent)
@@ -31,8 +32,8 @@ class ProfileActivity : ComponentActivity() {
     }
 
     private fun setupLogOut() {
-        val addBtn = findViewById<Button>(R.id.button6)
-        addBtn.setOnClickListener {
+        val toolbarLogout = findViewById<ImageView>(R.id.toolbarLogout)
+        toolbarLogout.setOnClickListener {
             Log.d("JAM_NAVIGATION", "[ProfileActivity] Click LOG OUT EVENT button")
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
