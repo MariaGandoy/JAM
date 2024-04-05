@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">AMP_JAM</string>
-    <string name="registrate">Registrate con</string>
+    <string name="registrate">Regístrate con</string>
     <string name="google_map_api_key">AIzaSyAqg4aXzPcLriABMGE0ZmXvZ9v_6-7iK3w</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
