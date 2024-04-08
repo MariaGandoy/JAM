@@ -23,6 +23,7 @@ class MapEventFragment: DialogFragment() {
             val inflater = requireActivity().layoutInflater;
             val view = inflater.inflate(R.layout.map_event, null)
 
+            setUpExitButton(view)
             setUpNameEventListener(view)
             setUpDatePickerDialog(view)
             setUpRadioGroupListener(view)
@@ -37,6 +38,13 @@ class MapEventFragment: DialogFragment() {
                 }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    private fun setUpExitButton(view: View) {
+        val exitBtn = view.findViewById<ImageButton>(R.id.exitButton)
+        exitBtn.setOnClickListener {
+            Log.d("JAM_NAVIGATION", "[MapEvent] Click EXIT button")
+        }
     }
 
     private fun setUpNameEventListener(view: View) {
