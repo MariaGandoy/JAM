@@ -74,6 +74,5 @@ class LoginActivity : ComponentActivity() {
     }
 
     // Si se quiere implementar el registro de usuarios nuevos, se puede agregar una función similar aquí
-    //o podemos acceder al signup de la otra actividad
-    // y llamarla desde un botón de "Crear cuenta", por ejemplo.
+    // o podemos acceder al signup de la otra actividad y llamarla desde un botón de "Crear cuenta"
 }
