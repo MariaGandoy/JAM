@@ -126,11 +126,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        Log.d("JAM_NAVIGATION", "[permisosssss] Need permission")
-
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d("JAM_NAVIGATION", "[MapFragment] Need permission; ${requestCode}")
-
         if (requestCode == FINE_PERMISSION_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startLocationService()

@@ -81,12 +81,7 @@ class LocationService : Service() {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             return
-            Log.d("JAM_NAVIGATION", "[MapService] permission sad :)")
-
         }
-
-        Log.d("JAM_NAVIGATION", "[MapService] permission cool :)")
-
 
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
