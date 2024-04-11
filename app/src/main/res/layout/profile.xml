@@ -44,16 +44,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="466dp" />
+            app:layout_constraintGuide_begin="379dp" />
 
         <ImageView
             android:id="@+id/imageView3"
-            android:layout_width="111dp"
-            android:layout_height="103dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginTop="20dp"
-            android:src="@drawable/sample_user"
+            android:src="@drawable/account_circle"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            android:foregroundGravity="center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -72,11 +72,11 @@
 
         <TextView
             android:id="@+id/textView3"
-            android:layout_width="314dp"
-            android:layout_height="39dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Nombre Completo"
-            android:textSize="30sp"
+            android:text="\@usuario10"
+            android:textSize="23sp"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -84,22 +84,23 @@
 
         <TextView
             android:id="@+id/textView4"
-            android:layout_width="123dp"
-            android:layout_height="34dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="Ciudad - País"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
+            android:gravity="center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
         <TextView
             android:id="@+id/textView5"
             android:layout_width="135dp"
-            android:layout_height="34dp"
-            android:layout_marginTop="28dp"
-            android:text="X  Amigos"
+            android:layout_height="30dp"
+            android:layout_marginTop="25dp"
+            android:gravity="center"
+            android:text="X  amigos"
             android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.337"
@@ -110,20 +111,20 @@
             android:id="@+id/button5"
             android:layout_width="56dp"
             android:layout_height="48dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
             android:text="+"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.243"
             app:layout_constraintStart_toEndOf="@+id/textView5"
             app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
         <TextView
             android:id="@+id/textView6"
-            android:layout_width="268dp"
-            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="Localización: $Estado"
-            android:textSize="25sp"
+            android:textSize="23sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
@@ -131,11 +132,12 @@
 
         <TextView
             android:id="@+id/textView7"
-            android:layout_width="120dp"
-            android:layout_height="49dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:gravity="center"
             android:text="Historial"
-            android:textSize="30sp"
+            android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"

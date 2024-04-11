@@ -1,11 +1,9 @@
 package com.example.amp_jam
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.SearchView
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -24,7 +22,7 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     }
 
     private fun setupAddEventButton() {
-        val addBtn = findViewById<Button>(R.id.addEventButton)
+        val addBtn = findViewById<ImageButton>(R.id.addEventButton)
         addBtn.setOnClickListener {
             val eventDialog = MapEventFragment()
 
@@ -33,15 +31,20 @@ class MapActivity : FragmentActivity(), OnMapReadyCallback {
     }
 
     private fun setUpUbicationListener() {
-        val textInputUbication = findViewById<EditText>(R.id.textInputUbication)
-        textInputUbication.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                Log.d("JAM_NAVIGATION", "[Map] Ubication text changed to: $s")
+        val searchUbication = findViewById<SearchView>(R.id.searchUbication)
+        searchUbication.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // This method is called when the user submits the query.
+                // You can handle the submission here if needed.
+                return true
             }
 
-            override fun afterTextChanged(s: Editable?) {}
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // This method is called when the text in the search field changes.
+                // newText contains the new text entered by the user.
+                Log.d("JAM_NAVIGATION", "[MapFragment] Ubication text changed to: $newText")
+                return true
+            }
         })
     }
 

@@ -1,15 +1,15 @@
 package com.example.amp_jam
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.fragment.app.DialogFragment
@@ -17,28 +17,33 @@ import java.util.Calendar
 
 class MapEventFragment: DialogFragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.map_event, container, false)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return activity?.let {
+            val builder = AlertDialog.Builder(it)
+            val inflater = requireActivity().layoutInflater;
+            val view = inflater.inflate(R.layout.map_event, null)
+
+            setUpExitButton(view)
+            setUpNameEventListener(view)
+            setUpDatePickerDialog(view)
+            setUpRadioGroupListener(view)
+            setupPhotoButtons(view)
+
+            builder.setView(view)
+                .setPositiveButton("AÑADIR") { dialog, id ->
+                    Log.d("JAM_NAVIGATION", "[MapEvent] Add event")
+                }
+                .setNegativeButton("CANCELAR") { dialog, id ->
+                    Log.d("JAM_NAVIGATION", "[MapEvent] Cancel event")
+                }
+            builder.create()
+        } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setupAddEventButton(view)
-        setUpNameEventListener(view)
-        setUpDatePickerDialog(view)
-        setUpRadioGroupListener(view)
-    }
-
-    private fun setupAddEventButton(view: View) {
-        val addBtn = view.findViewById<Button>(R.id.idBtnAdd)
-        addBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[MapEvent] Click ADD EVENT button")
-            dismiss()
+    private fun setUpExitButton(view: View) {
+        val exitBtn = view.findViewById<ImageButton>(R.id.exitButton)
+        exitBtn.setOnClickListener {
+            Log.d("JAM_NAVIGATION", "[MapEvent] Click EXIT button")
         }
     }
 
@@ -84,6 +89,18 @@ class MapEventFragment: DialogFragment() {
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
             val radioButton = view.findViewById<RadioButton>(checkedId)
             Log.d("JAM_NAVIGATION", "[MapEvent] Notify radio group selection changed to: $checkedId")
+        }
+    }
+
+    private fun setupPhotoButtons(view: View) {
+        val folderBtn = view.findViewById<ImageButton>(R.id.addFromCamera)
+        folderBtn.setOnClickListener {
+            Log.d("JAM_NAVIGATION", "[MapEvent] Click ADD FROM CAMERA button")
+        }
+
+        val pictureBtn = view.findViewById<ImageButton>(R.id.addFromFiles)
+        pictureBtn.setOnClickListener {
+            Log.d("JAM_NAVIGATION", "[MapEvent] Click ADD FROM FILES button")
         }
     }
 
