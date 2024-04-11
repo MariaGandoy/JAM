@@ -6,6 +6,8 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.ComponentActivity
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 class ProfileActivity : ComponentActivity() {
 
@@ -33,6 +35,7 @@ class ProfileActivity : ComponentActivity() {
         val toolbarLogout = findViewById<ImageView>(R.id.toolbarLogout)
         toolbarLogout.setOnClickListener {
             Log.d("JAM_NAVIGATION", "[ProfileActivity] Click LOG OUT EVENT button")
+            Firebase.auth.signOut()
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
