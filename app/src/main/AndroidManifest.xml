@@ -56,6 +56,9 @@
             android:name=".EnterActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
+
+        <!-- Services -->
+        <service android:name=".LocationService"/>
     </application>
 
 </manifest>
