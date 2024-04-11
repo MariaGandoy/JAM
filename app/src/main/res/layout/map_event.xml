@@ -51,7 +51,7 @@
             android:layout_marginStart="20dp"
             android:ems="10"
             android:inputType="text"
-            android:text="Nombre del evento" />
+            android:hint="Nombre del evento" />
 
         <EditText
             android:id="@+id/eventDate"
@@ -64,7 +64,7 @@
             android:clickable="true"
             android:focusableInTouchMode="false"
             android:inputType="date"
-            android:text="Fecha del evento"
+            android:hint="Fecha del evento"
             android:onClick="showDatePickerDialog" />
 
 

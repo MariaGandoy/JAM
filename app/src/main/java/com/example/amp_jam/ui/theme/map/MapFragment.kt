@@ -109,8 +109,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
+            requestPermissions(
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
                 FINE_PERMISSION_CODE
             )
@@ -158,7 +157,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
     override fun onLocationReceived(location: Location) {
         // Update the map with the received location data
-        // mLocation?.remove()
         val myLocation = LatLng(location.latitude, location.longitude)
         val markerOptions = MarkerOptions()
             .position(myLocation)
