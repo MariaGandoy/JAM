@@ -17,6 +17,18 @@ import java.util.Calendar
 
 class MapEventFragment: DialogFragment() {
 
+    data class EventData(
+        val name: String,
+        val date: String,
+        val type: String,
+    )
+
+    interface MapEventDialogListener {
+        fun onEventSubmitted(data: EventData)
+    }
+
+    var listener: MapEventDialogListener? = null
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
@@ -32,6 +44,8 @@ class MapEventFragment: DialogFragment() {
             builder.setView(view)
                 .setPositiveButton("AÑADIR") { dialog, id ->
                     Log.d("JAM_NAVIGATION", "[MapEvent] Add event")
+                    val eventData = setEventData(view)
+                    submitEvent(eventData)
                 }
                 .setNegativeButton("CANCELAR") { dialog, id ->
                     Log.d("JAM_NAVIGATION", "[MapEvent] Cancel event")
@@ -102,6 +116,19 @@ class MapEventFragment: DialogFragment() {
         pictureBtn.setOnClickListener {
             Log.d("JAM_NAVIGATION", "[MapEvent] Click ADD FROM FILES button")
         }
+    }
+
+    private fun setEventData(view: View): EventData {
+        val eventName = view.findViewById<EditText>(R.id.eventName).text.toString()
+        val eventDate = view.findViewById<EditText>(R.id.eventDate).text.toString()
+        val eventType = "EVENT" // TODO: add SONG and PHOTO
+
+        return EventData(eventName, eventDate, eventType)
+    }
+
+    private fun submitEvent(data: EventData) {
+        listener?.onEventSubmitted(data)
+        dismiss()
     }
 
 }

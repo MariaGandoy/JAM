@@ -22,24 +22,23 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
  * Use the [MapFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.LocationListener {
+class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.LocationListener, MapEventFragment.MapEventDialogListener {
 
     private var FINE_PERMISSION_CODE = 1
     private var mGoogleMap: GoogleMap? = null
+    private var previousLocation: Marker? = null
+
 
     private var LOCATION_SERVICE_ACTIVE = false
 
@@ -76,7 +75,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         val addBtn = view.findViewById<ImageButton>(R.id.addEventButton)
         addBtn.setOnClickListener {
             val eventDialog = MapEventFragment()
-
+            eventDialog.listener = this
             eventDialog.show(requireFragmentManager(), "MapEvent")
         }
     }
@@ -158,11 +157,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
     override fun onLocationReceived(location: Location) {
         // Update the map with the received location data
         val myLocation = LatLng(location.latitude, location.longitude)
+
+        // Remove the previous marker if it exists
+        previousLocation?.remove()
+
+        // Add the new marker
         val markerOptions = MarkerOptions()
             .position(myLocation)
             .title("My position")
-         mGoogleMap?.addMarker(markerOptions)
-        mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 10f))
+
+        previousLocation = mGoogleMap?.addMarker(markerOptions)
     }
 
     private fun registerLocationReceiver() {
@@ -178,5 +182,35 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         if (::locationBroadcastReceiver.isInitialized) {
             LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(locationBroadcastReceiver)
         }
+    }
+
+    /* Handle events creation and data base dialog: */
+    override fun onEventSubmitted(eventData: MapEventFragment.EventData) {
+        val center = mGoogleMap?.cameraPosition?.target
+
+        // Create event marker (quitar cuando se lea de firebase y leer tb nuestro datos de base de datos ¿?)
+        val markerOptions = MarkerOptions()
+            .apply {
+                center?.let { position(it) }
+                title(eventData.name)
+                snippet("Fecha: " + eventData.date)
+                if (eventData.type == "EVENT") {
+                    icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                } else {
+                    icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                }
+            }
+
+
+        mGoogleMap?.addMarker(markerOptions)
+        center?.let { nonNullCenter ->
+            mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(nonNullCenter, 20f))
+        }
+
+        // TODO: Persist marker in firebase
+    }
+
+    private fun createEventMarker() {
+
     }
 }
