@@ -17,14 +17,8 @@ import java.util.Calendar
 
 class MapEventFragment: DialogFragment() {
 
-    data class EventData(
-        val name: String,
-        val date: String,
-        val type: String,
-    )
-
     interface MapEventDialogListener {
-        fun onEventSubmitted(data: EventData)
+        fun onEventSubmitted(data: Post)
     }
 
     var listener: MapEventDialogListener? = null
@@ -118,15 +112,15 @@ class MapEventFragment: DialogFragment() {
         }
     }
 
-    private fun setEventData(view: View): EventData {
+    private fun setEventData(view: View): Post {
         val eventName = view.findViewById<EditText>(R.id.eventName).text.toString()
         val eventDate = view.findViewById<EditText>(R.id.eventDate).text.toString()
         val eventType = "EVENT" // TODO: add SONG and PHOTO
 
-        return EventData(eventName, eventDate, eventType)
+        return Post(eventName, eventDate, eventType, "", "")
     }
 
-    private fun submitEvent(data: EventData) {
+    private fun submitEvent(data: Post) {
         listener?.onEventSubmitted(data)
         dismiss()
     }

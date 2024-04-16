@@ -46,16 +46,16 @@ class TimelineFragment : Fragment() {
 
     private fun getPosts(): MutableList<Post>{
         var posts:MutableList<Post> = ArrayList()
-        posts.add(Post("Jorge ha compartido una imagen desde la Torre de Hércules", "Hace 5 seg", "Peter Parker", "https://cursokotlin.com/wp-content/uploads/2017/07/spiderman.jpg"))
-        posts.add(Post("Jorge Copy ha compartido una imagen desde la Torre de Hércules", "Hace 5 seg", "Peter Parker", "https://cursokotlin.com/wp-content/uploads/2017/07/spiderman.jpg"))
-        posts.add(Post("María ha creado el evento Cumpleaños en Pub Rochester", "Hace 10 seg", "Matthew Michael Murdock", "https://cursokotlin.com/wp-content/uploads/2017/07/daredevil.jpg"))
-        posts.add(Post("María Copy ha creado el evento Cumpleaños en Pub Rochester", "Hace 10 seg", "Matthew Michael Murdock", "https://cursokotlin.com/wp-content/uploads/2017/07/daredevil.jpg"))
-        posts.add(Post("Joel está en Juan Flórez", "Hace 3 mins", "James Howlett", "https://cursokotlin.com/wp-content/uploads/2017/07/logan.jpeg"))
-        posts.add(Post("Joel Copy está en Juan Flórez", "Hace 3 mins", "James Howlett", "https://cursokotlin.com/wp-content/uploads/2017/07/logan.jpeg"))
-        posts.add(Post("Juan está en María Pita", "Hace 1 h", "Bruce Wayne", "https://cursokotlin.com/wp-content/uploads/2017/07/batman.jpg"))
-        posts.add(Post("Juan Copy está en María Pita", "Hace 1 h", "Bruce Wayne", "https://cursokotlin.com/wp-content/uploads/2017/07/batman.jpg"))
-        posts.add(Post("Hilda ha compartido una foto", "Hace 2 h", "Thor Odinson", "https://cursokotlin.com/wp-content/uploads/2017/07/thor.jpg"))
-        posts.add(Post("Hilda Copy ha compartido una foto", "Hace 2 h", "Thor Odinson", "https://cursokotlin.com/wp-content/uploads/2017/07/thor.jpg"))
+        posts.add(Post("Jorge ha compartido una imagen desde la Torre de Hércules", "Hace 5 seg", "EVENT", "Peter Parker", "https://cursokotlin.com/wp-content/uploads/2017/07/spiderman.jpg"))
+        posts.add(Post("Jorge Copy ha compartido una imagen desde la Torre de Hércules", "Hace 5 seg","EVENT", "Peter Parker", "https://cursokotlin.com/wp-content/uploads/2017/07/spiderman.jpg"))
+        posts.add(Post("María ha creado el evento Cumpleaños en Pub Rochester", "Hace 10 seg", "EVENT","Matthew Michael Murdock", "https://cursokotlin.com/wp-content/uploads/2017/07/daredevil.jpg"))
+        posts.add(Post("María Copy ha creado el evento Cumpleaños en Pub Rochester", "Hace 10 seg", "EVENT","Matthew Michael Murdock", "https://cursokotlin.com/wp-content/uploads/2017/07/daredevil.jpg"))
+        posts.add(Post("Joel está en Juan Flórez", "Hace 3 mins", "James Howlett", "EVENT","https://cursokotlin.com/wp-content/uploads/2017/07/logan.jpeg"))
+        posts.add(Post("Joel Copy está en Juan Flórez", "Hace 3 mins", "EVENT","James Howlett", "https://cursokotlin.com/wp-content/uploads/2017/07/logan.jpeg"))
+        posts.add(Post("Juan está en María Pita", "Hace 1 h", "EVENT","Bruce Wayne", "https://cursokotlin.com/wp-content/uploads/2017/07/batman.jpg"))
+        posts.add(Post("Juan Copy está en María Pita", "Hace 1 h", "EVENT","Bruce Wayne", "https://cursokotlin.com/wp-content/uploads/2017/07/batman.jpg"))
+        posts.add(Post("Hilda ha compartido una foto", "Hace 2 h", "EVENT","Thor Odinson", "https://cursokotlin.com/wp-content/uploads/2017/07/thor.jpg"))
+        posts.add(Post("Hilda Copy ha compartido una foto", "Hace 2 h", "EVENT","Thor Odinson", "https://cursokotlin.com/wp-content/uploads/2017/07/thor.jpg"))
         return posts
     }
 }

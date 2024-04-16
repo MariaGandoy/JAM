@@ -39,8 +39,8 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
         private val userAvatar = view.findViewById(R.id.userAvatar) as ImageView
 
         fun bind(post:Post, context: Context){
-            postText.text = post.text
-            postTime.text = post.time
+            postText.text = post.title
+            postTime.text = post.date
 
             val drawableName = "sample_user"
             val resourceId = context.resources.getIdentifier(drawableName, "drawable", context.packageName)

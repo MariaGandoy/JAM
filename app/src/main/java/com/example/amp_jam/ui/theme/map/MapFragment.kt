@@ -17,6 +17,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.amp_jam.LocationBroadcastReceiver
 import com.example.amp_jam.LocationService
 import com.example.amp_jam.MapEventFragment
+import com.example.amp_jam.Post
 import com.example.amp_jam.R
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -164,7 +165,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         // Add the new marker
         val markerOptions = MarkerOptions()
             .position(myLocation)
-            .title("My position")
+            .title("Mi posición en tiempo real")
 
         previousLocation = mGoogleMap?.addMarker(markerOptions)
     }
@@ -185,19 +186,25 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
     }
 
     /* Handle events creation and data base dialog: */
-    override fun onEventSubmitted(eventData: MapEventFragment.EventData) {
+    override fun onEventSubmitted(postData: Post) {
         val center = mGoogleMap?.cameraPosition?.target
 
         // Create event marker (quitar cuando se lea de firebase y leer tb nuestro datos de base de datos ¿?)
         val markerOptions = MarkerOptions()
             .apply {
                 center?.let { position(it) }
-                title(eventData.name)
-                snippet("Fecha: " + eventData.date)
-                if (eventData.type == "EVENT") {
-                    icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-                } else {
-                    icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                title(postData.title)
+                snippet("Fecha: " + postData.date)
+                when (postData.type) {
+                    "EVENT" -> {
+                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                    }
+                    "PHOTO" -> {
+                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                    }
+                    "SONG" -> {
+                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                    }
                 }
             }
 
@@ -208,9 +215,5 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         }
 
         // TODO: Persist marker in firebase
-    }
-
-    private fun createEventMarker() {
-
     }
 }
