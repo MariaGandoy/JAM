@@ -7,19 +7,22 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.auth
 
 class LoginActivity : ComponentActivity() {
 
     // Referencia a Firebase Authentication
     private lateinit var auth: FirebaseAuth
-
+    private val GOOGLE_SIGN_IN = 100
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login)
 
+        signOut()
         FirebaseApp.initializeApp(this)
 
         // Inicializar Firebase Auth
@@ -29,6 +32,7 @@ class LoginActivity : ComponentActivity() {
         val emailEditText = findViewById<EditText>(R.id.editTextTextEmailAddress)
         val passwordEditText = findViewById<EditText>(R.id.editTextTextPassword)
         val loginButton = findViewById<Button>(R.id.button)
+        val googleButton = findViewById<Button>(R.id.googleButton)
 
         // Configurar el Listener para manejar el clic del botón de "Entrar"
         loginButton.setOnClickListener {
@@ -36,6 +40,13 @@ class LoginActivity : ComponentActivity() {
             val password = passwordEditText.text.toString()
             signIn(email, password)
         }
+
+        googleButton.setOnClickListener {
+            val intent = Intent(this, GoogleSignInActivity::class.java)
+            startActivity(intent)
+        }
+
+
     }
 
     private fun signIn(email: String, password: String) {
@@ -71,6 +82,10 @@ class LoginActivity : ComponentActivity() {
             // Mantener al usuario en la LoginActivity o mostrar algún mensaje según sea necesario
             Log.d("FirebaseAuth", "updateUI: No user is logged in")
         }
+    }
+
+    private fun signOut() {
+        Firebase.auth.signOut()
     }
 
     // Si se quiere implementar el registro de usuarios nuevos, se puede agregar una función similar aquí

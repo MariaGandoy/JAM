@@ -56,6 +56,7 @@
             android:name=".EnterActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
+        <activity android:name=".GoogleSignInActivity" />
 
         <!-- Services -->
         <service android:name=".LocationService"/>
