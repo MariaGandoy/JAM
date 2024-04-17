@@ -15,7 +15,6 @@ import android.widget.RadioGroup
 import androidx.fragment.app.DialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 
 class MapEventFragment: DialogFragment() {
@@ -133,16 +132,7 @@ class MapEventFragment: DialogFragment() {
     }
 
     private fun submitEvent(data: Post) {
-        persistEvent(data)
         listener?.onEventSubmitted(data)
         dismiss()
     }
-
-    private fun persistEvent(data: Post) {
-        val database = FirebaseFirestore.getInstance()
-        val usuariosCollection = database.collection("usuarios")
-
-        // TODO: persist event
-    }
-
 }
