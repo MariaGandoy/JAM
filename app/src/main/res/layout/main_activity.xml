@@ -3,12 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:gravity="center">
+    android:gravity="center"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/gradient_background">
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="334dp"
-        android:layout_height="162dp"
+        android:layout_width="310dp"
+        android:layout_height="289dp"
         android:alpha="1"
         android:src="@drawable/logo"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,13 +22,15 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="113dp"
-        android:layout_height="23dp"
-        android:alpha="1"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:fontFamily="@font/alata"
         android:text="@string/app_name"
         android:textAlignment="center"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
         app:layout_constraintVertical_bias="0.0" />
@@ -35,24 +39,27 @@
         android:layout_width="113dp"
         android:layout_height="23dp"
         android:alpha="1"
+        android:fontFamily="@font/calistoga"
         android:text="@string/registrate"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.097" />
+        app:layout_constraintVertical_bias="0.177" />
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="158dp"
-        android:layout_height="57dp"
-        android:alpha="1"
+        android:layout_width="280dp"
+        android:layout_height="40dp"
+        android:background="@drawable/custom_button_background"
+        android:fontFamily="@font/calistoga"
         android:text="Iniciar sesión"
-        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
         app:layout_constraintVertical_bias="0.468" />
@@ -61,22 +68,25 @@
         android:layout_width="194dp"
         android:layout_height="26dp"
         android:alpha="1"
-        android:text="¿Ya tienes cuenta?"
+        android:text="¿No tienes cuenta?"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/button3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button2"
-        app:layout_constraintVertical_bias="0.431" />
+        app:layout_constraintVertical_bias="0.731" />
 
     <Button
         android:id="@+id/button3"
-        android:layout_width="158dp"
-        android:layout_height="57dp"
-        android:alpha="1"
-        android:text="Crear cuenta"
+        android:layout_width="280dp"
+        android:layout_height="40dp"
+        android:background="@drawable/custom_button_background"
+        android:fontFamily="@font/calistoga"
+        android:text="Registrarse"
         android:textAlignment="center"
+        android:textSize="14sp"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
