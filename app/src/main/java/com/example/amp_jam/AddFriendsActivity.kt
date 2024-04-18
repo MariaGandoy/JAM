@@ -5,19 +5,27 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.ComponentActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import android.widget.LinearLayout
+
+
 
 class AddFriendsActivity : ComponentActivity(){
+
+    private lateinit var firestore: FirebaseFirestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.add_friends)
 
+        firestore = FirebaseFirestore.getInstance()
+
         setupLogOut()
-        setupAddFriend1()
-        setupAddFriend2()
-        setupAddFriend3()
-        setupAddFriend4()
-        setupAddFriend5()
+        loadAllUsers()
+
 
     }
 
@@ -30,38 +38,77 @@ class AddFriendsActivity : ComponentActivity(){
         }
     }
 
-    private fun setupAddFriend1() {
-        val addBtn = findViewById<Button>(R.id.button5)
-        addBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[AddFriendsActivity] Click ADD FRIEND 1 EVENT button")
+    private fun loadAllUsers() {
+        firestore.collection("usuarios")
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    for (document in documents) {
+                        val userName = document.getString("user") ?: "Unknown"
+                        addUserToList(userName, document.id)
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("AddFriendsActivity", "Error loading users", exception)
+            }
+    }
+
+    private fun addUserToList(userName: String, userId: String) {
+        val userContainer = findViewById<LinearLayout>(R.id.usersContainer)
+
+        // TextView para mostrar el nombre del usuario
+        val textView = TextView(this).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            text = userName
+            textSize = 20f
+            setPadding(16, 16, 16, 16)
+        }
+
+        // Esto no acaba de funcionar bien del todoo
+        val addButton = Button(this).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            text = "+"
+            setOnClickListener {
+                addFriend(userId)
+            }
+        }
+
+        // Crear un nuevo LinearLayout para contener el TextView y el Button
+        val userLayout = LinearLayout(this).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            orientation = LinearLayout.HORIZONTAL
+            addView(textView)
+            addView(addButton)
+        }
+
+        userContainer.addView(userLayout)
+    }
+
+    private fun addFriend(userId: String) {
+        // Falta por implementar esto que no tenemos bien aún para la parte social
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            firestore.collection("usuarios").document(currentUser.uid)
+                .collection("friends").document(userId).set(mapOf("added" to true))
+                .addOnSuccessListener {
+                    Log.d("AddFriendsActivity", "Friend added successfully: $userId")
+                }
+                .addOnFailureListener {
+                    Log.e("AddFriendsActivity", "Failed to add friend", it)
+                }
         }
     }
 
-    private fun setupAddFriend2() {
-        val addBtn = findViewById<Button>(R.id.button16)
-        addBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[AddFriendsActivity] Click ADD FRIEND 2 EVENT button")
-        }
-    }
 
-    private fun setupAddFriend3() {
-        val addBtn = findViewById<Button>(R.id.button17)
-        addBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[AddFriendsActivity] Click ADD FRIEND 3 EVENT button")
-        }
-    }
 
-    private fun setupAddFriend4() {
-        val addBtn = findViewById<Button>(R.id.button18)
-        addBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[AddFriendsActivity] Click ADD FRIEND 4 EVENT button")
-        }
-    }
-
-    private fun setupAddFriend5() {
-        val addBtn = findViewById<Button>(R.id.button19)
-        addBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[AddFriendsActivity] Click ADD FRIEND 5 EVENT button")
-        }
-    }
 }

@@ -21,10 +21,6 @@ class AddFriendsFragment : Fragment() {
 
         setupLogOut(view)
         setupAddFriend1(view)
-        setupAddFriend2(view)
-        setupAddFriend3(view)
-        setupAddFriend4(view)
-        setupAddFriend5(view)
 
         return view
     }
@@ -46,31 +42,5 @@ class AddFriendsFragment : Fragment() {
         }
     }
 
-    private fun setupAddFriend2(view: View) {
-        val addBtn = view.findViewById<Button>(R.id.button16)
-        addBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[AddFriendsFragment] Click ADD FRIEND 2 EVENT button")
-        }
-    }
 
-    private fun setupAddFriend3(view: View) {
-        val addBtn = view.findViewById<Button>(R.id.button17)
-        addBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[AddFriendsFragment] Click ADD FRIEND 3 EVENT button")
-        }
-    }
-
-    private fun setupAddFriend4(view: View) {
-        val addBtn = view.findViewById<Button>(R.id.button18)
-        addBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[AddFriendsFragment] Click ADD FRIEND 4 EVENT button")
-        }
-    }
-
-    private fun setupAddFriend5(view: View) {
-        val addBtn = view.findViewById<Button>(R.id.button19)
-        addBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[AddFriendsFragment] Click ADD FRIEND 5 EVENT button")
-        }
-    }
 }
