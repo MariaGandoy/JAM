@@ -74,7 +74,7 @@ class TimelineFragment : Fragment() {
                             for (postDocument in postsResult) {
                                 val postData = postDocument.data
 
-                                posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], "", ""))
+                                posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, null))
                             }
 
                             fetchedCount++
