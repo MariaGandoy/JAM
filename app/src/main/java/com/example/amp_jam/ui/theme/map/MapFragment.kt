@@ -207,7 +207,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         val markerOptions = MarkerOptions()
             .apply {
                 center?.let { position(it) }
-                title(postData.title)
+                title(postData.title.toString())
                 snippet("Fecha: " + postData.date)
                 when (postData.type) {
                     "EVENT" -> {
