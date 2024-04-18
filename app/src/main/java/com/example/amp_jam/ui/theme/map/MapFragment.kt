@@ -27,6 +27,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 /**
@@ -45,11 +48,19 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
     private lateinit var locationBroadcastReceiver: LocationBroadcastReceiver
 
+    private lateinit var auth: FirebaseAuth
+
+    private var currentUser: FirebaseUser? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.map, container, false)
+
+        // Retrieve current user
+        auth = FirebaseAuth.getInstance()
+        currentUser = auth.currentUser
 
         setupAddEventButton(view)
         setUpUbicationListener(view)
@@ -168,6 +179,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             .title("Mi posición en tiempo real")
 
         previousLocation = mGoogleMap?.addMarker(markerOptions)
+
+        // Persist to firebase
+        persistUbication(myLocation)
     }
 
     private fun registerLocationReceiver() {
@@ -193,7 +207,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         val markerOptions = MarkerOptions()
             .apply {
                 center?.let { position(it) }
-                title(postData.title)
+                title(postData.title.toString())
                 snippet("Fecha: " + postData.date)
                 when (postData.type) {
                     "EVENT" -> {
@@ -209,11 +223,51 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             }
 
 
+        // TODO: remove this and read all events/posts from firebase to draw the map, even our own posts
         mGoogleMap?.addMarker(markerOptions)
         center?.let { nonNullCenter ->
             mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(nonNullCenter, 20f))
         }
 
-        // TODO: Persist marker in firebase
+        // Persist to firebase
+        persistPost(postData, center)
+    }
+
+    private fun persistPost(data: Post, center: LatLng?) {
+        val database = FirebaseFirestore.getInstance()
+
+        // Create a reference to the user's posts collection
+        val userPostsCollection = database.collection("usuarios").document(currentUser!!.uid)
+            .collection("posts")
+
+        // Generate a new document ID for the post
+        val newPostDocument = userPostsCollection.document()
+
+        // Prepare the data for the post
+        val postData = hashMapOf(
+            "fecha" to data.date,
+            "titulo" to data.title,
+            "tipo" to data.type,
+            "user" to data.user,
+            "lugar" to center
+        )
+
+        // Set the post data in the document
+        newPostDocument.set(postData)
+    }
+
+    private fun persistUbication(location: LatLng?) {
+        val database = FirebaseFirestore.getInstance()
+
+        // TODO: Change to update location, not create new everytime
+        var userData = hashMapOf(
+            "user" to currentUser!!.email,
+            "lugar" to location
+        )
+
+        if (currentUser != null) {
+            database.collection("usuarios").document(currentUser!!.uid)
+                .set(userData)
+        }
     }
 }

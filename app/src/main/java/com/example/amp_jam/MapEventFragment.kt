@@ -13,6 +13,8 @@ import android.widget.ImageButton
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.fragment.app.DialogFragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import java.util.Calendar
 
 class MapEventFragment: DialogFragment() {
@@ -23,11 +25,19 @@ class MapEventFragment: DialogFragment() {
 
     var listener: MapEventDialogListener? = null
 
+    private lateinit var auth: FirebaseAuth
+
+    private var currentUser: FirebaseUser? = null
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
             val inflater = requireActivity().layoutInflater;
             val view = inflater.inflate(R.layout.map_event, null)
+
+            // Retrieve current user
+            auth = FirebaseAuth.getInstance()
+            currentUser = auth.currentUser
 
             setUpExitButton(view)
             setUpNameEventListener(view)
@@ -116,13 +126,13 @@ class MapEventFragment: DialogFragment() {
         val eventName = view.findViewById<EditText>(R.id.eventName).text.toString()
         val eventDate = view.findViewById<EditText>(R.id.eventDate).text.toString()
         val eventType = "EVENT" // TODO: add SONG and PHOTO
+        val userEmail = currentUser?.email ?: ""
 
-        return Post(eventName, eventDate, eventType, "", "")
+        return Post(eventName, eventDate, eventType, userEmail, null, null)
     }
 
     private fun submitEvent(data: Post) {
         listener?.onEventSubmitted(data)
         dismiss()
     }
-
 }
