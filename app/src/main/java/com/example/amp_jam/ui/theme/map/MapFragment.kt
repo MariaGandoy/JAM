@@ -1,10 +1,14 @@
 package com.example.amp_jam.ui.theme.map
 
 import android.Manifest
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +23,8 @@ import com.example.amp_jam.LocationService
 import com.example.amp_jam.MapEventFragment
 import com.example.amp_jam.Post
 import com.example.amp_jam.R
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -48,6 +54,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
     private lateinit var locationBroadcastReceiver: LocationBroadcastReceiver
 
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     private lateinit var auth: FirebaseAuth
 
     private var currentUser: FirebaseUser? = null
@@ -73,10 +81,44 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(LOCATION_SERVICE_ACTIVE)
+        // Inicializar el cliente de ubicación fusionada
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        if (LOCATION_SERVICE_ACTIVE) {
             registerLocationReceiver()
+            // Obtener la ubicación actual y hacer zoom en ella
+            getCurrentLocationAndZoom()
+        }
+
     }
 
+    private fun getCurrentLocationAndZoom() {
+        if (ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                FINE_PERMISSION_CODE
+            )
+            return
+        }
+
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                location?.let {
+                    val latLng = LatLng(location.latitude, location.longitude)
+                    mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13.25f))
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("MapFragment", "Error getting location: ${e.message}")
+            }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         unregisterLocationReceiver()
@@ -164,21 +206,50 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
         mGoogleMap!!.uiSettings.isZoomControlsEnabled = true
+
+        // Verificar si la ubicación está habilitada
+        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // La ubicación no está habilitada, solicitar al usuario que la habilite
+            AlertDialog.Builder(requireContext())
+                .setTitle("Activar Ubicación")
+                .setMessage("La ubicación está desactivada. ¿Desea activarla ahora?")
+                .setPositiveButton("Sí") { _, _ ->
+                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                }
+                .setNegativeButton("Cerrar") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .create()
+                .show()
+        } else {
+            // La ubicación está habilitada, activar el botón de "Mi Ubicación"
+            if (ActivityCompat.checkSelfPermission(
+                    this.requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this.requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+            mGoogleMap!!.isMyLocationEnabled = true
+
+            val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            Log.d("Localizacion", location.toString())
+            if (location != null) {
+                val latLng = LatLng(location.latitude, location.longitude)
+                mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+            }
+
+        }
     }
 
     override fun onLocationReceived(location: Location) {
         // Update the map with the received location data
         val myLocation = LatLng(location.latitude, location.longitude)
-
-        // Remove the previous marker if it exists
-        previousLocation?.remove()
-
-        // Add the new marker
-        val markerOptions = MarkerOptions()
-            .position(myLocation)
-            .title("Mi posición en tiempo real")
-
-        previousLocation = mGoogleMap?.addMarker(markerOptions)
 
         // Persist to firebase
         persistUbication(myLocation)
