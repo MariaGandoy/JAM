@@ -53,7 +53,7 @@ class LocationService : Service() {
         // Create a LocationRequest (configuration parameters for LocationCallback)
         val locationRequest = LocationRequest.create().apply {
             // Sets the desired interval for active location updates.
-            interval = 20000 // 20 secs (TODO: cambiar llegado el momento, para pruebas dejar número alto para evitar muchas peticiones)
+            interval = 30000 // 30 secs (TODO: cambiar llegado el momento, para pruebas dejar número alto para evitar muchas peticiones)
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
