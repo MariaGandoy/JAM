@@ -43,11 +43,6 @@
             android:theme="@style/Theme.AMP_JAM" >
         </activity>
         <activity
-            android:name=".MapActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AMP_JAM" >
-        </activity>
-        <activity
             android:name=".AddFriendsActivity"
             android:exported="true"
             android:theme="@style/Theme.AMP_JAM" >

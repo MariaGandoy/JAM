@@ -12,7 +12,6 @@ class AddFriendsActivity : ComponentActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.add_friends)
 
-        setupBackButton()
         setupLogOut()
         setupAddFriend1()
         setupAddFriend2()
@@ -20,15 +19,6 @@ class AddFriendsActivity : ComponentActivity(){
         setupAddFriend4()
         setupAddFriend5()
 
-    }
-
-    private fun setupBackButton() {
-        val toolbarBack = findViewById<ImageView>(R.id.toolbarBack)
-        toolbarBack.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[AddFriendsActivity] Click BACK EVENT button")
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
-        }
     }
 
     private fun setupLogOut() {
@@ -44,8 +34,6 @@ class AddFriendsActivity : ComponentActivity(){
         val addBtn = findViewById<Button>(R.id.button5)
         addBtn.setOnClickListener {
             Log.d("JAM_NAVIGATION", "[AddFriendsActivity] Click ADD FRIEND 1 EVENT button")
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
         }
     }
 
@@ -53,8 +41,6 @@ class AddFriendsActivity : ComponentActivity(){
         val addBtn = findViewById<Button>(R.id.button16)
         addBtn.setOnClickListener {
             Log.d("JAM_NAVIGATION", "[AddFriendsActivity] Click ADD FRIEND 2 EVENT button")
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
         }
     }
 
@@ -62,8 +48,6 @@ class AddFriendsActivity : ComponentActivity(){
         val addBtn = findViewById<Button>(R.id.button17)
         addBtn.setOnClickListener {
             Log.d("JAM_NAVIGATION", "[AddFriendsActivity] Click ADD FRIEND 3 EVENT button")
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
         }
     }
 
@@ -71,8 +55,6 @@ class AddFriendsActivity : ComponentActivity(){
         val addBtn = findViewById<Button>(R.id.button18)
         addBtn.setOnClickListener {
             Log.d("JAM_NAVIGATION", "[AddFriendsActivity] Click ADD FRIEND 4 EVENT button")
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
         }
     }
 
@@ -80,8 +62,6 @@ class AddFriendsActivity : ComponentActivity(){
         val addBtn = findViewById<Button>(R.id.button19)
         addBtn.setOnClickListener {
             Log.d("JAM_NAVIGATION", "[AddFriendsActivity] Click ADD FRIEND 5 EVENT button")
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
         }
     }
 }

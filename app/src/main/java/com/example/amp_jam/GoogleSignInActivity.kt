@@ -83,14 +83,21 @@ class GoogleSignInActivity : Activity() {
     }
 
     private fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        googleSignInClient.signOut().addOnCompleteListener(this) {
+            // Start the sign-in intent after sign-out is completed
+            val signInIntent = googleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        }
     }
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
             // Si el usuario ha iniciado sesión correctamente, se podría redirigir a otra Activity
+            val name = user.displayName // Nombre del usuario
+            val email = user.email // Correo electrónico del usuario
             Log.d(TAG, "updateUIGoogle: User is logged in")
+            Log.d(TAG, "Nombre: $name")
+            Log.d(TAG, "Correo electrónico: $email")
             startActivity(Intent(this, EnterActivity::class.java))
         } else {
             // Mantener al usuario en la LoginActivity o mostrar algún mensaje según sea necesario
