@@ -1,21 +1,33 @@
 package com.example.amp_jam
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import java.util.Calendar
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.drawable.BitmapDrawable
+import androidx.core.content.ContextCompat
+
 
 class MapEventFragment: DialogFragment() {
 
@@ -29,10 +41,62 @@ class MapEventFragment: DialogFragment() {
 
     private var currentUser: FirebaseUser? = null
 
+    private lateinit var takePictureLauncher: ActivityResultLauncher<Intent>
+    private lateinit var pickImageLauncher: ActivityResultLauncher<String>
+
+    companion object {
+        private const val REQUEST_CAMERA_PERMISSION = 1
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // Asegúrate de que hay datos en el resultado
+                if (result.data != null && result.data?.extras?.get("data") != null) {
+                    val imageBitmap = result.data?.extras?.get("data") as Bitmap
+
+                    // Comprueba que el Bitmap no es null
+                    if (imageBitmap != null) {
+                        // Aquí puedes verificar el tamaño del Bitmap, por ejemplo
+                        Log.d("JAM_NAVIGATION", "Width of the captured image: ${imageBitmap.width}")
+                        Log.d("JAM_NAVIGATION", "Height of the captured image: ${imageBitmap.height}")
+
+                        // Actualiza el ImageButton
+                        val cameraButton = view?.findViewById<ImageButton>(R.id.addFromCamera)
+                        cameraButton?.setImageBitmap(imageBitmap)
+                        Log.d("JAM_NAVIGATION", "[MapEvent] Image captured and displayed.")
+                    } else {
+                        // El Bitmap es null
+                        Log.d("JAM_NAVIGATION", "Captured image is null.")
+                    }
+                } else {
+                    // Los datos del resultado son null
+                    Log.d("JAM_NAVIGATION", "Result data from camera is null.")
+                }
+            } else {
+                Log.d("JAM_NAVIGATION", "Failed to capture image.")
+            }
+        }
+
+        pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            if (uri != null) {
+                val imageView = view?.findViewById<ImageButton>(R.id.addFromFiles)
+                val imageBitmap = MediaStore.Images.Media.getBitmap(activity?.contentResolver, uri)
+                imageView?.setImageBitmap(imageBitmap)
+                Log.d("JAM_NAVIGATION", "[MapEvent] Image selected")
+            }
+        }
+
+
+    }
+
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
-            val inflater = requireActivity().layoutInflater;
+            val inflater = requireActivity().layoutInflater
             val view = inflater.inflate(R.layout.map_event, null)
 
             // Retrieve current user
@@ -46,12 +110,12 @@ class MapEventFragment: DialogFragment() {
             setupPhotoButtons(view)
 
             builder.setView(view)
-                .setPositiveButton("AÑADIR") { dialog, id ->
+                .setPositiveButton("AÑADIR") { _, _ ->
                     Log.d("JAM_NAVIGATION", "[MapEvent] Add event")
                     val eventData = setEventData(view)
                     submitEvent(eventData)
                 }
-                .setNegativeButton("CANCELAR") { dialog, id ->
+                .setNegativeButton("CANCELAR") { _, _ ->
                     Log.d("JAM_NAVIGATION", "[MapEvent] Cancel event")
                 }
             builder.create()
@@ -109,16 +173,47 @@ class MapEventFragment: DialogFragment() {
             Log.d("JAM_NAVIGATION", "[MapEvent] Notify radio group selection changed to: $checkedId")
         }
     }
+    private fun openCamera() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Si no tenemos el permiso lo solicitamos
+            requestPermissions(
+                arrayOf(Manifest.permission.CAMERA),
+                REQUEST_CAMERA_PERMISSION
+            )
+        } else {
+            // Si ya tenemos permiso hacemos la foto.
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            takePictureLauncher.launch(takePictureIntent)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permiso concedido, lanzar la cámara
+                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                takePictureLauncher.launch(takePictureIntent)
+            } else {
+                // Permiso denegado
+                Log.d("JAM_NAVIGATION", "[MapEvent] Camera permission was denied")
+            }
+        }
+    }
 
     private fun setupPhotoButtons(view: View) {
-        val folderBtn = view.findViewById<ImageButton>(R.id.addFromCamera)
-        folderBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[MapEvent] Click ADD FROM CAMERA button")
+        val cameraBtn = view.findViewById<ImageButton>(R.id.addFromCamera)
+        cameraBtn.setOnClickListener {
+            openCamera()
         }
 
-        val pictureBtn = view.findViewById<ImageButton>(R.id.addFromFiles)
-        pictureBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[MapEvent] Click ADD FROM FILES button")
+        val galleryBtn = view.findViewById<ImageButton>(R.id.addFromFiles)
+        galleryBtn.setOnClickListener {
+            pickImageLauncher.launch("image/*")
         }
     }
 
