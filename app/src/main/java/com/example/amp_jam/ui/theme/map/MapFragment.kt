@@ -23,6 +23,7 @@ import com.example.amp_jam.LocationService
 import com.example.amp_jam.MapEventFragment
 import com.example.amp_jam.Post
 import com.example.amp_jam.R
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -33,6 +34,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -47,7 +52,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
     private var FINE_PERMISSION_CODE = 1
     private var mGoogleMap: GoogleMap? = null
-    private var previousLocation: Marker? = null
+
+    private lateinit var autocompleteFragment: AutocompleteSupportFragment
 
 
     private var LOCATION_SERVICE_ACTIVE = false
@@ -70,8 +76,22 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
 
+        Places.initialize(requireContext(), getString(R.string.google_map_api_key))
+        autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocompleteUbication) as AutocompleteSupportFragment
+        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG))
+        autocompleteFragment.setOnPlaceSelectedListener(object: PlaceSelectionListener{
+            override fun onError(place: Status) {
+                Log.d("JAM_NAVIGATION", "[MapFragment] Error searching location")
+            }
+
+            override fun onPlaceSelected(place: Place) {
+                val latLng = place.latLng!!
+
+                zoomOnMap(latLng)
+            }
+        })
+
         setupAddEventButton(view)
-        setUpUbicationListener(view)
         createMapFragment()
         checkLocationPermissions()
 
@@ -132,24 +152,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             eventDialog.listener = this
             eventDialog.show(requireFragmentManager(), "MapEvent")
         }
-    }
-
-    private fun setUpUbicationListener(view: View) {
-        val searchUbication = view.findViewById<SearchView>(R.id.searchUbication)
-        searchUbication.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                // This method is called when the user submits the query.
-                // You can handle the submission here if needed.
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                // This method is called when the text in the search field changes.
-                // newText contains the new text entered by the user.
-                Log.d("JAM_NAVIGATION", "[MapFragment] Ubication text changed to: $newText")
-                return true
-            }
-        })
     }
 
     /* Check permissions: */
@@ -241,7 +243,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             Log.d("Localizacion", location.toString())
             if (location != null) {
                 val latLng = LatLng(location.latitude, location.longitude)
-                mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                zoomOnMap(latLng)
             }
 
         }
@@ -268,6 +270,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         if (::locationBroadcastReceiver.isInitialized) {
             LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(locationBroadcastReceiver)
         }
+    }
+
+    private fun zoomOnMap(latLng: LatLng) {
+        val newLatLngZoom = CameraUpdateFactory.newLatLngZoom(latLng, 15f)
+        mGoogleMap?.animateCamera(newLatLngZoom)
     }
 
     /* Handle events creation and data base dialog: */

@@ -116,12 +116,9 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
         private fun createAlertPost(post:Post, context: Context) {
             // Set song data
             postText.text = Html.fromHtml("<b>${post.user}</b> creó una <b>alerta</b>")
-            postText.setTextColor(ContextCompat.getColor(context, R.color.orange))
             postTime.visibility = View.GONE // TODO: change for a mark of when the post was created
 
-            // Set post user profile pic (TODO: change for user pic)
-            val drawableName = "sample_user"
-            val resourceId = context.resources.getIdentifier(drawableName, "drawable", context.packageName)
+            val resourceId = context.resources.getIdentifier("warning", "drawable", context.packageName)
             userAvatar.setImageResource(resourceId)
 
             postImage.visibility = View.GONE

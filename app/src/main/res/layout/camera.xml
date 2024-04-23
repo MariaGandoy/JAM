@@ -22,56 +22,51 @@
 
         <ImageButton
             android:id="@+id/imageButton3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageButton4"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.836"
-            android:backgroundTint="#99E1BC"
+            android:background="@drawable/custom_round_button_background"
             android:src="@android:drawable/ic_menu_edit" />
 
         <ImageButton
             android:id="@+id/imageButton4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView8"
             app:layout_constraintEnd_toStartOf="@+id/imageButton3"
             app:layout_constraintStart_toEndOf="@+id/imageButton2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.836"
-            android:backgroundTint="#99E1BC"
+            android:background="@drawable/custom_round_button_background"
             android:src="@android:drawable/ic_menu_camera" />
 
         <ImageButton
             android:id="@+id/imageButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView8"
             app:layout_constraintEnd_toStartOf="@+id/imageButton4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.836"
-            android:backgroundTint="#99E1BC"
+            android:background="@drawable/custom_round_button_background"
             android:src="@android:drawable/ic_menu_save" />
 
         <ImageButton
             android:id="@+id/imageButton5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:backgroundTint="#99E1BC"
+            android:background="@drawable/custom_round_button_background"
             android:src="@android:drawable/ic_menu_manage" />
 
-        <Switch
-            android:id="@+id/switch3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Flash"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton5"
-            tools:layout_editor_absoluteY="16dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

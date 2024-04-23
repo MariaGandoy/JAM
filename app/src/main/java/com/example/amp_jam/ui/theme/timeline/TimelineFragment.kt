@@ -55,10 +55,12 @@ class TimelineFragment : Fragment() {
         val database = FirebaseFirestore.getInstance()
 
         // Some test data
+        /*
         posts.add(Post("Cumpleaños", "04/07/24", "EVENT", "Peter Parker", "https://cursokotlin.com/wp-content/uploads/2017/07/spiderman.jpg", ""))
         posts.add(Post("", "04/07/24", "PHOTO", "Peter Parker", "https://cursokotlin.com/wp-content/uploads/2017/07/spiderman.jpg", ""))
         posts.add(Post("", "04/07/24", "SONG", "Peter Parker", "https://cursokotlin.com/wp-content/uploads/2017/07/spiderman.jpg", "https://open.spotify.com/intl-es/track/59xD5osEFsaNt5PXfIKUnX?si=2476b039634943fe"))
         posts.add(Post("", "04/07/24", "ALERT", "Peter Parker", "https://cursokotlin.com/wp-content/uploads/2017/07/spiderman.jpg", ""))
+        */
 
         database.collection("usuarios").get()
             .addOnSuccessListener { usuariosResult ->
@@ -67,6 +69,9 @@ class TimelineFragment : Fragment() {
 
                 for (usuarioDocument in usuariosResult) {
                     val usuarioId = usuarioDocument.id
+
+                    Log.d("JAM_NAVIGATION", "[timeline] current user es: ${usuarioDocument}")
+
 
                     database.collection("usuarios").document(usuarioId)
                         .collection("posts").get()

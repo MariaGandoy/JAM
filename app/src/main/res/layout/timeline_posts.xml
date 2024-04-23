@@ -5,31 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
+    android:backgroundTint="@color/black"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:padding="5dp">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/userAvatar"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
+            android:padding="5dp"
             android:src="@drawable/sample_user"
-            android:scaleType="centerCrop" />
+            app:shapeAppearanceOverlay="@style/circleImageView"
+            app:strokeColor="@android:color/transparent"
+            app:strokeWidth="1dp" />
 
         <TextView
             android:id="@+id/postText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textColor="@color/white"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/userAvatar"
-            android:text="Juan está en María Pita" />
+            android:text="Post text"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/postTime"
@@ -38,7 +43,7 @@
             android:textSize="15sp"
             android:layout_below="@+id/postText"
             android:layout_toEndOf="@+id/userAvatar"
-            tools:text="Hace 5 seg"/>
+            tools:text="Post time"/>
 
         <ImageView
             android:id="@+id/postImage"
@@ -51,3 +56,4 @@
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
+

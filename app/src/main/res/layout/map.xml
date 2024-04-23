@@ -18,33 +18,39 @@
         app:layout_constraintVertical_bias="1.0"
         tools:srcCompat="@drawable/sample_map" />
 
-    <SearchView
-        android:id="@+id/searchUbication"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:queryHint="Ubicación"
-        android:background="@drawable/bg_search"
-        android:iconifiedByDefault="false"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/autocompleteUbicationCard"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:cardCornerRadius="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.05"/>
-
+        app:layout_constraintVertical_bias="1.0"
+        >
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/autocompleteUbication"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment">
+        </androidx.fragment.app.FragmentContainerView>
+    </androidx.cardview.widget.CardView>
 
     <ImageButton
         android:id="@+id/addEventButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginEnd="20dp"
-        android:background="@drawable/round_button_background"
+        android:background="@drawable/custom_round_button_background"
         android:src="@drawable/add_location"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchUbication"
+        app:layout_constraintTop_toBottomOf="@+id/autocompleteUbicationCard"
         app:layout_constraintVertical_bias="0.03" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
