@@ -109,6 +109,7 @@ class AddFriendsActivity : ComponentActivity(){
         }
     }
 
-
+//    Ya creado en Firebase los tipos de datos necesarios para poder hacer las listas de amigos o seguidores, segun el diseño que decidamos optar. 
+//    Está dentro de la clase de usuario junto a los posts
 
 }
