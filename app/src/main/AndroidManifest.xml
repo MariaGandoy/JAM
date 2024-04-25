@@ -58,11 +58,6 @@
             android:theme="@style/Theme.AMP_JAM" >
         </activity>
         <activity
-            android:name=".CamaraActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AMP_JAM" >
-        </activity>
-        <activity
             android:name=".EnterActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
