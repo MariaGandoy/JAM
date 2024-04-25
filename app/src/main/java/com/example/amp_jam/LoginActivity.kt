@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.google.firebase.Firebase
@@ -34,7 +35,7 @@ class LoginActivity : ComponentActivity() {
         val emailEditText = findViewById<EditText>(R.id.editTextTextEmailAddress)
         val passwordEditText = findViewById<EditText>(R.id.editTextTextPassword)
         val loginButton = findViewById<Button>(R.id.button)
-        val googleButton = findViewById<Button>(R.id.googleButton)
+        val googleButton = findViewById<ImageButton>(R.id.googleButton)
 
         // Configurar datos de usuario por defecto
         val defaultEmail = SharedPreferencesHelper.getDefaultEmail()

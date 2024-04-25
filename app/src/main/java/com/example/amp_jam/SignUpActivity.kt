@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.google.firebase.FirebaseApp
@@ -30,7 +31,7 @@ class SignUpActivity : ComponentActivity() {
         val lastNameEditText = findViewById<EditText>(R.id.editTextText2)
         val emailEditText = findViewById<EditText>(R.id.editTextTextEmailAddress)
         val passwordEditText = findViewById<EditText>(R.id.editTextTextPassword)
-        val signUpButton = findViewById<Button>(R.id.button7)
+        val signUpButton = findViewById<ImageButton>(R.id.button7)
 
         signUpButton.setOnClickListener {
             val name = nameEditText.text.toString().trim()
