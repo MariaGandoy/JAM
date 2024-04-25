@@ -23,6 +23,7 @@ import com.example.amp_jam.LocationService
 import com.example.amp_jam.MapEventFragment
 import com.example.amp_jam.Post
 import com.example.amp_jam.R
+import com.example.amp_jam.SharedPreferencesHelper
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -132,7 +133,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             .addOnSuccessListener { location: Location? ->
                 location?.let {
                     val latLng = LatLng(location.latitude, location.longitude)
-                    mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13.25f))
+
+                    // Zoom en última configuración o en usuario por defecto
+                    val lastCords = SharedPreferencesHelper.getLastCords()
+                    val zoom = SharedPreferencesHelper.getMapZoom()
+                    if (lastCords != null && zoom != null) {
+                        mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(lastCords, zoom))
+                    } else {
+                        mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13.25f))
+                    }
                 }
             }
             .addOnFailureListener { e ->
@@ -140,6 +149,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             }
     }
     override fun onDestroyView() {
+        // Guardar última configuración del mapa
+        val center = mGoogleMap?.cameraPosition?.target
+        val zoom = mGoogleMap?.cameraPosition?.zoom
+        if (center != null && zoom != null) {
+            SharedPreferencesHelper.setLastCords(center)
+            SharedPreferencesHelper.setMapZoom(zoom)
+        }
+
         super.onDestroyView()
         unregisterLocationReceiver()
     }

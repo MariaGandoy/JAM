@@ -24,6 +24,8 @@ class LoginActivity : ComponentActivity() {
 
         signOut()
         FirebaseApp.initializeApp(this)
+        SharedPreferencesHelper.init(this)
+        SharedPreferencesHelper.clearMapConfiguration()
 
         // Inicializar Firebase Auth
         auth = FirebaseAuth.getInstance()
@@ -33,6 +35,10 @@ class LoginActivity : ComponentActivity() {
         val passwordEditText = findViewById<EditText>(R.id.editTextTextPassword)
         val loginButton = findViewById<Button>(R.id.button)
         val googleButton = findViewById<Button>(R.id.googleButton)
+
+        // Configurar datos de usuario por defecto
+        val defaultEmail = SharedPreferencesHelper.getDefaultEmail()
+        if (defaultEmail != null) emailEditText.setText(defaultEmail)
 
         // Configurar el Listener para manejar el clic del botón de "Entrar"
         loginButton.setOnClickListener {
@@ -45,7 +51,6 @@ class LoginActivity : ComponentActivity() {
             val intent = Intent(this, GoogleSignInActivity::class.java)
             startActivity(intent)
         }
-
 
     }
 
@@ -62,6 +67,7 @@ class LoginActivity : ComponentActivity() {
                 if (task.isSuccessful) {
                     // Inicio de sesión exitoso
                     Log.d("FirebaseAuth", "signInWithEmail:success")
+                    SharedPreferencesHelper.setDefaultEmail(email)
                     val user = auth.currentUser
                     updateUI(user)
                 } else {
