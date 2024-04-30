@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    android:backgroundTint="@color/black"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
 
@@ -30,10 +29,11 @@
             android:id="@+id/postText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/userAvatar"
             android:text="Post text"
+            android:layout_toStartOf="@+id/seeInMap"
             android:textSize="18sp" />
 
         <TextView
@@ -52,7 +52,17 @@
             android:layout_below="@id/postTime"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@id/userAvatar"
+            android:layout_toStartOf="@+id/seeInMap"
             android:src="@drawable/sample_user" />
+
+        <ImageButton
+            android:id="@+id/seeInMap"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/custom_round_button_background"
+            android:src="@drawable/find_map"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"/>
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

@@ -1,31 +1,33 @@
 package com.example.amp_jam
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Html
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
 class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
     private var posts: MutableList<Post>  = ArrayList()
     private lateinit var context: Context
+    private lateinit var navController: NavController
 
-    fun RecyclerAdapter(posts : MutableList<Post>, context: Context) {
+    fun RecyclerAdapter(posts : MutableList<Post>, context: Context, navController: NavController) {
         this.posts = posts
         this.context = context
+        this.navController = navController
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = posts[position]
-        holder.bind(item, context)
+        holder.bind(item, context, navController)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -42,8 +44,9 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
         private val postTime = view.findViewById(R.id.postTime) as TextView
         private val postImage = view.findViewById(R.id.postImage) as ImageView
         private val userAvatar = view.findViewById(R.id.userAvatar) as ImageView
+        private val seeInMapButton = view.findViewById<ImageButton>(R.id.seeInMap)
 
-        fun bind(post:Post, context: Context){
+        fun bind(post:Post, context: Context, navController: NavController){
             when (post.type) {
                 "EVENT" -> {
                     createEventPost(post, context)
@@ -56,6 +59,15 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
                 }
                 "ALERT" -> {
                     createAlertPost(post, context)
+                }
+            }
+
+            seeInMapButton.setOnClickListener {
+                // Handle button click action here
+                post.location?.let { location ->
+                    SharedPreferencesHelper.setLastCords(location);
+                    SharedPreferencesHelper.setMapZoom(15f);
+                    navController.navigate(R.id.navigation_map);
                 }
             }
         }

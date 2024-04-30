@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.amp_jam.Post
 import com.example.amp_jam.R
 import com.example.amp_jam.RecyclerAdapter
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.android.gms.maps.model.LatLng
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -45,7 +47,7 @@ class TimelineFragment : Fragment() {
 
         // Fetch posts asynchronously and set up the adapter when posts are available
         getPosts { posts ->
-            mAdapter.RecyclerAdapter(posts, requireContext())
+            mAdapter.RecyclerAdapter(posts, requireContext(), findNavController())
             mRecyclerView.adapter = mAdapter
         }
     }
@@ -70,16 +72,18 @@ class TimelineFragment : Fragment() {
                 for (usuarioDocument in usuariosResult) {
                     val usuarioId = usuarioDocument.id
 
-                    Log.d("JAM_NAVIGATION", "[timeline] current user es: ${usuarioDocument}")
-
-
                     database.collection("usuarios").document(usuarioId)
                         .collection("posts").get()
                         .addOnSuccessListener { postsResult ->
                             for (postDocument in postsResult) {
                                 val postData = postDocument.data
 
-                                posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, null))
+                                // Get post location data
+                                val lugarPost = postData["lugar"] as HashMap<*,*>
+                                val latitude = lugarPost["latitude"] as Double
+                                val longitude = lugarPost["longitude"] as Double
+
+                                posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, null, LatLng(latitude, longitude)))
                             }
 
                             fetchedCount++
@@ -99,3 +103,4 @@ class TimelineFragment : Fragment() {
             }
     }
 }
+

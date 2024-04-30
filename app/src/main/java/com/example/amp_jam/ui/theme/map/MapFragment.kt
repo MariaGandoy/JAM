@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.SearchView
 import androidx.core.app.ActivityCompat
@@ -39,6 +40,8 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -52,10 +55,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.LocationListener, MapEventFragment.MapEventDialogListener {
 
     private var FINE_PERMISSION_CODE = 1
+
     private var mGoogleMap: GoogleMap? = null
 
     private lateinit var autocompleteFragment: AutocompleteSupportFragment
-
 
     private var LOCATION_SERVICE_ACTIVE = false
 
@@ -77,24 +80,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
 
-        Places.initialize(requireContext(), getString(R.string.google_map_api_key))
-        autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocompleteUbication) as AutocompleteSupportFragment
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG))
-        autocompleteFragment.setOnPlaceSelectedListener(object: PlaceSelectionListener{
-            override fun onError(place: Status) {
-                Log.d("JAM_NAVIGATION", "[MapFragment] Error searching location")
-            }
-
-            override fun onPlaceSelected(place: Place) {
-                val latLng = place.latLng!!
-
-                zoomOnMap(latLng)
-            }
-        })
-
-        setupAddEventButton(view)
         createMapFragment()
         checkLocationPermissions()
+        setUpLegend(view)
+        setUpSearchLocation(view)
+        setupAddEventButton(view)
+        setUpCustomCenterButton(view)
 
         return view
     }
@@ -171,6 +162,64 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         }
     }
 
+    private fun setUpLegend(view: View) {
+        val legendButton = view.findViewById<ImageButton>(R.id.legendButton)
+        val legendContainer = view.findViewById<FrameLayout>(R.id.legendContainer)
+
+        legendButton.setOnClickListener {
+            // Toggle visibility of the legend container
+            legendContainer.visibility = if (legendContainer.visibility == View.VISIBLE) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
+        }
+    }
+
+    private fun setUpSearchLocation(view: View) {
+        Places.initialize(requireContext(), getString(R.string.google_map_api_key))
+        autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocompleteUbication) as AutocompleteSupportFragment
+        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG))
+
+        autocompleteFragment.setOnPlaceSelectedListener(object: PlaceSelectionListener{
+            override fun onError(place: Status) {
+                Log.d("JAM_NAVIGATION", "[MapFragment] Error searching location")
+            }
+
+            override fun onPlaceSelected(place: Place) {
+                val latLng = place.latLng!!
+
+                zoomOnMap(latLng)
+            }
+        })
+    }
+
+    private fun setUpCustomCenterButton(view: View) {
+        val centerButton = view.findViewById<ImageButton>(R.id.centerButton)
+
+        centerButton.setOnClickListener {
+            if (ActivityCompat.checkSelfPermission(
+                    this.requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this.requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                centerButton.isEnabled = false
+            } else {
+                centerButton.isEnabled = true
+                val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+                if (location != null) {
+                    val latLng = LatLng(location.latitude, location.longitude)
+                    mGoogleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+                }
+            }
+        }
+    }
+
     /* Check permissions: */
     private fun checkLocationPermissions() {
         if (ActivityCompat.checkSelfPermission(
@@ -224,7 +273,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
-        mGoogleMap!!.uiSettings.isZoomControlsEnabled = true
 
         // Verificar si la ubicación está habilitada
         val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -254,15 +302,22 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                 return
             }
             mGoogleMap!!.isMyLocationEnabled = true
+            mGoogleMap!!.uiSettings.isMyLocationButtonEnabled = false
 
+            // User location
             val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            Log.d("Localizacion", location.toString())
-            if (location != null) {
+
+            // Last saved location
+            val lastCords = SharedPreferencesHelper.getLastCords()
+            val zoom = SharedPreferencesHelper.getMapZoom()
+
+            if (lastCords != null && zoom != null) {
+                mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(lastCords, zoom))
+            } else if (location != null) {
                 val latLng = LatLng(location.latitude, location.longitude)
                 zoomOnMap(latLng)
             }
-
         }
     }
 
@@ -365,4 +420,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                 .set(userData)
         }
     }
+
+    /* Map controls */
 }
