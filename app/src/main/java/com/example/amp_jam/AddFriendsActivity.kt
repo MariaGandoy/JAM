@@ -60,15 +60,16 @@ class AddFriendsActivity : ComponentActivity(){
         // TextView para mostrar el nombre del usuario
         val textView = TextView(this).apply {
             layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                0, // 0 para peso
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1.0f // Peso para que tome espacio disponible
             )
             text = userName
             textSize = 20f
             setPadding(16, 16, 16, 16)
         }
 
-        // Esto no acaba de funcionar bien del todoo
+        // Button para agregar a amigos
         val addButton = Button(this).apply {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -94,6 +95,7 @@ class AddFriendsActivity : ComponentActivity(){
         userContainer.addView(userLayout)
     }
 
+
     private fun addFriend(userId: String) {
         // Falta por implementar esto que no tenemos bien aún para la parte social
         val currentUser = FirebaseAuth.getInstance().currentUser
@@ -109,6 +111,7 @@ class AddFriendsActivity : ComponentActivity(){
         }
     }
 
-
+//    Ya creado en Firebase los tipos de datos necesarios para poder hacer las listas de amigos o seguidores, segun el diseño que decidamos optar. 
+//    Está dentro de la clase de usuario junto a los posts
 
 }

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Switch
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +22,11 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import android.Manifest
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -36,6 +42,8 @@ private const val ARG_PARAM2 = "param2"
 class ProfileFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var locationSwitch: Switch
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -135,6 +143,59 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun setupLocationSwitch(view: View) {
+        locationSwitch = view.findViewById(R.id.switch1)
+        updateSwitchBasedOnPermissions()
+
+        locationSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                requestLocationPermissions()
+            } else {
+                // Opcional: Manejar la desactivación de permisos si es necesario
+                Toast.makeText(context, "Ubicación desactivada", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun updateSwitchBasedOnPermissions() {
+        locationSwitch.isChecked = (
+                ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                )
+    }
+
+    private fun requestLocationPermissions() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+            // Mostrar una explicación al usuario *asincrónicamente*
+            Toast.makeText(context, "Se requiere permiso de ubicación para esta funcionalidad", Toast.LENGTH_LONG).show()
+        } else {
+            // No se necesita explicación, podemos solicitar el permiso.
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // Permiso concedido, realizar la tarea relacionada con la ubicación
+                    Toast.makeText(context, "Permiso de ubicación concedido", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Permiso denegado, desactivar la funcionalidad relacionada con la ubicación
+                    Toast.makeText(context, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show()
+                    locationSwitch.isChecked = false
+                }
+                return
+            }
+            // Otros casos del 'when' para otros permisos que este app podría solicitar
+            else -> {
+                // Ignorar todas las otras solicitudes.
+            }
+        }
+    }
 
 
 

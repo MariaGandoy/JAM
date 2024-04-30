@@ -59,7 +59,7 @@ class SignUpActivity : ComponentActivity() {
                             "lastName" to lastName,
                             "email" to email
                         )
-                        db.collection("users").document(user.uid).set(userMap)
+                        db.collection("usuarios").document(user.uid).set(userMap)
                             .addOnSuccessListener {
                                 Log.d("Firestore", "DocumentSnapshot added with ID: ${user.uid}")
                                 startActivity(Intent(this, EnterActivity::class.java))
