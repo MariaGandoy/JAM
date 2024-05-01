@@ -88,8 +88,8 @@
 
         <TextView
             android:id="@+id/textView5"
-            android:layout_width="135dp"
-            android:layout_height="30dp"
+            android:layout_width="133dp"
+            android:layout_height="36dp"
             android:layout_marginTop="25dp"
             android:gravity="center"
             android:text="X  amigos"
