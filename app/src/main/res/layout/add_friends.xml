@@ -48,10 +48,16 @@
 
         <ScrollView
             android:id="@+id/scrollView3"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="0dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.571"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/autocompleteUbicationCard"
+            app:layout_constraintVertical_bias="0.909"
             tools:ignore="NotSibling">
 
             <LinearLayout

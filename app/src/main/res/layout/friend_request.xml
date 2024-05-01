@@ -3,29 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background">
 
     <TextView
         android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="256dp"
+        android:layout_height="28dp"
         android:text="Solicitudes de amistad recibidas:"
+        android:textAlignment="center"
+        android:textColor="@color/darkGreen"
+        android:textSize="17sp"
         app:layout_constraintBottom_toTopOf="@+id/scrollView4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.809" />
+        app:layout_constraintVertical_bias="0.774" />
 
     <ScrollView
         android:id="@+id/scrollView4"
-        android:layout_width="390dp"
+        android:layout_width="350dp"
         android:layout_height="250dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.347"
+        app:layout_constraintVertical_bias="0.262"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
@@ -41,6 +47,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Solicitudes de amistad enviadas:"
+        android:textAlignment="center"
+        android:textColor="@color/darkGreen"
+        android:textSize="17sp"
         app:layout_constraintBottom_toTopOf="@+id/scrollView5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,8 +58,10 @@
 
     <ScrollView
         android:id="@+id/scrollView5"
-        android:layout_width="390dp"
+        android:layout_width="350dp"
         android:layout_height="250dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         android:layout_marginTop="472dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
