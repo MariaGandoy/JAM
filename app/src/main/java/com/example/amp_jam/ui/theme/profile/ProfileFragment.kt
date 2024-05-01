@@ -91,6 +91,7 @@ class ProfileFragment : Fragment() {
         val userNameTextView = view.findViewById<TextView>(R.id.textView3)
         val profileImageView = view.findViewById<ImageView>(R.id.imageView3)
         val postsTextView = view.findViewById<TextView>(R.id.postsTextView)
+        val friendsCountTextView = view.findViewById<TextView>(R.id.textView5)
 
         if (currentUser != null) {
             // Load user profile picture and name
@@ -106,11 +107,11 @@ class ProfileFragment : Fragment() {
                 .get()
                 .addOnSuccessListener { document ->
                     val name = document.getString("name")
-                    userNameTextView.text = name ?: "@usuario10"
+                    userNameTextView.text = name ?: "@usuario"
                 }
                 .addOnFailureListener { exception ->
                     Log.d("ProfileFragment", "get failed with ", exception)
-                    userNameTextView.text = "@usuario10"
+                    userNameTextView.text = "@usuario"
                 }
 
             // Load posts
@@ -135,66 +136,24 @@ class ProfileFragment : Fragment() {
                     postsTextView.text = "Error al cargar los posts"
                     Log.d("ProfileFragment", "Error loading posts", it)
                 }
-        } else {
-            userNameTextView.text = "@usuario10"
-            postsTextView.text = "No tienes actividad reciente"
-        }
-    }
 
-    private fun setupLocationSwitch(view: View) {
-        locationSwitch = view.findViewById(R.id.switch1)
-        updateSwitchBasedOnPermissions()
 
-        locationSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                requestLocationPermissions()
-            } else {
-                // Opcional: Manejar la desactivación de permisos si es necesario
-                Toast.makeText(context, "Ubicación desactivada", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+            firestore.collection("usuarios").document(currentUser.uid).collection("friends")
+                .get()
+                .addOnSuccessListener { documents ->
 
-    private fun updateSwitchBasedOnPermissions() {
-        locationSwitch.isChecked = (
-                ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                )
-    }
-
-    private fun requestLocationPermissions() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
-            // Mostrar una explicación al usuario *asincrónicamente*
-            Toast.makeText(context, "Se requiere permiso de ubicación para esta funcionalidad", Toast.LENGTH_LONG).show()
-        } else {
-            // No se necesita explicación, podemos solicitar el permiso.
-            requestPermissions(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            LOCATION_PERMISSION_REQUEST_CODE -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    // Permiso concedido, realizar la tarea relacionada con la ubicación
-                    Toast.makeText(context, "Permiso de ubicación concedido", Toast.LENGTH_SHORT).show()
-                } else {
-                    // Permiso denegado, desactivar la funcionalidad relacionada con la ubicación
-                    Toast.makeText(context, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show()
-                    locationSwitch.isChecked = false
+                    friendsCountTextView.text = "${documents.size()} amigos"
                 }
-                return
-            }
-            // Otros casos del 'when' para otros permisos que este app podría solicitar
-            else -> {
-                // Ignorar todas las otras solicitudes.
-            }
+                .addOnFailureListener {
+                    Log.d("ProfileFragment", "Error loading friends count", it)
+                    friendsCountTextView.text = "0 amigos" // Si no hay lsita o hay un error 0
+                }
+        } else {
+            userNameTextView.text = "@usuario"
+            postsTextView.text = "No tienes actividad reciente"
+            friendsCountTextView.text = "0 amigos"
         }
     }
-
 
 
 
