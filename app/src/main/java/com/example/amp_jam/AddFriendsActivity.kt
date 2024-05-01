@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -104,6 +105,7 @@ class AddFriendsActivity : ComponentActivity() {
             textSize = 20f
             setPadding(16, 16, 16, 16)
         }
+        textView.setTextColor(getResources().getColor(R.color.darkGreen))
 
         // Button para agregar a amigos
         val addButton = Button(this).apply {
@@ -113,10 +115,12 @@ class AddFriendsActivity : ComponentActivity() {
                 0.3f // Peso para asegurar que el botón tenga espacio visible
             )
             text = "+"
+            background = ContextCompat.getDrawable(context, R.drawable.custom_button_background)
             setOnClickListener {
                 addFriend(userId)
             }
         }
+        addButton.setTextColor(getResources().getColor(R.color.ivory))
 
         // Crear un nuevo LinearLayout para contener el TextView y el Button
         val userLayout = LinearLayout(this).apply {

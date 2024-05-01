@@ -87,6 +87,7 @@ class ListOfFriendsActivity : ComponentActivity() {
             textSize = 20f
             setPadding(16, 16, 16, 16)
         }
+        textView.setTextColor(getResources().getColor(R.color.darkGreen))
 
         val removeButton = Button(this).apply {
             layoutParams = LinearLayout.LayoutParams(
@@ -95,10 +96,12 @@ class ListOfFriendsActivity : ComponentActivity() {
                 0.3f
             )
             text = "✘"
+            background = ContextCompat.getDrawable(context, R.drawable.custom_button_background)
             setOnClickListener {
                 removeFriend(friendId)
             }
         }
+        removeButton.setTextColor(getResources().getColor(R.color.ivory))
 
         userLayout.addView(textView)
         userLayout.addView(removeButton)
