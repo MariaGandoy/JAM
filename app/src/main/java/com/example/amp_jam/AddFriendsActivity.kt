@@ -13,6 +13,7 @@ class AddFriendsActivity : ComponentActivity() {
 
     private lateinit var firestore: FirebaseFirestore
     private var currentUserUid: String? = null
+    private var sentFriendUserIds: MutableSet<String> = mutableSetOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,18 +22,39 @@ class AddFriendsActivity : ComponentActivity() {
         firestore = FirebaseFirestore.getInstance()
         currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
 
-        loadAllUsers()
+        loadSentFriendRequests {
+            loadAllUsers()
+        }
     }
+
+    private fun loadSentFriendRequests(onComplete: () -> Unit) {
+        currentUserUid?.let { uid ->
+            firestore.collection("usuarios").document(uid).collection("send_friend")
+                .get()
+                .addOnSuccessListener { documents ->
+                    sentFriendUserIds.clear()
+                    for (document in documents) {
+                        sentFriendUserIds.add(document.id)
+                    }
+                    onComplete()
+                }
+                .addOnFailureListener {
+                    Log.e("AddFriendsActivity", "Error loading sent friend requests", it)
+                    onComplete() // Continuar aunque haya un error.
+                }
+        } ?: onComplete() // Ejecutar onComplete si currentUserUid es nulo.
+    }
+
 
     private fun loadAllUsers() {
         firestore.collection("usuarios")
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
+                    findViewById<LinearLayout>(R.id.usersContainer).removeAllViews() // Limpiar lista antes de añadir nuevos usuarios
                     for (document in documents) {
                         val userId = document.id
-                        // Solo mostrar usuarios que no son el usuario actual
-                        if (userId != currentUserUid) {
+                        if (userId != currentUserUid && !sentFriendUserIds.contains(userId)) {
                             val userName = document.getString("user") ?: "Unknown"
                             addUserToList(userName, userId)
                         }
@@ -43,6 +65,7 @@ class AddFriendsActivity : ComponentActivity() {
                 Log.d("AddFriendsActivity", "Error loading users", exception)
             }
     }
+
 
     private fun addUserToList(userName: String, userId: String) {
         val userContainer = findViewById<LinearLayout>(R.id.usersContainer)
@@ -90,11 +113,14 @@ class AddFriendsActivity : ComponentActivity() {
     private fun addFriend(friendUserId: String) {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null && friendUserId != currentUser.uid) {
-            // Añadir a send_friend del usuario actual
+            // Implementar adiciones de amigo como antes, pero ahora refrescar la lista
             firestore.collection("usuarios").document(currentUser.uid)
                 .collection("send_friend").document(friendUserId).set(mapOf("added" to true))
                 .addOnSuccessListener {
                     Log.d("AddFriendsActivity", "Friend added to send_friend successfully: $friendUserId")
+                    loadSentFriendRequests {
+                        loadAllUsers() // Recargar usuarios después de añadir a un amigo
+                    }
                 }
                 .addOnFailureListener {
                     Log.e("AddFriendsActivity", "Failed to add to send_friend", it)
