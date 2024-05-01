@@ -23,20 +23,13 @@ class AddFriendsActivity : ComponentActivity(){
 
         firestore = FirebaseFirestore.getInstance()
 
-        setupLogOut()
+
         loadAllUsers()
 
 
     }
 
-    private fun setupLogOut() {
-        val toolbarLogout = findViewById<ImageView>(R.id.toolbarLogout)
-        toolbarLogout.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[ProfileActivity] Click LOG OUT EVENT button")
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
-    }
+
 
     private fun loadAllUsers() {
         firestore.collection("usuarios")

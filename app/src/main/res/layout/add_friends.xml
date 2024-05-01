@@ -9,38 +9,6 @@
     tools:ignore="MissingDefaultResource">
 
     <!-- Top menu -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/lightGreen"
-        app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@android:color/white">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
-
-
-            <ImageView
-                android:id="@+id/toolbarLogo"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/logo"
-                android:layout_centerInParent="true"/>
-
-            <ImageView
-                android:id="@+id/toolbarLogout"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:src="@drawable/arrow_outwards"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"/>
-
-        </RelativeLayout>
-
-    </androidx.appcompat.widget.Toolbar>
 
     <!-- Activity content -->
     <androidx.constraintlayout.widget.ConstraintLayout
