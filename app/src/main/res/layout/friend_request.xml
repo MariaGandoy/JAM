@@ -19,7 +19,7 @@
 
     <ScrollView
         android:id="@+id/scrollView4"
-        android:layout_width="409dp"
+        android:layout_width="390dp"
         android:layout_height="250dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,6 +29,7 @@
         tools:ignore="MissingConstraints">
 
         <LinearLayout
+            android:id="@+id/receivedRequestsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
@@ -48,14 +49,16 @@
 
     <ScrollView
         android:id="@+id/scrollView5"
-        android:layout_width="409dp"
+        android:layout_width="390dp"
         android:layout_height="250dp"
         android:layout_marginTop="472dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
+            android:id="@+id/sentRequestsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
