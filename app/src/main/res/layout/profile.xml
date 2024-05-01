@@ -92,6 +92,7 @@
             android:layout_marginTop="24dp"
             android:gravity="center"
             android:text="X  amigos"
+            android:background="@drawable/ivory_back"
             android:textColor="@color/darkGreen"
             android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
