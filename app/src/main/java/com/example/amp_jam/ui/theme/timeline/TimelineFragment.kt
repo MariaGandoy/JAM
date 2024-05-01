@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.amp_jam.Post
 import com.example.amp_jam.R
 import com.example.amp_jam.RecyclerAdapter
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.firestore.FirebaseFirestore
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,7 +36,7 @@ class TimelineFragment : Fragment() {
         val view = inflater.inflate(R.layout.timeline, container, false)
 
         setUpRecyclerView(view)
-
+        Log.d("Debugeandoklk", "llego Timeline")
         return view
     }
 

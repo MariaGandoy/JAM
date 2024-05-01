@@ -1,5 +1,6 @@
 package com.example.amp_jam
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -69,6 +70,7 @@ class LoginActivity : ComponentActivity() {
                     // Inicio de sesión exitoso
                     Log.d("FirebaseAuth", "signInWithEmail:success")
                     SharedPreferencesHelper.setDefaultEmail(email)
+                    saveUserSession()
                     val user = auth.currentUser
                     updateUI(user)
                 } else {
@@ -93,6 +95,23 @@ class LoginActivity : ComponentActivity() {
 
     private fun signOut() {
         Firebase.auth.signOut()
+        clearUserSession()
+    }
+
+    private fun saveUserSession() {
+        val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putString("user_id", FirebaseAuth.getInstance().currentUser?.uid)
+            apply()
+        }
+    }
+
+    private fun clearUserSession() {
+        val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            remove("user_id")
+            apply()
+        }
     }
 
     // Si se quiere implementar el registro de usuarios nuevos, se puede agregar una función similar aquí
