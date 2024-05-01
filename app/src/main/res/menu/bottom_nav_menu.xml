@@ -17,6 +17,11 @@
         android:title="camera" />
 
     <item
+        android:id="@+id/navigation_friends"
+        android:icon="@drawable/warning"
+        android:title="friends" />
+
+    <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/person_icon"
         android:title="profile" />
