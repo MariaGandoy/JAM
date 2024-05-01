@@ -32,8 +32,18 @@ class SignUpActivity : ComponentActivity() {
         val emailEditText = findViewById<EditText>(R.id.editTextTextEmailAddress)
         val passwordEditText = findViewById<EditText>(R.id.editTextTextPassword)
         val signUpButton = findViewById<ImageButton>(R.id.button7)
+        val registerButton = findViewById<Button>(R.id.button4)
+
 
         signUpButton.setOnClickListener {
+            val name = nameEditText.text.toString().trim()
+            val lastName = lastNameEditText.text.toString().trim()
+            val email = emailEditText.text.toString().trim()
+            val password = passwordEditText.text.toString().trim()
+            createAccount(name, lastName, email, password)
+        }
+
+        registerButton.setOnClickListener {
             val name = nameEditText.text.toString().trim()
             val lastName = lastNameEditText.text.toString().trim()
             val email = emailEditText.text.toString().trim()
