@@ -417,7 +417,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
         if (currentUser != null) {
             database.collection("usuarios").document(currentUser!!.uid)
-                .set(userData)
+                .update(userData)
         }
     }
 
