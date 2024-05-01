@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="2dp"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@drawable/gradient_background">
 
     <!-- Top Bar -->
     <RelativeLayout
@@ -19,9 +20,13 @@
             android:id="@+id/newEventTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
             android:text="Nuevo evento"
-            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textColor="@color/ivory"
             android:textSize="25sp" />
 
     </RelativeLayout>
@@ -46,7 +51,8 @@
                 android:layout_marginStart="20dp"
                 android:ems="10"
                 android:inputType="text"
-                android:hint="Nombre del evento" />
+                android:hint="Nombre del evento"
+                android:backgroundTint="@color/darkGreen"/>
 
             <EditText
                 android:id="@+id/eventDate"
@@ -60,7 +66,8 @@
                 android:focusableInTouchMode="false"
                 android:inputType="date"
                 android:hint="Fecha del evento"
-                android:onClick="showDatePickerDialog" />
+                android:onClick="showDatePickerDialog"
+                android:backgroundTint="@color/darkGreen"/>
 
 
             <!-- Friends to notify of event -->
@@ -69,9 +76,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/eventDate"
-                android:layout_margin="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
                 android:text="Compartir con"
-                android:textColor="@color/black"
+                android:textColor="@color/darkGreen"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -113,9 +123,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/radioGroup"
-                android:layout_margin="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
                 android:text="Asociar imagen a evento"
-                android:textColor="@color/black"
+                android:textColor="@color/darkGreen"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 

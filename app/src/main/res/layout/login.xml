@@ -30,13 +30,13 @@
 
         <TextView
             android:id="@+id/textView"
-            android:layout_width="168dp"
-            android:layout_height="29dp"
+            android:layout_width="227dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:text="Iniciar sesión"
             android:textAlignment="center"
             android:textColor="@color/darkGreen"
-            android:textSize="24sp"
+            android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/editTextTextEmailAddress"
             app:layout_constraintEnd_toEndOf="parent"
