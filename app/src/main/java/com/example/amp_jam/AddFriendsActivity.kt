@@ -14,6 +14,7 @@ class AddFriendsActivity : ComponentActivity() {
     private lateinit var firestore: FirebaseFirestore
     private var currentUserUid: String? = null
     private var sentFriendUserIds: MutableSet<String> = mutableSetOf()
+    private var friendUserIds: MutableSet<String> = mutableSetOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,9 +24,31 @@ class AddFriendsActivity : ComponentActivity() {
         currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
 
         loadSentFriendRequests {
-            loadAllUsers()
+            loadFriends {
+                loadAllUsers()
+            }
         }
+
     }
+
+    private fun loadFriends(onComplete: () -> Unit) {
+        currentUserUid?.let { uid ->
+            firestore.collection("usuarios").document(uid).collection("friends")
+                .get()
+                .addOnSuccessListener { documents ->
+                    friendUserIds.clear()
+                    for (document in documents) {
+                        friendUserIds.add(document.id)
+                    }
+                    onComplete()
+                }
+                .addOnFailureListener {
+                    Log.e("AddFriendsActivity", "Error loading friends", it)
+                    onComplete()
+                }
+        } ?: onComplete()
+    }
+
 
     private fun loadSentFriendRequests(onComplete: () -> Unit) {
         currentUserUid?.let { uid ->
@@ -51,10 +74,10 @@ class AddFriendsActivity : ComponentActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    findViewById<LinearLayout>(R.id.usersContainer).removeAllViews() // Limpiar lista antes de añadir nuevos usuarios
+                    findViewById<LinearLayout>(R.id.usersContainer).removeAllViews()
                     for (document in documents) {
                         val userId = document.id
-                        if (userId != currentUserUid && !sentFriendUserIds.contains(userId)) {
+                        if (userId != currentUserUid && !sentFriendUserIds.contains(userId) && !friendUserIds.contains(userId)) {
                             val userName = document.getString("user") ?: "Unknown"
                             addUserToList(userName, userId)
                         }
