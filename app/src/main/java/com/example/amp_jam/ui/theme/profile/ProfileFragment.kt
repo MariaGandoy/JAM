@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.amp_jam.AddFriendsActivity
+import com.example.amp_jam.ListOfFriendsActivity
 import com.example.amp_jam.MainActivity
 import com.example.amp_jam.R
 import com.google.firebase.Firebase
@@ -143,6 +144,11 @@ class ProfileFragment : Fragment() {
                 .addOnSuccessListener { documents ->
 
                     friendsCountTextView.text = "${documents.size()} amigos"
+                    friendsCountTextView.setOnClickListener {
+                        val intent = Intent(activity, ListOfFriendsActivity::class.java)
+                        startActivity(intent)
+                    }
+
                 }
                 .addOnFailureListener {
                     Log.d("ProfileFragment", "Error loading friends count", it)
