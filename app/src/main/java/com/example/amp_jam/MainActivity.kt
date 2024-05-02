@@ -11,6 +11,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import com.google.firebase.auth.FirebaseAuth
 import java.util.Objects
 import kotlin.math.sqrt
 
@@ -99,5 +100,26 @@ class MainActivity : ComponentActivity() {
         sensorManager!!.unregisterListener(sensorListener)
         super.onPause()
     }
+
+    private fun checkUserSession() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            // Si hay un usuario iniciado sesión, dirigirlo a la pantalla principal
+            Log.d("FirebaseAuth", "checkUserSession: User is logged in")
+            try {
+                startActivity(Intent(this, EnterActivity::class.java))
+                Log.d("Holaquetal", "checkUserSession: User is logged in")
+                finish() // Finalizar LoginActivity para evitar volver atrás
+                Log.d("Holaquetal", "pasofinish")
+            } catch (e: Exception) {
+                Log.e("Vererror", "Error launching EnterActivity", e)
+            }
+        } else {
+            // Si no hay ningún usuario iniciado sesión, permitir que el usuario inicie sesión normalmente
+            Log.d("FirebaseAuth", "checkUserSession: No user is logged in")
+        }
+    }
+
+
 
 }

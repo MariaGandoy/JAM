@@ -1,6 +1,8 @@
 package com.example.amp_jam.ui.theme.profile
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,14 +10,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Switch
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.amp_jam.AddFriendsActivity
+import com.example.amp_jam.ListOfFriendsActivity
 import com.example.amp_jam.MainActivity
-import com.example.amp_jam.Post
 import com.example.amp_jam.R
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -36,6 +40,8 @@ private const val ARG_PARAM2 = "param2"
 class ProfileFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var locationSwitch: Switch
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +56,7 @@ class ProfileFragment : Fragment() {
         setupAddFriends(view)
         loadUserProfileData(view)
 
+        Log.d("Debugeandoklk", "llego Profile")
         return view
     }
 
@@ -85,6 +92,7 @@ class ProfileFragment : Fragment() {
         val userNameTextView = view.findViewById<TextView>(R.id.textView3)
         val profileImageView = view.findViewById<ImageView>(R.id.imageView3)
         val postsTextView = view.findViewById<TextView>(R.id.postsTextView)
+        val friendsCountTextView = view.findViewById<TextView>(R.id.textView5)
 
         if (currentUser != null) {
             // Load user profile picture and name
@@ -100,11 +108,11 @@ class ProfileFragment : Fragment() {
                 .get()
                 .addOnSuccessListener { document ->
                     val name = document.getString("name")
-                    userNameTextView.text = name ?: "@usuario10"
+                    userNameTextView.text = name ?: "@usuario"
                 }
                 .addOnFailureListener { exception ->
                     Log.d("ProfileFragment", "get failed with ", exception)
-                    userNameTextView.text = "@usuario10"
+                    userNameTextView.text = "@usuario"
                 }
 
             // Load posts
@@ -129,13 +137,29 @@ class ProfileFragment : Fragment() {
                     postsTextView.text = "Error al cargar los posts"
                     Log.d("ProfileFragment", "Error loading posts", it)
                 }
+
+
+            firestore.collection("usuarios").document(currentUser.uid).collection("friends")
+                .get()
+                .addOnSuccessListener { documents ->
+
+                    friendsCountTextView.text = "${documents.size()} amigos"
+                    friendsCountTextView.setOnClickListener {
+                        val intent = Intent(activity, ListOfFriendsActivity::class.java)
+                        startActivity(intent)
+                    }
+
+                }
+                .addOnFailureListener {
+                    Log.d("ProfileFragment", "Error loading friends count", it)
+                    friendsCountTextView.text = "0 amigos" // Si no hay lsita o hay un error 0
+                }
         } else {
-            userNameTextView.text = "@usuario10"
+            userNameTextView.text = "@usuario"
             postsTextView.text = "No tienes actividad reciente"
+            friendsCountTextView.text = "0 amigos"
         }
     }
-
-
 
 
 

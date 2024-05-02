@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -27,7 +28,8 @@
         android:fontFamily="@font/alata"
         android:text="@string/app_name"
         android:textAlignment="center"
-        android:textSize="24sp"
+        android:textSize="30sp"
+        android:textColor="@color/darkGreen"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -35,34 +37,38 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
         app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
-        android:layout_width="113dp"
-        android:layout_height="23dp"
-        android:alpha="1"
-        android:fontFamily="@font/calistoga"
-        android:text="@string/registrate"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.177" />
-
     <Button
         android:id="@+id/button2"
-        android:layout_width="280dp"
-        android:layout_height="40dp"
+        android:layout_width="269dp"
+        android:layout_height="61dp"
         android:background="@drawable/custom_button_background"
-        android:fontFamily="@font/calistoga"
         android:text="Iniciar sesión"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
+        android:textColor="@color/ivory"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.468" />
+        app:layout_constraintVertical_bias="0.256" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="269dp"
+        android:layout_height="61dp"
+        android:background="@drawable/custom_button_background"
+        android:text="Registrarse"
+        android:textAlignment="center"
+        android:textColor="@color/ivory"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button2"
+        app:layout_constraintVertical_bias="0.338" />
 
     <TextView
         android:layout_width="194dp"
@@ -70,28 +76,13 @@
         android:alpha="1"
         android:text="¿No tienes cuenta?"
         android:textAlignment="center"
+        android:textColor="@color/darkGreen"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/button3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button2"
-        app:layout_constraintVertical_bias="0.731" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="280dp"
-        android:layout_height="40dp"
-        android:background="@drawable/custom_button_background"
-        android:fontFamily="@font/calistoga"
-        android:text="Registrarse"
-        android:textAlignment="center"
-        android:textSize="14sp"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
-        app:layout_constraintVertical_bias="0.413" />
+        app:layout_constraintVertical_bias="0.89" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

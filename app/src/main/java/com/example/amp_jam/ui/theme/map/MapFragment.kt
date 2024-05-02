@@ -13,6 +13,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.SearchView
 import androidx.core.app.ActivityCompat
@@ -39,6 +41,8 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -52,10 +56,14 @@ import com.google.firebase.firestore.FirebaseFirestore
 class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.LocationListener, MapEventFragment.MapEventDialogListener {
 
     private var FINE_PERMISSION_CODE = 1
+
     private var mGoogleMap: GoogleMap? = null
 
-    private lateinit var autocompleteFragment: AutocompleteSupportFragment
+    private var mapMarkers: MutableList<Marker> = ArrayList()
 
+    private var visibleMarkers = mutableListOf("FRIEND", "EVENT")
+
+    private lateinit var autocompleteFragment: AutocompleteSupportFragment
 
     private var LOCATION_SERVICE_ACTIVE = false
 
@@ -77,24 +85,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
 
-        Places.initialize(requireContext(), getString(R.string.google_map_api_key))
-        autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocompleteUbication) as AutocompleteSupportFragment
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG))
-        autocompleteFragment.setOnPlaceSelectedListener(object: PlaceSelectionListener{
-            override fun onError(place: Status) {
-                Log.d("JAM_NAVIGATION", "[MapFragment] Error searching location")
-            }
-
-            override fun onPlaceSelected(place: Place) {
-                val latLng = place.latLng!!
-
-                zoomOnMap(latLng)
-            }
-        })
-
-        setupAddEventButton(view)
         createMapFragment()
         checkLocationPermissions()
+        setUpLegend(view)
+        setUpSearchLocation(view)
+        setupAddEventButton(view)
+        setUpCustomCenterButton(view)
 
         return view
     }
@@ -134,9 +130,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                 location?.let {
                     val latLng = LatLng(location.latitude, location.longitude)
 
+                    mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13.25f))
+
                     // Zoom en última configuración o en usuario por defecto
-                    val lastCords = SharedPreferencesHelper.getLastCords()
-                    val zoom = SharedPreferencesHelper.getMapZoom()
+                    val lastCords = SharedPreferencesHelper.getLastCords(this.context as Context)
+                    val zoom = SharedPreferencesHelper.getMapZoom(this.context as Context)
                     if (lastCords != null && zoom != null) {
                         mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(lastCords, zoom))
                     } else {
@@ -153,8 +151,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         val center = mGoogleMap?.cameraPosition?.target
         val zoom = mGoogleMap?.cameraPosition?.zoom
         if (center != null && zoom != null) {
-            SharedPreferencesHelper.setLastCords(center)
-            SharedPreferencesHelper.setMapZoom(zoom)
+            SharedPreferencesHelper.setLastCords(this.context as Context, center)
+            SharedPreferencesHelper.setMapZoom(this.context as Context, zoom)
         }
 
         super.onDestroyView()
@@ -168,6 +166,96 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             val eventDialog = MapEventFragment()
             eventDialog.listener = this
             eventDialog.show(requireFragmentManager(), "MapEvent")
+        }
+    }
+
+    private fun setUpLegend(view: View) {
+        val legendButton = view.findViewById<ImageButton>(R.id.legendButton)
+        val legendContainer = view.findViewById<FrameLayout>(R.id.legendContainer)
+
+        legendButton.setOnClickListener {
+            // Toggle visibility of the legend container
+            legendContainer.visibility = if (legendContainer.visibility == View.VISIBLE) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
+
+            // Handle each checkbox
+            if (legendContainer.visibility == View.VISIBLE) {
+                val checkboxEvents = view.findViewById<CheckBox>(R.id.checkboxEvents)
+                val checkboxAmigos = view.findViewById<CheckBox>(R.id.checboxAmigos)
+
+                checkboxEvents.setOnCheckedChangeListener { buttonView, isChecked ->
+                    if (isChecked) {
+                        visibleMarkers.add("EVENT")
+                        updateMarkersVisibility()
+                    } else {
+                        visibleMarkers.remove("EVENT")
+                        updateMarkersVisibility()
+                    }
+                }
+
+                checkboxAmigos.setOnCheckedChangeListener { buttonView, isChecked ->
+                    if (isChecked) {
+                        visibleMarkers.add("FRIEND")
+                        updateMarkersVisibility()
+                    } else {
+                        visibleMarkers.remove("FRIEND")
+                        updateMarkersVisibility()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateMarkersVisibility() {
+        for (marker in mapMarkers) {
+            marker.isVisible = visibleMarkers.contains(marker.getTag())
+        }
+    }
+
+    private fun setUpSearchLocation(view: View) {
+        Places.initialize(requireContext(), getString(R.string.google_map_api_key))
+        autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocompleteUbication) as AutocompleteSupportFragment
+        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG))
+
+        autocompleteFragment.setOnPlaceSelectedListener(object: PlaceSelectionListener{
+            override fun onError(place: Status) {
+                Log.d("JAM_NAVIGATION", "[MapFragment] Error searching location")
+            }
+
+            override fun onPlaceSelected(place: Place) {
+                val latLng = place.latLng!!
+
+                zoomOnMap(latLng)
+            }
+        })
+    }
+
+    private fun setUpCustomCenterButton(view: View) {
+        val centerButton = view.findViewById<ImageButton>(R.id.centerButton)
+
+        centerButton.setOnClickListener {
+            if (ActivityCompat.checkSelfPermission(
+                    this.requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this.requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                centerButton.isEnabled = false
+            } else {
+                centerButton.isEnabled = true
+                val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+                if (location != null) {
+                    val latLng = LatLng(location.latitude, location.longitude)
+                    mGoogleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+                }
+            }
         }
     }
 
@@ -224,7 +312,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
-        mGoogleMap!!.uiSettings.isZoomControlsEnabled = true
 
         // Verificar si la ubicación está habilitada
         val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -254,24 +341,100 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                 return
             }
             mGoogleMap!!.isMyLocationEnabled = true
+            mGoogleMap!!.uiSettings.isMyLocationButtonEnabled = false
 
+            // User location
             val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            Log.d("Localizacion", location.toString())
+
             if (location != null) {
                 val latLng = LatLng(location.latitude, location.longitude)
                 zoomOnMap(latLng)
             }
 
+            // Last saved location
+            val lastCords = SharedPreferencesHelper.getLastCords(this.context as Context)
+            val zoom = SharedPreferencesHelper.getMapZoom(this.context as Context)
+
+            if (lastCords != null && zoom != null) {
+                mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(lastCords, zoom))
+            } else if (location != null) {
+                val latLng = LatLng(location.latitude, location.longitude)
+                zoomOnMap(latLng)
+            }
         }
     }
 
-    override fun onLocationReceived(location: Location) {
-        // Update the map with the received location data
-        val myLocation = LatLng(location.latitude, location.longitude)
+    override fun onLocationReceived(mapData: HashMap<Any, Any>) {
+        // Accessing the location
+        val location: Location? = mapData["currentLocation"] as? Location
 
-        // Persist to firebase
-        persistUbication(myLocation)
+        if (location !== null) {
+            val myLocation = LatLng(location.latitude, location.longitude)
+
+            persistUbication(myLocation)
+        }
+
+        // Accessing map data (friends and posts)
+        val posts: MutableList<Post>? = mapData["posts"] as? MutableList<Post>
+        val friends: ArrayList<HashMap<String, Any?>>? = mapData["friends"] as? ArrayList<HashMap<String, Any?>>
+
+        if (posts !== null && friends !== null) updateMapView(posts, friends)
+    }
+
+    private fun updateMapView(posts: MutableList<Post>, friends: ArrayList<HashMap<String, Any?>>) {
+        mGoogleMap?.clear()
+        mapMarkers.clear()
+
+        // Update posts from firebase
+         posts.forEach { post ->
+             val latitude = post.location?.latitude as Double
+             val longitude = post.location?.longitude as Double
+
+             val postMarkerOptions = MarkerOptions()
+                 .position(LatLng(latitude, longitude))
+                 .title(post.title.toString())
+                 .snippet("Fecha: " + post.date)
+                 .apply {
+                     when (post.type) {
+                         "EVENT" -> {
+                             icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                         }
+
+                         "PHOTO" -> {
+                             icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                         }
+
+                         "SONG" -> {
+                             icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                         }
+                     }
+                 }
+
+             val marker = mGoogleMap?.addMarker(postMarkerOptions) as Marker
+
+             marker.setTag(post.type)
+             mapMarkers.add(marker)
+         }
+
+        // Update friends from firebase
+        friends.forEach { friend ->
+            val lugar = friend["lugar"] as HashMap<*,*>
+            val latitude = lugar["latitude"] as Double
+            val longitude = lugar["longitude"] as Double
+
+            val userMarkerOptions = MarkerOptions()
+                .position(LatLng(latitude, longitude))
+                .title(friend["user"] as String)
+                .icon(BitmapDescriptorFactory.defaultMarker()) // TODO: change user marker
+
+            val marker = mGoogleMap?.addMarker(userMarkerOptions) as Marker
+
+            marker.setTag("FRIEND")
+            mapMarkers.add(marker)
+        }
+
+        updateMarkersVisibility()
     }
 
     private fun registerLocationReceiver() {
@@ -294,7 +457,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         mGoogleMap?.animateCamera(newLatLngZoom)
     }
 
-    /* Handle events creation and data base dialog: */
+    /* Handle events creation: */
     override fun onEventSubmitted(postData: Post) {
         val center = mGoogleMap?.cameraPosition?.target
 
@@ -361,8 +524,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         )
 
         if (currentUser != null) {
+            // Update the document in Firestore
             database.collection("usuarios").document(currentUser!!.uid)
-                .set(userData)
+                .update(userData)
+                .addOnFailureListener { e ->
+                    // Update the document in Firestore
+                    database.collection("usuarios").document(currentUser!!.uid)
+                        .set(userData)
+                }
         }
+
     }
 }

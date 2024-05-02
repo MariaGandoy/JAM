@@ -14,7 +14,6 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.activity.result.ActivityResultLauncher
@@ -25,7 +24,7 @@ import com.google.firebase.auth.FirebaseUser
 import java.util.Calendar
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.drawable.BitmapDrawable
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 
 
@@ -103,7 +102,6 @@ class MapEventFragment: DialogFragment() {
             auth = FirebaseAuth.getInstance()
             currentUser = auth.currentUser
 
-            setUpExitButton(view)
             setUpNameEventListener(view)
             setUpDatePickerDialog(view)
             setUpRadioGroupListener(view)
@@ -112,21 +110,13 @@ class MapEventFragment: DialogFragment() {
             builder.setView(view)
                 .setPositiveButton("AÑADIR") { _, _ ->
                     Log.d("JAM_NAVIGATION", "[MapEvent] Add event")
-                    val eventData = setEventData(view)
-                    submitEvent(eventData)
+                    setEventData(view)
                 }
                 .setNegativeButton("CANCELAR") { _, _ ->
                     Log.d("JAM_NAVIGATION", "[MapEvent] Cancel event")
                 }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
-    }
-
-    private fun setUpExitButton(view: View) {
-        val exitBtn = view.findViewById<ImageButton>(R.id.exitButton)
-        exitBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[MapEvent] Click EXIT button")
-        }
     }
 
     private fun setUpNameEventListener(view: View) {
@@ -217,13 +207,20 @@ class MapEventFragment: DialogFragment() {
         }
     }
 
-    private fun setEventData(view: View): Post {
+    private fun setEventData(view: View) {
         val eventName = view.findViewById<EditText>(R.id.eventName).text.toString()
         val eventDate = view.findViewById<EditText>(R.id.eventDate).text.toString()
+
+        // Validación básica de nombre y evento
+        if (eventName.isBlank() || eventDate.isBlank()) {
+            Toast.makeText(requireContext(), "Los campos de nombre y fecha no pueden estar vacíos.", Toast.LENGTH_LONG).show()
+            return
+        }
+
         val eventType = "EVENT" // TODO: add SONG and PHOTO
         val userEmail = currentUser?.email ?: ""
 
-        return Post(eventName, eventDate, eventType, userEmail, null, null)
+        submitEvent(Post(eventName, eventDate, eventType, userEmail, null, null, null))
     }
 
     private fun submitEvent(data: Post) {

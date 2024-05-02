@@ -4,21 +4,25 @@
     <item
         android:id="@+id/navigation_timeline"
         android:icon="@drawable/timeline_icon"
-        android:title="timeline" />
-
-    <item
-        android:id="@+id/navigation_map"
-        android:icon="@drawable/map_icon"
-        android:title="map" />
+        android:title="eventos" />
 
     <item
         android:id="@+id/navigation_camera"
         android:icon="@drawable/camera_icon"
-        android:title="camera" />
+        android:title="cámara" />
+
+    <item
+        android:id="@+id/navigation_map"
+        android:icon="@drawable/map_icon"
+        android:title="mapa" />
+    <item
+        android:id="@+id/navigation_friends"
+        android:icon="@drawable/friend_notifications"
+        android:title="amigos" />
 
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/person_icon"
-        android:title="profile" />
+        android:title="mi perfil" />
 
 </menu>

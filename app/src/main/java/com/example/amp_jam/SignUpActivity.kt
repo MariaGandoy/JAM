@@ -32,8 +32,18 @@ class SignUpActivity : ComponentActivity() {
         val emailEditText = findViewById<EditText>(R.id.editTextTextEmailAddress)
         val passwordEditText = findViewById<EditText>(R.id.editTextTextPassword)
         val signUpButton = findViewById<ImageButton>(R.id.button7)
+        val registerButton = findViewById<Button>(R.id.button4)
+
 
         signUpButton.setOnClickListener {
+            val name = nameEditText.text.toString().trim()
+            val lastName = lastNameEditText.text.toString().trim()
+            val email = emailEditText.text.toString().trim()
+            val password = passwordEditText.text.toString().trim()
+            createAccount(name, lastName, email, password)
+        }
+
+        registerButton.setOnClickListener {
             val name = nameEditText.text.toString().trim()
             val lastName = lastNameEditText.text.toString().trim()
             val email = emailEditText.text.toString().trim()
@@ -59,7 +69,7 @@ class SignUpActivity : ComponentActivity() {
                             "lastName" to lastName,
                             "email" to email
                         )
-                        db.collection("users").document(user.uid).set(userMap)
+                        db.collection("usuarios").document(user.uid).set(userMap)
                             .addOnSuccessListener {
                                 Log.d("Firestore", "DocumentSnapshot added with ID: ${user.uid}")
                                 startActivity(Intent(this, EnterActivity::class.java))

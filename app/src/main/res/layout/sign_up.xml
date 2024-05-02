@@ -6,15 +6,18 @@
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:ignore="MissingDefaultResource">
+    tools:ignore="MissingDefaultResource"
+    android:background="@drawable/gradient_background">
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="163dp"
-        android:layout_height="39dp"
-        android:text="Registrarse"
+        android:layout_width="188dp"
+        android:layout_height="43dp"
         android:gravity="center"
-        android:textSize="30sp"
+        android:text="Registrarse"
+        android:textStyle="bold"
+        android:textSize="32sp"
+        android:textColor="@color/darkGreen"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -26,12 +29,13 @@
         android:id="@+id/editTextText"
         android:layout_width="269dp"
         android:layout_height="56dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="48dp"
+        android:backgroundTint="@color/darkGreen"
         android:ems="10"
-        android:inputType="text"
         android:hint="Nombre"
+        android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.472"
+        app:layout_constraintHorizontal_bias="0.467"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -43,6 +47,7 @@
         android:ems="10"
         android:inputType="text"
         android:hint="Apellido"
+        android:backgroundTint="@color/darkGreen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.467"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,6 +61,7 @@
         android:ems="10"
         android:inputType="textEmailAddress"
         android:hint="E-mail"
+        android:backgroundTint="@color/darkGreen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.471"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,33 +75,53 @@
         android:ems="10"
         android:inputType="textPassword"
         android:hint="Contraseña"
+        android:backgroundTint="@color/darkGreen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="193dp"
+        android:layout_height="61dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/custom_button_background"
+        android:text="Registrarse"
+        android:textAlignment="center"
+        android:textColor="@color/ivory"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword"
+        app:layout_constraintVertical_bias="0.545" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="159dp"
         android:layout_height="34dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="8dp"
         android:text="Registrarse con:"
+        android:textAlignment="center"
+        android:textColor="@color/darkGreen"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="523dp" />
+        app:layout_constraintGuide_end="220dp" />
 
     <ImageButton
         android:id="@+id/button7"
         android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="30dp"
+        android:layout_height="67dp"
+        android:layout_marginTop="12dp"
         android:padding="0dp"
         android:scaleType="fitCenter"
         android:src="@drawable/google"
