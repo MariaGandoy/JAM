@@ -61,6 +61,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
     private var mapMarkers: MutableList<Marker> = ArrayList()
 
+    private var visibleMarkers = mutableListOf("FRIEND", "EVENT")
+
     private lateinit var autocompleteFragment: AutocompleteSupportFragment
 
     private var LOCATION_SERVICE_ACTIVE = false
@@ -186,15 +188,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
                 checkboxEvents.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (isChecked) {
+                        visibleMarkers.add("EVENT")
                         updateMarkersVisibility()
                     } else {
+                        visibleMarkers.remove("EVENT")
+                        updateMarkersVisibility()
                     }
                 }
 
                 checkboxAmigos.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (isChecked) {
+                        visibleMarkers.add("FRIEND")
                         updateMarkersVisibility()
                     } else {
+                        visibleMarkers.remove("FRIEND")
+                        updateMarkersVisibility()
                     }
                 }
             }
@@ -202,10 +210,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
     }
 
     private fun updateMarkersVisibility() {
-        Log.d("MARKERs", "markers son  " + mapMarkers)
-
         for (marker in mapMarkers) {
-            // TO DO
+            marker.isVisible = visibleMarkers.contains(marker.getTag())
         }
     }
 
@@ -406,6 +412,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                  }
 
              val marker = mGoogleMap?.addMarker(postMarkerOptions) as Marker
+
+             marker.setTag(post.type)
              mapMarkers.add(marker)
          }
 
@@ -421,8 +429,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                 .icon(BitmapDescriptorFactory.defaultMarker()) // TODO: change user marker
 
             val marker = mGoogleMap?.addMarker(userMarkerOptions) as Marker
+
+            marker.setTag("FRIEND")
             mapMarkers.add(marker)
         }
+
+        updateMarkersVisibility()
     }
 
     private fun registerLocationReceiver() {
