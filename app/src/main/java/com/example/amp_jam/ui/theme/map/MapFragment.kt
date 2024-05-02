@@ -20,6 +20,7 @@ import android.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.amp_jam.GoogleSignInActivity
 import com.example.amp_jam.LocationBroadcastReceiver
 import com.example.amp_jam.LocationService
 import com.example.amp_jam.MapEventFragment
@@ -528,9 +529,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             database.collection("usuarios").document(currentUser!!.uid)
                 .update(userData)
                 .addOnFailureListener { e ->
-                    // Update the document in Firestore
-                    database.collection("usuarios").document(currentUser!!.uid)
-                        .update(userData)
+                    Log.d("Firestore", "Error updating user data")
                 }
         }
 

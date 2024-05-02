@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class GoogleSignInActivity : Activity() {
 
@@ -73,6 +74,7 @@ class GoogleSignInActivity : Activity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
+                    updateDB(user)
                     updateUI(user)
                 } else {
                     // If sign in fails, display a message to the user.
@@ -102,6 +104,37 @@ class GoogleSignInActivity : Activity() {
         } else {
             // Mantener al usuario en la LoginActivity o mostrar algún mensaje según sea necesario
             Log.d(TAG, "updateUIGoogle: No user is logged in")
+        }
+    }
+
+    private fun updateDB(user: FirebaseUser?) {
+        var db = FirebaseFirestore.getInstance()
+
+        user?.let {
+            val userExists = db.collection("usuarios").document(user.uid)
+            userExists.get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        Log.d(TAG, "User already exists in the database")
+                    } else {
+                        // User does not exist, add user information to the database
+                        val userMap = hashMapOf(
+                            "name" to user.displayName,
+                            "email" to user.email
+                        )
+
+                        userExists.set(userMap)
+                            .addOnSuccessListener {
+                                Log.d(TAG, "User added to Firestore with ID: ${user.uid}")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.w(TAG, "Error adding user to Firestore", e)
+                            }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "Error checking user existence in Firestore", e)
+                }
         }
     }
 
