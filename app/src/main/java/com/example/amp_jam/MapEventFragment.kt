@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseUser
 import java.util.Calendar
 import android.Manifest
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 
 
@@ -109,8 +110,7 @@ class MapEventFragment: DialogFragment() {
             builder.setView(view)
                 .setPositiveButton("AÑADIR") { _, _ ->
                     Log.d("JAM_NAVIGATION", "[MapEvent] Add event")
-                    val eventData = setEventData(view)
-                    submitEvent(eventData)
+                    setEventData(view)
                 }
                 .setNegativeButton("CANCELAR") { _, _ ->
                     Log.d("JAM_NAVIGATION", "[MapEvent] Cancel event")
@@ -207,13 +207,20 @@ class MapEventFragment: DialogFragment() {
         }
     }
 
-    private fun setEventData(view: View): Post {
+    private fun setEventData(view: View) {
         val eventName = view.findViewById<EditText>(R.id.eventName).text.toString()
         val eventDate = view.findViewById<EditText>(R.id.eventDate).text.toString()
+
+        // Validación básica de nombre y evento
+        if (eventName.isBlank() || eventDate.isBlank()) {
+            Toast.makeText(requireContext(), "Los campos de nombre y fecha no pueden estar vacíos.", Toast.LENGTH_LONG).show()
+            return
+        }
+
         val eventType = "EVENT" // TODO: add SONG and PHOTO
         val userEmail = currentUser?.email ?: ""
 
-        return Post(eventName, eventDate, eventType, userEmail, null, null, null)
+        submitEvent(Post(eventName, eventDate, eventType, userEmail, null, null, null))
     }
 
     private fun submitEvent(data: Post) {

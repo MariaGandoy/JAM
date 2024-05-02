@@ -84,6 +84,7 @@
         android:id="@+id/button4"
         android:layout_width="193dp"
         android:layout_height="61dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/custom_button_background"
         android:text="Registrarse"
         android:textAlignment="center"

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import com.example.amp_jam.Post
 import com.example.amp_jam.R
 import com.example.amp_jam.RecyclerAdapter
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 // TODO: Rename parameter arguments, choose names that match
@@ -45,10 +47,14 @@ class TimelineFragment : Fragment() {
         mRecyclerView.setHasFixedSize(true)
         mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        var progressBar = view.findViewById<ProgressBar>(androidx.appcompat.R.id.progress_circular)
+        progressBar.visibility = View.VISIBLE
+
         // Fetch posts asynchronously and set up the adapter when posts are available
         getPosts { posts ->
             mAdapter.RecyclerAdapter(posts, requireContext(), findNavController())
             mRecyclerView.adapter = mAdapter
+            progressBar.visibility = View.GONE
         }
     }
 
@@ -56,51 +62,51 @@ class TimelineFragment : Fragment() {
         var posts:MutableList<Post> = ArrayList()
         val database = FirebaseFirestore.getInstance()
 
-        // Some test data
-        /*
-        posts.add(Post("Cumpleaños", "04/07/24", "EVENT", "Peter Parker", "https://cursokotlin.com/wp-content/uploads/2017/07/spiderman.jpg", ""))
-        posts.add(Post("", "04/07/24", "PHOTO", "Peter Parker", "https://cursokotlin.com/wp-content/uploads/2017/07/spiderman.jpg", ""))
-        posts.add(Post("", "04/07/24", "SONG", "Peter Parker", "https://cursokotlin.com/wp-content/uploads/2017/07/spiderman.jpg", "https://open.spotify.com/intl-es/track/59xD5osEFsaNt5PXfIKUnX?si=2476b039634943fe"))
-        posts.add(Post("", "04/07/24", "ALERT", "Peter Parker", "https://cursokotlin.com/wp-content/uploads/2017/07/spiderman.jpg", ""))
-        */
+        val auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
 
-        database.collection("usuarios").get()
-            .addOnSuccessListener { usuariosResult ->
-                val fetchCount = usuariosResult.size()
-                var fetchedCount = 0
+        if (currentUser != null) {
+            database.collection("usuarios")
+                .document(currentUser.uid)
+                .collection("friends")
+                .get()
+                .addOnSuccessListener { usuariosResult ->
+                    val fetchCount = usuariosResult.size()
+                    var fetchedCount = 0
 
-                for (usuarioDocument in usuariosResult) {
-                    val usuarioId = usuarioDocument.id
+                    for (usuarioDocument in usuariosResult) {
+                        database.collection("usuarios")
+                            .document(usuarioDocument.id)
+                            .collection("posts")
+                            .get()
+                            .addOnSuccessListener { postsResult ->
+                                for (postDocument in postsResult) {
+                                    val postData = postDocument.data
 
-                    database.collection("usuarios").document(usuarioId)
-                        .collection("posts").get()
-                        .addOnSuccessListener { postsResult ->
-                            for (postDocument in postsResult) {
-                                val postData = postDocument.data
+                                    // Get post location data
+                                    val lugarPost = postData["lugar"] as HashMap<*,*>
+                                    val latitude = lugarPost["latitude"] as Double
+                                    val longitude = lugarPost["longitude"] as Double
 
-                                // Get post location data
-                                val lugarPost = postData["lugar"] as HashMap<*,*>
-                                val latitude = lugarPost["latitude"] as Double
-                                val longitude = lugarPost["longitude"] as Double
+                                    posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, null, LatLng(latitude, longitude)))
+                                }
 
-                                posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, null, LatLng(latitude, longitude)))
+                                fetchedCount++
+                                // Check if all posts have been fetched
+                                if (fetchedCount == fetchCount) {
+                                    // Invoke the callback with the fetched posts
+                                    callback(posts)
+                                }
                             }
-
-                            fetchedCount++
-                            // Check if all posts have been fetched
-                            if (fetchedCount == fetchCount) {
-                                // Invoke the callback with the fetched posts
-                                callback(posts)
+                            .addOnFailureListener { exception ->
+                                // Handle any errors that may occur
                             }
-                        }
-                        .addOnFailureListener { exception ->
-                            // Handle any errors that may occur
-                        }
+                    }
                 }
-            }
-            .addOnFailureListener { exception ->
-                // Handle any errors that may occur
-            }
+                .addOnFailureListener { exception ->
+                    // Handle any errors that may occur
+                }
+        }
     }
 }
 

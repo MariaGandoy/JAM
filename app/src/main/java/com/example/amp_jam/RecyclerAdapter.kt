@@ -65,8 +65,8 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
             seeInMapButton.setOnClickListener {
                 // Handle button click action here
                 post.location?.let { location ->
-                    SharedPreferencesHelper.setLastCords(location);
-                    SharedPreferencesHelper.setMapZoom(15f);
+                    SharedPreferencesHelper.setLastCords(context, location);
+                    SharedPreferencesHelper.setMapZoom(context,15f);
                     navController.navigate(R.id.navigation_map);
                 }
             }

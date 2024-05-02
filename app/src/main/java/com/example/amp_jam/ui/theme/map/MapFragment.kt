@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.SearchView
@@ -57,6 +58,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
     private var FINE_PERMISSION_CODE = 1
 
     private var mGoogleMap: GoogleMap? = null
+
+    private var mapMarkers: MutableList<Marker> = ArrayList()
 
     private lateinit var autocompleteFragment: AutocompleteSupportFragment
 
@@ -125,9 +128,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                 location?.let {
                     val latLng = LatLng(location.latitude, location.longitude)
 
+                    mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13.25f))
+
                     // Zoom en última configuración o en usuario por defecto
-                    val lastCords = SharedPreferencesHelper.getLastCords()
-                    val zoom = SharedPreferencesHelper.getMapZoom()
+                    val lastCords = SharedPreferencesHelper.getLastCords(this.context as Context)
+                    val zoom = SharedPreferencesHelper.getMapZoom(this.context as Context)
                     if (lastCords != null && zoom != null) {
                         mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(lastCords, zoom))
                     } else {
@@ -144,8 +149,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         val center = mGoogleMap?.cameraPosition?.target
         val zoom = mGoogleMap?.cameraPosition?.zoom
         if (center != null && zoom != null) {
-            SharedPreferencesHelper.setLastCords(center)
-            SharedPreferencesHelper.setMapZoom(zoom)
+            SharedPreferencesHelper.setLastCords(this.context as Context, center)
+            SharedPreferencesHelper.setMapZoom(this.context as Context, zoom)
         }
 
         super.onDestroyView()
@@ -173,6 +178,34 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             } else {
                 View.VISIBLE
             }
+
+            // Handle each checkbox
+            if (legendContainer.visibility == View.VISIBLE) {
+                val checkboxEvents = view.findViewById<CheckBox>(R.id.checkboxEvents)
+                val checkboxAmigos = view.findViewById<CheckBox>(R.id.checboxAmigos)
+
+                checkboxEvents.setOnCheckedChangeListener { buttonView, isChecked ->
+                    if (isChecked) {
+                        updateMarkersVisibility()
+                    } else {
+                    }
+                }
+
+                checkboxAmigos.setOnCheckedChangeListener { buttonView, isChecked ->
+                    if (isChecked) {
+                        updateMarkersVisibility()
+                    } else {
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateMarkersVisibility() {
+        Log.d("MARKERs", "markers son  " + mapMarkers)
+
+        for (marker in mapMarkers) {
+            // TO DO
         }
     }
 
@@ -308,9 +341,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
 
+            if (location != null) {
+                val latLng = LatLng(location.latitude, location.longitude)
+                zoomOnMap(latLng)
+            }
+
             // Last saved location
-            val lastCords = SharedPreferencesHelper.getLastCords()
-            val zoom = SharedPreferencesHelper.getMapZoom()
+            val lastCords = SharedPreferencesHelper.getLastCords(this.context as Context)
+            val zoom = SharedPreferencesHelper.getMapZoom(this.context as Context)
 
             if (lastCords != null && zoom != null) {
                 mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(lastCords, zoom))
@@ -321,12 +359,70 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         }
     }
 
-    override fun onLocationReceived(location: Location) {
-        // Update the map with the received location data
-        val myLocation = LatLng(location.latitude, location.longitude)
+    override fun onLocationReceived(mapData: HashMap<Any, Any>) {
+        // Accessing the location
+        val location: Location? = mapData["currentLocation"] as? Location
 
-        // Persist to firebase
-        persistUbication(myLocation)
+        if (location !== null) {
+            val myLocation = LatLng(location.latitude, location.longitude)
+
+            persistUbication(myLocation)
+        }
+
+        // Accessing map data (friends and posts)
+        val posts: MutableList<Post>? = mapData["posts"] as? MutableList<Post>
+        val friends: ArrayList<HashMap<String, Any?>>? = mapData["friends"] as? ArrayList<HashMap<String, Any?>>
+
+        if (posts !== null && friends !== null) updateMapView(posts, friends)
+    }
+
+    private fun updateMapView(posts: MutableList<Post>, friends: ArrayList<HashMap<String, Any?>>) {
+        mGoogleMap?.clear()
+        mapMarkers.clear()
+
+        // Update posts from firebase
+         posts.forEach { post ->
+             val latitude = post.location?.latitude as Double
+             val longitude = post.location?.longitude as Double
+
+             val postMarkerOptions = MarkerOptions()
+                 .position(LatLng(latitude, longitude))
+                 .title(post.title.toString())
+                 .snippet("Fecha: " + post.date)
+                 .apply {
+                     when (post.type) {
+                         "EVENT" -> {
+                             icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                         }
+
+                         "PHOTO" -> {
+                             icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                         }
+
+                         "SONG" -> {
+                             icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                         }
+                     }
+                 }
+
+             val marker = mGoogleMap?.addMarker(postMarkerOptions) as Marker
+             mapMarkers.add(marker)
+         }
+
+        // Update friends from firebase
+        friends.forEach { friend ->
+            val lugar = friend["lugar"] as HashMap<*,*>
+            val latitude = lugar["latitude"] as Double
+            val longitude = lugar["longitude"] as Double
+
+            val userMarkerOptions = MarkerOptions()
+                .position(LatLng(latitude, longitude))
+                .title(friend["user"] as String)
+                .icon(BitmapDescriptorFactory.defaultMarker()) // TODO: change user marker
+
+            val marker = mGoogleMap?.addMarker(userMarkerOptions) as Marker
+            mapMarkers.add(marker)
+        }
     }
 
     private fun registerLocationReceiver() {
@@ -349,7 +445,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         mGoogleMap?.animateCamera(newLatLngZoom)
     }
 
-    /* Handle events creation and data base dialog: */
+    /* Handle events creation: */
     override fun onEventSubmitted(postData: Post) {
         val center = mGoogleMap?.cameraPosition?.target
 
@@ -416,10 +512,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         )
 
         if (currentUser != null) {
+            // Update the document in Firestore
             database.collection("usuarios").document(currentUser!!.uid)
                 .update(userData)
+                .addOnFailureListener { e ->
+                    // Update the document in Firestore
+                    database.collection("usuarios").document(currentUser!!.uid)
+                        .set(userData)
+                }
         }
-    }
 
-    /* Map controls */
+    }
 }
