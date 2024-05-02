@@ -17,9 +17,9 @@
         android:label="map"
         tools:layout="@layout/map" />
 
-    <fragment
+    <activity
         android:id="@+id/navigation_camera"
-        android:name="com.example.amp_jam.ui.theme.camera.CameraFragment"
+        android:name="com.example.amp_jam.CamaraActivity"
         android:label="camera"
         tools:layout="@layout/camera" />
 

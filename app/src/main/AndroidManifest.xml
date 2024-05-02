@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-feature android:name="android.hardware.camera2.full" />
 
 
     <application
@@ -65,6 +66,10 @@
 
         <activity
             android:name=".EnterActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+        <activity
+            android:name=".CamaraActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
         <activity android:name=".GoogleSignInActivity" />
