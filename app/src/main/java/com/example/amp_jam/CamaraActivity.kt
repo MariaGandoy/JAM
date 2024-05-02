@@ -57,7 +57,6 @@ class CamaraActivity: ComponentActivity() {
     private var mBackgroundThread: HandlerThread? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Toast.makeText(this@CamaraActivity, "UwU", Toast.LENGTH_SHORT).show()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.camara_activity)
         textureView = findViewById<View>(R.id.texture) as TextureView
