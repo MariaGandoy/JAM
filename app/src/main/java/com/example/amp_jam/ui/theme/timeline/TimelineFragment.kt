@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,7 +30,13 @@ private const val ARG_PARAM2 = "param2"
  */
 class TimelineFragment : Fragment() {
     lateinit var mRecyclerView: RecyclerView
+
     val mAdapter: RecyclerAdapter = RecyclerAdapter()
+
+    lateinit var progressBar: ProgressBar
+
+    lateinit var customMessage: TextView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,14 +54,22 @@ class TimelineFragment : Fragment() {
         mRecyclerView.setHasFixedSize(true)
         mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        var progressBar = view.findViewById<ProgressBar>(androidx.appcompat.R.id.progress_circular)
+        progressBar = view.findViewById<ProgressBar>(androidx.appcompat.R.id.progress_circular)
+        customMessage = view.findViewById<TextView>(R.id.customMessage)
         progressBar.visibility = View.VISIBLE
+        customMessage.visibility = View.GONE
 
         // Fetch posts asynchronously and set up the adapter when posts are available
         getPosts { posts ->
             mAdapter.RecyclerAdapter(posts, requireContext(), findNavController())
             mRecyclerView.adapter = mAdapter
             progressBar.visibility = View.GONE
+
+            // Check if posts are available
+            if (posts.isEmpty()) {
+                customMessage.visibility = View.VISIBLE
+                customMessage.text = "No hay ningún post"
+            }
         }
     }
 
@@ -72,6 +87,7 @@ class TimelineFragment : Fragment() {
                 .get()
                 .addOnSuccessListener { usuariosResult ->
                     val fetchCount = usuariosResult.size()
+                    if (fetchCount == 0) callback(posts)
                     var fetchedCount = 0
 
                     for (usuarioDocument in usuariosResult) {
@@ -100,11 +116,15 @@ class TimelineFragment : Fragment() {
                             }
                             .addOnFailureListener { exception ->
                                 // Handle any errors that may occur
+                                progressBar.visibility = View.GONE
+                                customMessage.text = "Error cargando posts"
                             }
                     }
                 }
                 .addOnFailureListener { exception ->
                     // Handle any errors that may occur
+                    progressBar.visibility = View.GONE
+                    customMessage.text = "Error cargando posts"
                 }
         }
     }
