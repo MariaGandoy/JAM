@@ -61,6 +61,10 @@
             android:name=".EnterActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
+        <activity
+            android:name=".CamaraActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
         <activity android:name=".GoogleSignInActivity" />
 
         <!-- Services -->
