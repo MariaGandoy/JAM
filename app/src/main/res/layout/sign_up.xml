@@ -120,7 +120,8 @@
     <ImageButton
         android:id="@+id/button7"
         android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_height="67dp"
+        android:layout_marginTop="12dp"
         android:padding="0dp"
         android:scaleType="fitCenter"
         android:src="@drawable/google"
@@ -128,7 +129,6 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.example.amp_jam.ui.theme.friends
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,8 @@ import com.example.amp_jam.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import android.util.Log
+import androidx.core.content.ContextCompat
+
 class FriendsRequestFragment : Fragment() {
 
     private lateinit var firestore: FirebaseFirestore
@@ -82,6 +85,7 @@ class FriendsRequestFragment : Fragment() {
             textSize = 20f
             layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
         }
+        userNameView.setTextColor(getResources().getColor(R.color.darkGreen))
 
         userLayout.addView(userNameView)
 
@@ -89,21 +93,31 @@ class FriendsRequestFragment : Fragment() {
             //Boton de aceptar
             val acceptButton = Button(context).apply {
                 text = "✔"
+                background = ContextCompat.getDrawable(context, R.drawable.custom_button_background)
                 setOnClickListener { manageFriendRequest(userId, true) }
             }
+            acceptButton.setTextColor(getResources().getColor(R.color.ivory))
+
             //Boton de rechazar
             val rejectButton = Button(context).apply {
                 text = "✘"
+                background = ContextCompat.getDrawable(context, R.drawable.custom_button_background)
                 setOnClickListener { manageFriendRequest(userId, false) }
             }
+            rejectButton.setTextColor(getResources().getColor(R.color.ivory))
+
             userLayout.addView(acceptButton)
             userLayout.addView(rejectButton)
         } else {
             //Rechazar si se envió por error
             val cancelButton = Button(context).apply {
                 text = "✘"
+                background = ContextCompat.getDrawable(context, R.drawable.custom_button_background)
                 setOnClickListener { cancelFriendRequest(userId) }
             }
+            cancelButton.setTextColor(getResources().getColor(R.color.ivory))
+
+
             userLayout.addView(cancelButton)
         }
 

@@ -29,18 +29,18 @@
             android:id="@+id/postText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/darkGreen"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/userAvatar"
             android:text="Post text"
             android:layout_toStartOf="@+id/seeInMap"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/postTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:layout_below="@+id/postText"
             android:layout_toEndOf="@+id/userAvatar"
             tools:text="Post time"/>
