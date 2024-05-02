@@ -530,7 +530,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                 .addOnFailureListener { e ->
                     // Update the document in Firestore
                     database.collection("usuarios").document(currentUser!!.uid)
-                        .set(userData)
+                        .update(userData)
                 }
         }
 
