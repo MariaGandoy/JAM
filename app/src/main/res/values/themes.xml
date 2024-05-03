@@ -9,4 +9,11 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+    <style name="AppTheme.Dark" parent="Theme.AppCompat">
+        <!-- Estilos para el modo oscuro -->
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/design_default_color_primary_dark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 </resources>
