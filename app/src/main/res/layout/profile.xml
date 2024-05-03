@@ -9,19 +9,12 @@
     tools:ignore="MissingDefaultResource"
     android:background="@drawable/gradient_background">
 
-    <!-- Top menu -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:id="@+id/toolbar"
-            android:layout_height="?attr/actionBarSize">
 
-        </RelativeLayout>
 
     <!-- Activity content -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
