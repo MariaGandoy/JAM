@@ -18,11 +18,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 /**
  * A simple [Fragment] subclass.
  * Use the [TimelineFragment.newInstance] factory method to
@@ -82,44 +77,65 @@ class TimelineFragment : Fragment() {
 
         if (currentUser != null) {
             database.collection("usuarios")
-                .document(currentUser.uid)
-                .collection("friends")
+                .document(currentUser.uid).collection("posts")
                 .get()
-                .addOnSuccessListener { usuariosResult ->
-                    val fetchCount = usuariosResult.size()
-                    if (fetchCount == 0) callback(posts)
-                    var fetchedCount = 0
+                .addOnSuccessListener { myResult ->
+                    for (postDocument in myResult) {
+                        val postData = postDocument.data
 
-                    for (usuarioDocument in usuariosResult) {
-                        database.collection("usuarios")
-                            .document(usuarioDocument.id)
-                            .collection("posts")
-                            .get()
-                            .addOnSuccessListener { postsResult ->
-                                for (postDocument in postsResult) {
-                                    val postData = postDocument.data
+                        // Get post location data
+                        val lugarPost = postData["lugar"] as HashMap<*,*>
+                        val latitude = lugarPost["latitude"] as Double
+                        val longitude = lugarPost["longitude"] as Double
 
-                                    // Get post location data
-                                    val lugarPost = postData["lugar"] as HashMap<*,*>
-                                    val latitude = lugarPost["latitude"] as Double
-                                    val longitude = lugarPost["longitude"] as Double
-
-                                    posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, null, LatLng(latitude, longitude)))
-                                }
-
-                                fetchedCount++
-                                // Check if all posts have been fetched
-                                if (fetchedCount == fetchCount) {
-                                    // Invoke the callback with the fetched posts
-                                    callback(posts)
-                                }
-                            }
-                            .addOnFailureListener { exception ->
-                                // Handle any errors that may occur
-                                progressBar.visibility = View.GONE
-                                customMessage.text = "Error cargando posts"
-                            }
+                        posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, null, LatLng(latitude, longitude)))
                     }
+
+                    database.collection("usuarios")
+                        .document(currentUser.uid)
+                        .collection("friends")
+                        .get()
+                        .addOnSuccessListener { usuariosResult ->
+                            val fetchCount = usuariosResult.size()
+                            if (fetchCount == 0) callback(posts)
+                            var fetchedCount = 0
+
+                            for (usuarioDocument in usuariosResult) {
+                                database.collection("usuarios")
+                                    .document(usuarioDocument.id)
+                                    .collection("posts")
+                                    .get()
+                                    .addOnSuccessListener { postsResult ->
+                                        for (postDocument in postsResult) {
+                                            val postData = postDocument.data
+
+                                            // Get post location data
+                                            val lugarPost = postData["lugar"] as HashMap<*,*>
+                                            val latitude = lugarPost["latitude"] as Double
+                                            val longitude = lugarPost["longitude"] as Double
+
+                                            posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, null, LatLng(latitude, longitude)))
+                                        }
+
+                                        fetchedCount++
+                                        // Check if all posts have been fetched
+                                        if (fetchedCount == fetchCount) {
+                                            // Invoke the callback with the fetched posts
+                                            callback(posts)
+                                        }
+                                    }
+                                    .addOnFailureListener { exception ->
+                                        // Handle any errors that may occur
+                                        progressBar.visibility = View.GONE
+                                        customMessage.text = "Error cargando posts"
+                                    }
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            // Handle any errors that may occur
+                            progressBar.visibility = View.GONE
+                            customMessage.text = "Error cargando posts"
+                        }
                 }
                 .addOnFailureListener { exception ->
                     // Handle any errors that may occur
