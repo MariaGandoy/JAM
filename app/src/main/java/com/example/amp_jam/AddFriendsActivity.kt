@@ -94,30 +94,48 @@ class AddFriendsActivity : ComponentActivity() {
     private fun addUserToList(userName: String, userId: String) {
         val userContainer = findViewById<LinearLayout>(R.id.usersContainer)
 
-        // TextView para mostrar el nombre del usuario
-        val textView = TextView(this).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                0, // Ancho como 0, pero con peso
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                0.7f // Peso menor para dar más espacio al botón
-            )
-            text = userName
-            textSize = 20f
-            setPadding(16, 16, 16, 16)
+        var textView= TextView(this)
+        if (userName.length > 20) {
+            // TextView para mostrar el nombre del usuario
+            textView = TextView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    0, // Ancho como 0, pero con peso
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    0.7f // Peso menor para dar más espacio al botón
+                )
+                text = userName + "\n"
+                textSize = 16f
+                setPadding(16, 16, 16, 16)
+            }
+            textView.setTextColor(getResources().getColor(R.color.darkGreen))
         }
-        textView.setTextColor(getResources().getColor(R.color.darkGreen))
+        else {
+            // TextView para mostrar el nombre del usuario
+            textView = TextView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    0, // Ancho como 0, pero con peso
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    0.7f // Peso menor para dar más espacio al botón
+                )
+                text = userName + "\n"
+                textSize = 20f
+                setPadding(16, 16, 16, 16)
+            }
+            textView.setTextColor(getResources().getColor(R.color.darkGreen))
+        }
 
         // Button para agregar a amigos
         val addButton = Button(this).apply {
             layoutParams = LinearLayout.LayoutParams(
                 0, // Ancho como 0, pero con peso
                 LinearLayout.LayoutParams.WRAP_CONTENT,
-                0.3f // Peso para asegurar que el botón tenga espacio visible
+                0.1f // Peso para asegurar que el botón tenga espacio visible
             )
             text = "+"
-            background = ContextCompat.getDrawable(context, R.drawable.custom_button_background)
+            background = ContextCompat.getDrawable(context, R.drawable.custom_round_button_background)
             setOnClickListener {
                 addFriend(userId)
+
             }
         }
         addButton.setTextColor(getResources().getColor(R.color.ivory))
