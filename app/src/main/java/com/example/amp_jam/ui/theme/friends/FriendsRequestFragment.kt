@@ -2,14 +2,17 @@ package com.example.amp_jam.ui.theme.friends
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.amp_jam.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -61,17 +64,29 @@ class FriendsRequestFragment : Fragment() {
         firestore.collection("usuarios").document(userId).get()
             .addOnSuccessListener { document ->
                 val userName = document.getString("name") ?: "Unknown"
-                val profilePhoto = document.getBlob("")
-                addUserToScrollView(container, userName, userId, isReceived)
+                val profilePhotoURL = document.getString("photo") ?: "nophoto"
+
+                addUserToScrollView(container, userName, profilePhotoURL, userId, isReceived)
             }
             .addOnFailureListener { e ->
                 Log.e("FriendsRequestFragment", "Error loading user details", e)
-                addUserToScrollView(container, "Error loading name", userId, isReceived)
+                addUserToScrollView(container, "Error loading name", "nophoto", userId, isReceived)
             }
     }
 
-    private fun addUserToScrollView(container: LinearLayout, userName: String, userId: String, isReceived: Boolean) {
+    private fun addUserToScrollView(container: LinearLayout, userName: String, profilePhotoURL: String, userId: String, isReceived: Boolean) {
         val userLayout = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                bottomMargin = 50 // Establece el margen inferior
+            }
+        }
+
+        // Layout para la imagen de perfil
+        val profilePhotoLayout = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -79,49 +94,89 @@ class FriendsRequestFragment : Fragment() {
             )
         }
 
+        // ImageView para la imagen de perfil
+        val profilePhotoView = ImageView(context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                250, // Tamaño deseado de la imagen de perfil
+                250
+            ).apply {
+                gravity = Gravity.CENTER_VERTICAL
+                marginEnd = 30 // Ajusta el margen entre la imagen y el nombre de usuario
+            }
+        }
+        Glide.with(requireContext())
+            .load(profilePhotoURL)
+            .into(profilePhotoView)
+
+        // TextView para el nombre de usuario
         val userNameView = TextView(context).apply {
             text = userName
             textSize = 20f
-            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
         }
         userNameView.setTextColor(getResources().getColor(R.color.darkGreen))
 
-        userLayout.addView(userNameView)
+        // Agregar la imagen de perfil y el nombre de usuario al layout de la imagen de perfil
+        profilePhotoLayout.addView(profilePhotoView)
+        profilePhotoLayout.addView(userNameView)
+
+        // Agregar el layout de la imagen de perfil al layout de usuario
+        userLayout.addView(profilePhotoLayout)
+
+        // Layout para los botones
+        val buttonLayout = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = Gravity.END
+            }
+        }
 
         if (isReceived) {
             //Boton de aceptar
             val acceptButton = Button(context).apply {
-                text = "✔"
-                background = ContextCompat.getDrawable(context, R.drawable.custom_button_background)
+                text = "ACEPTAR"
+                background = ContextCompat.getDrawable(context, R.drawable.custom_button_background_2)
                 setOnClickListener { manageFriendRequest(userId, true) }
             }
             acceptButton.setTextColor(getResources().getColor(R.color.ivory))
 
             //Boton de rechazar
             val rejectButton = Button(context).apply {
-                text = "✘"
-                background = ContextCompat.getDrawable(context, R.drawable.custom_button_background)
+                text = "RECHAZAR"
+                background = ContextCompat.getDrawable(context, R.drawable.custom_button_background_2)
                 setOnClickListener { manageFriendRequest(userId, false) }
             }
             rejectButton.setTextColor(getResources().getColor(R.color.ivory))
 
-            userLayout.addView(acceptButton)
-            userLayout.addView(rejectButton)
+            // Agregar los botones al layout
+            buttonLayout.addView(acceptButton)
+            buttonLayout.addView(rejectButton)
         } else {
             //Rechazar si se envió por error
             val cancelButton = Button(context).apply {
-                text = "✘"
-                background = ContextCompat.getDrawable(context, R.drawable.custom_button_background)
+                text = "CANCELAR"
+                background = ContextCompat.getDrawable(context, R.drawable.custom_button_background_2)
                 setOnClickListener { cancelFriendRequest(userId) }
             }
             cancelButton.setTextColor(getResources().getColor(R.color.ivory))
 
-
-            userLayout.addView(cancelButton)
+            // Agregar el botón al layout
+            buttonLayout.addView(cancelButton)
         }
 
+        // Agregar el layout de los botones al layout de usuario
+        userLayout.addView(buttonLayout)
+
+        // Agregar el layout de usuario al contenedor principal
         container.addView(userLayout)
     }
+
 
     private fun manageFriendRequest(userId: String, accept: Boolean) {
         val currentUserRef = firestore.collection("usuarios").document(currentUserUid!!)
