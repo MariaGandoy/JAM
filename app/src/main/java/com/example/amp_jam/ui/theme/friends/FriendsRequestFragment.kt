@@ -1,20 +1,18 @@
 package com.example.amp_jam.ui.theme.friends
 
-import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.amp_jam.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import android.util.Log
-import androidx.core.content.ContextCompat
 
 class FriendsRequestFragment : Fragment() {
 
@@ -63,6 +61,7 @@ class FriendsRequestFragment : Fragment() {
         firestore.collection("usuarios").document(userId).get()
             .addOnSuccessListener { document ->
                 val userName = document.getString("name") ?: "Unknown"
+                val profilePhoto = document.getBlob("")
                 addUserToScrollView(container, userName, userId, isReceived)
             }
             .addOnFailureListener { e ->
