@@ -45,15 +45,15 @@
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/ivory_back"
         android:text="Solicitudes enviadas"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/scrollView5"
-        app:layout_constraintTop_toBottomOf="@id/scrollView4"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scrollView4" />
 
     <ScrollView
         android:id="@+id/scrollView5"
