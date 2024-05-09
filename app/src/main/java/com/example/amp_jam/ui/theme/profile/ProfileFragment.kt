@@ -10,17 +10,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.amp_jam.AddFriendsActivity
 import com.example.amp_jam.ListOfFriendsActivity
 import com.example.amp_jam.MainActivity
+import com.example.amp_jam.Post
 import com.example.amp_jam.R
+import com.example.amp_jam.RecyclerAdapter
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -43,6 +50,11 @@ class ProfileFragment : Fragment() {
     private lateinit var locationSwitch: Switch
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
 
+    val mAdapter: RecyclerAdapter = RecyclerAdapter()
+    lateinit var mRecyclerView: RecyclerView
+    lateinit var progressBar: ProgressBar
+    lateinit var customMessage: TextView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,7 +71,6 @@ class ProfileFragment : Fragment() {
         Log.d("Debugeandoklk", "llego Profile")
         return view
     }
-
 
     private fun setupLogOut(view: View) {
         val toolbarLogout = view.findViewById<ImageView>(R.id.toolbarLogout)
@@ -91,8 +102,9 @@ class ProfileFragment : Fragment() {
         val currentUser = auth.currentUser
         val userNameTextView = view.findViewById<TextView>(R.id.textView3)
         val profileImageView = view.findViewById<ImageView>(R.id.imageView3)
-        val postsTextView = view.findViewById<TextView>(R.id.postsTextView)
         val friendsCountTextView = view.findViewById<TextView>(R.id.textView5)
+        progressBar = view.findViewById<ProgressBar>(androidx.appcompat.R.id.progress_circular)
+        customMessage = view.findViewById<TextView>(R.id.customMessage)
 
         if (currentUser != null) {
             // Load user profile picture and name
@@ -116,28 +128,7 @@ class ProfileFragment : Fragment() {
                 }
 
             // Load posts
-            firestore.collection("usuarios").document(currentUser.uid).collection("posts")
-                .get()
-                .addOnSuccessListener { documents ->
-                    if (!documents.isEmpty) {
-                        val stringBuilder = StringBuilder()
-                        for (document in documents) {
-                            val title = document.getString("titulo") ?: "Sin título"
-                            val date = document.getString("fecha") ?: "Fecha desconocida"
-                            val tipo = document.getString("tipo") ?: "Tipo no especificado"
-                            val user = document.getString("user") ?: "Usuario desconocido"
-                            stringBuilder.append("Título: $title\nFecha: $date\nTipo: $tipo\nUsuario: $user\n\n")
-                        }
-                        postsTextView.text = stringBuilder.toString()
-                    } else {
-                        postsTextView.text = "No tienes actividad reciente"
-                    }
-                }
-                .addOnFailureListener {
-                    postsTextView.text = "Error al cargar los posts"
-                    Log.d("ProfileFragment", "Error loading posts", it)
-                }
-
+            setUpRecyclerView(view)
 
             firestore.collection("usuarios").document(currentUser.uid).collection("friends")
                 .get()
@@ -156,12 +147,63 @@ class ProfileFragment : Fragment() {
                 }
         } else {
             userNameTextView.text = "@usuario"
-            postsTextView.text = "No tienes actividad reciente"
             friendsCountTextView.text = "0 amigos"
+            customMessage.visibility = View.VISIBLE
+            customMessage.text = "No tienes actividad reciente"
         }
     }
 
+    private fun setUpRecyclerView(view: View) {
+        mRecyclerView = view.findViewById<RecyclerView>(R.id.postsList)
+        mRecyclerView.setHasFixedSize(true)
+        mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        progressBar.visibility = View.VISIBLE
+        customMessage.visibility = View.GONE
 
+        // Fetch posts asynchronously and set up the adapter when posts are available
+        getPosts { posts ->
+            mAdapter.RecyclerAdapter(posts, requireContext(), findNavController())
+            mRecyclerView.adapter = mAdapter
+            progressBar.visibility = View.GONE
+        }
+    }
+
+    private fun getPosts(callback: (MutableList<Post>) -> Unit) {
+        var posts:MutableList<Post> = ArrayList()
+
+        val auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+
+        if (currentUser != null) {
+            firestore.collection("usuarios").document(currentUser.uid).collection("posts")
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        for (postDocument in documents) {
+                            val postData = postDocument.data
+
+                            // Get post location data
+                            val lugarPost = postData["lugar"] as HashMap<*,*>
+                            val latitude = lugarPost["latitude"] as Double
+                            val longitude = lugarPost["longitude"] as Double
+
+                            posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, null, LatLng(latitude, longitude)))
+                        }
+                    } else {
+                        customMessage.visibility = View.VISIBLE
+                        customMessage.text = "No tienes actividad reciente"
+                    }
+
+                    callback(posts)
+                }
+                .addOnFailureListener {
+                    // Handle any errors that may occur
+                    progressBar.visibility = View.GONE
+                    customMessage.text = "Error al cargar los posts"
+                    Log.d("ProfileFragment", "Error loading posts", it)
+                }
+        }
+    }
 
 }
