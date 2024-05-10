@@ -90,7 +90,7 @@ class ProfileFragment : Fragment() {
 
 
     private fun setupAddFriends(view: View) {
-        val addBtn = view.findViewById<Button>(R.id.button5)
+        val addBtn = view.findViewById<ImageButton>(R.id.button5)
         addBtn.setOnClickListener {
             Log.d("JAM_NAVIGATION", "[ProfileFragment] Click ADD FRIENDS MENU EVENT button")
             val intent = Intent(activity, AddFriendsActivity::class.java)
