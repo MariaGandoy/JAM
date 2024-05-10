@@ -76,16 +76,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3" />
         
-        <Button
+        <ImageButton
             android:id="@+id/button5"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/custom_round_button_background"
             android:gravity="center"
-            android:text="+"
-            android:textColor="@color/ivory"
-            android:textSize="30sp"
+            android:src="@drawable/add_friend"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.192"
             app:layout_constraintStart_toEndOf="@+id/textView5"
