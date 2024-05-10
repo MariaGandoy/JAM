@@ -3,6 +3,7 @@ package com.example.amp_jam
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
@@ -21,6 +22,8 @@ class AddFriendsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.add_friends)
 
+        setUpBackArrow()
+
         firestore = FirebaseFirestore.getInstance()
         currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
 
@@ -30,6 +33,13 @@ class AddFriendsActivity : ComponentActivity() {
             }
         }
 
+    }
+
+    private fun setUpBackArrow() {
+        val backButton = findViewById<ImageView>(R.id.backButton)
+        backButton.setOnClickListener {
+            finish() // Close the activity and return to the fragment
+        }
     }
 
     private fun loadFriends(onComplete: () -> Unit) {
