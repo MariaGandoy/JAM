@@ -10,42 +10,21 @@
     android:background="@drawable/gradient_background">
 
     <!-- Top menu -->
-    <!-- Top Bar -->
-    <RelativeLayout
-        android:id="@+id/topBar"
-        android:layout_marginTop="15dp"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/backButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/arrow_back" />
-
-        <TextView
-            android:id="@+id/newEventTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            android:layout_toEndOf="@+id/backButton"
-            android:text="Añadir amigo"
-            android:textStyle="bold"
-            android:textColor="@color/darkGreen"
-            android:textSize="25sp" />
-
-    </RelativeLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:elevation="4dp"
+        app:title="Añadir amigos"
+        app:titleTextColor="@color/darkGreen"
+        app:navigationIcon="@drawable/arrow_back" />
 
     <!-- Activity content -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/topBar">
+        android:layout_below="@+id/toolbar">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/autocompleteUbicationCard"

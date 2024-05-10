@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
+import androidx.appcompat.widget.Toolbar
 import androidx.activity.ComponentActivity
 import androidx.navigation.NavController
 import com.google.firebase.Firebase
@@ -21,9 +22,9 @@ class SettingsActivity: ComponentActivity() {
     }
 
     private fun setUpBackArrow() {
-        val backButton = findViewById<ImageView>(R.id.backButton)
-        backButton.setOnClickListener {
-            finish() // Close the activity and return to the fragment
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setNavigationOnClickListener  {
+            finish()
         }
     }
 

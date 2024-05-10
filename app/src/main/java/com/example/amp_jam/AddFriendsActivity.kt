@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -36,9 +37,9 @@ class AddFriendsActivity : ComponentActivity() {
     }
 
     private fun setUpBackArrow() {
-        val backButton = findViewById<ImageView>(R.id.backButton)
-        backButton.setOnClickListener {
-            finish() // Close the activity and return to the fragment
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setNavigationOnClickListener  {
+            finish()
         }
     }
 
