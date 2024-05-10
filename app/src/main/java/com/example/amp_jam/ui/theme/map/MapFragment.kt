@@ -26,6 +26,7 @@ import com.example.amp_jam.LocationService
 import com.example.amp_jam.MapEventFragment
 import com.example.amp_jam.Post
 import com.example.amp_jam.R
+import com.example.amp_jam.ShakerService
 import com.example.amp_jam.SharedPreferencesHelper
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -76,6 +77,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
     private var currentUser: FirebaseUser? = null
 
+    private lateinit var shakerService: ShakerService
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -107,6 +110,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             // Obtener la ubicación actual y hacer zoom en ella
             getCurrentLocationAndZoom()
         }
+        shakerService = ShakerService(this.context as Context)
 
     }
 
@@ -533,5 +537,19 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                 }
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        shakerService.onResume()
+        shakerService.startReading()
+    }
+    override fun onPause() {
+        super.onPause()
+        shakerService.onPause()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        shakerService.onDestroy()
     }
 }

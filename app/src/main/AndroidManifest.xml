@@ -81,6 +81,7 @@
 
         <!-- Services -->
         <service android:name=".LocationService"/>
+
     </application>
 
 </manifest>
