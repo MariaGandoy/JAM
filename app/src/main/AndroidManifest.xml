@@ -63,6 +63,11 @@
             android:exported="true"
             android:theme="@style/Theme.AMP_JAM" >
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AMP_JAM" >
+        </activity>
 
         <activity
             android:name=".EnterActivity"

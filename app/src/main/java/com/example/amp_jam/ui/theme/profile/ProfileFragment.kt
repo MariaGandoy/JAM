@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Switch
@@ -27,6 +28,7 @@ import com.example.amp_jam.MainActivity
 import com.example.amp_jam.Post
 import com.example.amp_jam.R
 import com.example.amp_jam.RecyclerAdapter
+import com.example.amp_jam.SettingsActivity
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -64,26 +66,25 @@ class ProfileFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        setupLogOut(view)
+        setUpSettings(view)
         setupAddFriends(view)
         loadUserProfileData(view)
+
+        val settingsButton = view.findViewById<ImageButton>(R.id.configurations)
+        settingsButton.setOnClickListener {
+            val intent = Intent(activity, SettingsActivity::class.java)
+            startActivity(intent)
+        }
 
         Log.d("Debugeandoklk", "llego Profile")
         return view
     }
 
-    private fun setupLogOut(view: View) {
-        val toolbarLogout = view.findViewById<ImageView>(R.id.toolbarLogout)
-        toolbarLogout.setOnClickListener {
-            Log.d("ProfileFragment", Firebase.auth.currentUser.toString())
-            Firebase.auth.signOut()
-
-            val intent = Intent(activity, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    private fun setUpSettings(view: View) {
+        val settingsButton = view.findViewById<ImageButton>(R.id.configurations)
+        settingsButton.setOnClickListener {
+            val intent = Intent(activity, SettingsActivity::class.java)
             startActivity(intent)
-            activity?.finish()
-
-            Log.d("ProfileFragment", Firebase.auth.currentUser.toString())
         }
     }
 

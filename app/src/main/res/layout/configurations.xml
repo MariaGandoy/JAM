@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="2dp"
+    tools:context=".MainActivity"
+    android:background="@drawable/gradient_background">
+
+    <!-- Existing content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Toggle share location -->
+            <TextView
+                android:id="@+id/shareLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="30dp"
+                android:text="Compartir ubicación"
+                android:textColor="@color/black"
+                android:textSize="23sp" />
+
+            <Switch
+                android:id="@+id/locationSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/shareLocation"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="50dp"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:checked="true"
+                android:visibility="visible"/>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_below="@+id/shareLocation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <!-- Close session -->
+            <TextView
+                android:id="@+id/closeSession"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="30dp"
+                android:layout_below="@+id/shareLocation"
+                android:text="Cerrar sesión"
+                android:textColor="@color/black"
+                android:textSize="23sp" />
+
+            <ImageView
+                android:id="@+id/toolbarLogout"
+                android:layout_width="40dp"
+                android:layout_height="43dp"
+                android:layout_below="@+id/shareLocation"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="100dp"
+                android:layout_toEndOf="@+id/closeSession"
+                android:src="@drawable/logout" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_below="@+id/closeSession"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <!-- Dark mode -->
+            <TextView
+                android:id="@+id/darkMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="30dp"
+                android:layout_below="@+id/closeSession"
+                android:text="Modo nocturno"
+                android:textColor="@color/black"
+                android:textSize="23sp" />
+
+            <Switch
+                android:id="@+id/darkModeSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/darkMode"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="50dp"
+                android:layout_below="@+id/closeSession"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:visibility="visible"/>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_below="@+id/darkMode"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <!-- Delete account -->
+            <TextView
+                android:id="@+id/deleteAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="30dp"
+                android:layout_below="@+id/darkMode"
+                android:text="Eliminar cuenta"
+                android:textColor="@color/black"
+                android:textSize="23sp" />
+
+            <ImageView
+                android:id="@+id/deleteAccountButton"
+                android:layout_width="40dp"
+                android:layout_height="43dp"
+                android:layout_below="@+id/darkMode"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="80dp"
+                android:layout_toEndOf="@+id/darkMode"
+                android:src="@drawable/delete" />
+
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_below="@+id/deleteAccount"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

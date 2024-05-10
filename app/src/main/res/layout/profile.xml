@@ -10,11 +10,22 @@
     android:background="@drawable/gradient_background">
 
 
-
     <!-- Activity content -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/configurations"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/custom_round_button_background"
+            android:gravity="center"
+            android:src="@drawable/settings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="30dp"
+            android:layout_marginTop="20dp"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -155,44 +166,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textView7"
             android:visibility="invisible"/>
-
-        <ImageView
-            android:id="@+id/addEventButton"
-            android:layout_width="39dp"
-            android:layout_height="35dp"
-            android:layout_marginEnd="20dp"
-            android:src="@drawable/location_on"
-            app:layout_constraintBottom_toTopOf="@+id/switch1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.065"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.8" />
-
-        <Switch
-            android:id="@+id/switch1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:textSize="30sp"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.046"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/toolbarLogout"
-            android:layout_width="40dp"
-            android:layout_height="43dp"
-            android:layout_marginTop="36dp"
-            android:src="@drawable/logout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.954"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
