@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:layout_margin="2dp"
     tools:context=".MainActivity"
-    android:background="@drawable/gradient_background">
+    android:background="@drawable/gradient_background"
+    android:fitsSystemWindows="true">
 
     <!-- Top Bar -->
     <androidx.appcompat.widget.Toolbar
@@ -165,12 +166,13 @@
         android:id="@+id/infoApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/scrollView"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="296dp"
         android:layout_marginBottom="10dp"
         android:text="© 2024 JAM"
         android:textColor="@color/darkGreen"
-        android:textSize="16sp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:textSize="16sp" />
 
 </RelativeLayout>
