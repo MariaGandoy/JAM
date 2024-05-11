@@ -1,0 +1,9 @@
+<!-- custom_toolbar_shadow.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="0dp" />
+    <gradient
+        android:startColor="#33000000"
+        android:endColor="#00000000"
+        android:angle="90" />
+</shape>
