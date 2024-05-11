@@ -23,7 +23,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.amp_jam.GoogleSignInActivity
 import com.example.amp_jam.LocationBroadcastReceiver
 import com.example.amp_jam.LocationService
-import com.example.amp_jam.MapEventFragment
+import com.example.amp_jam.MapPostFragment
 import com.example.amp_jam.Post
 import com.example.amp_jam.R
 import com.example.amp_jam.SharedPreferencesHelper
@@ -54,7 +54,7 @@ import com.google.firebase.firestore.FirebaseFirestore
  * Use the [MapFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.LocationListener, MapEventFragment.MapEventDialogListener {
+class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.LocationListener, MapPostFragment.MapPostDialogListener {
 
     private var FINE_PERMISSION_CODE = 1
 
@@ -164,9 +164,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
     private fun setupAddEventButton(view: View) {
         val addBtn = view.findViewById<ImageButton>(R.id.addEventButton)
         addBtn.setOnClickListener {
-            val eventDialog = MapEventFragment()
-            eventDialog.listener = this
-            eventDialog.show(requireFragmentManager(), "MapEvent")
+            val postDialog = MapPostFragment()
+            postDialog.listener = this
+            postDialog.show(requireFragmentManager(), "PostDialog")
         }
     }
 
@@ -458,8 +458,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         mGoogleMap?.animateCamera(newLatLngZoom)
     }
 
-    /* Handle events creation: */
-    override fun onEventSubmitted(postData: Post) {
+    /* Handle posts creation: */
+    override fun onPostSubmitted(postData: Post) {
         val center = mGoogleMap?.cameraPosition?.target
 
         // Create event marker (quitar cuando se lea de firebase y leer tb nuestro datos de base de datos ¿?)

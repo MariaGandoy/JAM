@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+                <!-- Add image -->
+                <TextView
+                    android:id="@+id/newPhotoTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:text="compartir imagen"
+                    android:textColor="@color/darkGreen"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/photoText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:hint="Pie de foto"
+                    android:layout_below="@id/newPhotoTitle"
+                    android:backgroundTint="@color/darkGreen"/>
+
+                <LinearLayout
+                    android:id="@+id/imageButtonsContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_below="@id/photoText"
+                    android:layout_centerHorizontal="true">
+
+                    <ImageButton
+                        android:id="@+id/addFromCamera"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_margin="10dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/take_photo" />
+
+                    <ImageButton
+                        android:id="@+id/addFromFiles"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_margin="10dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/add_photo" />
+
+                </LinearLayout>
+
+                <!-- Friends to notify -->
+                <TextView
+                    android:id="@+id/newEventNotify"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:text="compartir con"
+                    android:textColor="@color/darkGreen"
+                    android:layout_below="@id/imageButtonsContainer"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <RadioGroup
+                    android:id="@+id/radioGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/newEventNotify"
+                    android:layout_marginStart="20dp"
+                    android:background="#024CAF50"
+                    app:layout_constraintVertical_bias="0.24000001">
+
+                    <RadioButton
+                        android:id="@+id/radioButton1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="Amigos" />
+
+                    <RadioButton
+                        android:id="@+id/radioButton2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="Familia" />
+
+                    <RadioButton
+                        android:id="@+id/radioButton3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="Equipo" />
+
+                </RadioGroup>
+
+    </RelativeLayout>
+
+</ScrollView>
+

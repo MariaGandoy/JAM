@@ -2,8 +2,6 @@ package com.example.amp_jam
 
 import android.Manifest
 import android.app.Activity
-import android.app.DatePickerDialog
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import java.util.Calendar
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -31,7 +28,7 @@ import androidx.core.content.ContextCompat
  * Use the [MapEventFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MapEventFragment() : Fragment() {
+class MapPhotoFragment() : Fragment() {
 
     private lateinit var takePictureLauncher: ActivityResultLauncher<Intent>
     private lateinit var pickImageLauncher: ActivityResultLauncher<String>
@@ -86,52 +83,26 @@ class MapEventFragment() : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view =  inflater.inflate(R.layout.map_event, container, false)
+        val view = inflater.inflate(R.layout.map_photo, container, false)
 
-        setUpNameEventListener(view)
-        setUpDatePickerDialog(view, requireContext())
+        setUpPhotoTextListener(view)
         setUpRadioGroupListener(view)
         setupPhotoButtons(view)
 
         return view
     }
 
-    private fun setUpNameEventListener(view: View) {
-        val textInputName = view.findViewById<EditText>(R.id.eventName)
-
-        textInputName.addTextChangedListener(object : TextWatcher {
+    private fun setUpPhotoTextListener(view: View) {
+        val textInputPhoto = view.findViewById<EditText>(R.id.photoText)
+        textInputPhoto.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                Log.d("JAM_NAVIGATION", "[MapEvent] Event name text changed to: $s")
+                Log.d("JAM_NAVIGATION", "[MapPhoto] Photo text changed to: $s")
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
-    }
-
-    private fun setUpDatePickerDialog(view: View, context: Context) {
-        val textInputDate = view.findViewById<EditText>(R.id.eventDate)
-        textInputDate.setOnClickListener{
-            val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-            val datePickerDialog = DatePickerDialog(
-                context,
-                { _, yearValue, monthValue, dayValue ->
-                    textInputDate.setText("$dayValue/$monthValue/$yearValue")
-                    Log.d(
-                        "JAM_NAVIGATION",
-                        "[MapEvent] Event date changed to: $dayValue/$monthValue/$yearValue"
-                    )
-                },
-                year, month, day
-            )
-
-            datePickerDialog.show()
-        }
     }
 
     private fun setUpRadioGroupListener(view: View) {
@@ -163,7 +134,7 @@ class MapEventFragment() : Fragment() {
             // Si no tenemos el permiso lo solicitamos
             requestPermissions(
                 arrayOf(Manifest.permission.CAMERA),
-                MapEventFragment.REQUEST_CAMERA_PERMISSION
+                MapPhotoFragment.REQUEST_CAMERA_PERMISSION
             )
         } else {
             // Si ya tenemos permiso hacemos la foto.
@@ -174,7 +145,7 @@ class MapEventFragment() : Fragment() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == MapEventFragment.REQUEST_CAMERA_PERMISSION) {
+        if (requestCode == MapPhotoFragment.REQUEST_CAMERA_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permiso concedido, lanzar la cámara
                 val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -185,5 +156,4 @@ class MapEventFragment() : Fragment() {
             }
         }
     }
-
 }
