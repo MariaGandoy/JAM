@@ -88,7 +88,7 @@ class TimelineFragment : Fragment() {
                         val latitude = lugarPost["latitude"] as Double
                         val longitude = lugarPost["longitude"] as Double
 
-                        posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, null, LatLng(latitude, longitude)))
+                        posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, postData["song"], LatLng(latitude, longitude)))
                     }
 
                     database.collection("usuarios")
@@ -114,7 +114,7 @@ class TimelineFragment : Fragment() {
                                             val latitude = lugarPost["latitude"] as Double
                                             val longitude = lugarPost["longitude"] as Double
 
-                                            posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, null, LatLng(latitude, longitude)))
+                                            posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, postData["song"], LatLng(latitude, longitude)))
                                         }
 
                                         fetchedCount++

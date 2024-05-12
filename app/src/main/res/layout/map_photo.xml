@@ -10,36 +10,11 @@
         android:layout_height="wrap_content">
 
                 <!-- Add image -->
-                <TextView
-                    android:id="@+id/newPhotoTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:text="compartir imagen"
-                    android:textColor="@color/darkGreen"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/photoText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:ems="10"
-                    android:inputType="text"
-                    android:hint="Pie de foto"
-                    android:layout_below="@id/newPhotoTitle"
-                    android:backgroundTint="@color/darkGreen"/>
-
                 <LinearLayout
                     android:id="@+id/imageButtonsContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:layout_below="@id/photoText"
                     android:layout_centerHorizontal="true">
 
                     <ImageButton
@@ -60,6 +35,17 @@
 
                 </LinearLayout>
 
+                <EditText
+                    android:id="@+id/photoText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:hint="Pie de foto"
+                    android:layout_below="@id/imageButtonsContainer"
+                    android:backgroundTint="@color/darkGreen"/>
+
                 <!-- Friends to notify -->
                 <TextView
                     android:id="@+id/newEventNotify"
@@ -71,7 +57,7 @@
                     android:layout_marginBottom="20dp"
                     android:text="compartir con"
                     android:textColor="@color/darkGreen"
-                    android:layout_below="@id/imageButtonsContainer"
+                    android:layout_below="@id/photoText"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 

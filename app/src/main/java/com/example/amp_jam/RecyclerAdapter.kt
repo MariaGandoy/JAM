@@ -1,6 +1,8 @@
 package com.example.amp_jam
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.util.Log
@@ -10,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 
@@ -43,6 +46,7 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
         private val postText = view.findViewById(R.id.postText) as TextView
         private val postTime = view.findViewById(R.id.postTime) as TextView
         private val postImage = view.findViewById(R.id.postImage) as ImageView
+        private val postSong = view.findViewById(R.id.postSong) as ImageView
         private val userAvatar = view.findViewById(R.id.userAvatar) as ImageView
         private val seeInMapButton = view.findViewById<ImageButton>(R.id.seeInMap)
 
@@ -97,10 +101,10 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
             postTime.visibility = View.GONE // TODO: change for a mark of when the post was created
 
             // Set post user profile pic (TODO: change for user pic)
-            val drawableName = "sample_user"
-            val resourceId = context.resources.getIdentifier(drawableName, "drawable", context.packageName)
-            userAvatar.setImageResource(resourceId)
+            userAvatar.setImageResource(context.resources.getIdentifier("sample_user", "drawable", context.packageName))
 
+            postImage.visibility = View.VISIBLE
+            /*
             // Set post image (TODO: change for shared pic)
             if (post.photo != null) {
                 postImage.visibility = View.VISIBLE
@@ -108,14 +112,23 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
             } else {
                 postImage.visibility = View.GONE
             }
+
+             */
         }
 
         private fun createSongPost(post:Post, context: Context) {
             // Set song data
-            val text = "<b>${post.user}</b> compartió la canción <a href='${post.song}'>${post.song}</a>"
-            postText.text = Html.fromHtml(text)
-            postText.movementMethod = LinkMovementMethod.getInstance()
+            postText.text = Html.fromHtml("<b>${post.user}</b> ha compartido una canción")
             postTime.visibility = View.GONE // TODO: change for a mark of when the post was created
+
+            // Song link
+            postSong.visibility = View.VISIBLE
+            postSong.setOnClickListener {
+                val songLink = post.song as String // Tu enlace de Spotify aquí
+
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(songLink))
+                context.startActivity(intent)
+            }
 
             // Set post user profile pic (TODO: change for user pic)
             val drawableName = "sample_user"

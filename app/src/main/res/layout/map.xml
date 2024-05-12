@@ -16,8 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:srcCompat="@drawable/sample_map" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/autocompleteUbicationCard"
@@ -95,16 +94,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Fotos"
-                android:checked="true"
-                android:enabled="false"/>
+                android:checked="true"/>
 
             <CheckBox
                 android:id="@+id/checboxSongs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Canciones"
-                android:checked="true"
-                android:enabled="false"/>
+                android:checked="true"/>
 
             <CheckBox
                 android:id="@+id/checboxAmigos"

@@ -62,7 +62,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
     private var mapMarkers: MutableList<Marker> = ArrayList()
 
-    private var visibleMarkers = mutableListOf("FRIEND", "EVENT")
+    private var visibleMarkers = mutableListOf("FRIEND", "EVENT", "PHOTO", "SONG")
 
     private lateinit var autocompleteFragment: AutocompleteSupportFragment
 
@@ -184,29 +184,22 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
             // Handle each checkbox
             if (legendContainer.visibility == View.VISIBLE) {
-                val checkboxEvents = view.findViewById<CheckBox>(R.id.checkboxEvents)
-                val checkboxAmigos = view.findViewById<CheckBox>(R.id.checboxAmigos)
-
-                checkboxEvents.setOnCheckedChangeListener { buttonView, isChecked ->
-                    if (isChecked) {
-                        visibleMarkers.add("EVENT")
-                        updateMarkersVisibility()
-                    } else {
-                        visibleMarkers.remove("EVENT")
-                        updateMarkersVisibility()
-                    }
-                }
-
-                checkboxAmigos.setOnCheckedChangeListener { buttonView, isChecked ->
-                    if (isChecked) {
-                        visibleMarkers.add("FRIEND")
-                        updateMarkersVisibility()
-                    } else {
-                        visibleMarkers.remove("FRIEND")
-                        updateMarkersVisibility()
-                    }
-                }
+                setupMarkerChangeListener("EVENT", view.findViewById(R.id.checkboxEvents))
+                setupMarkerChangeListener("FRIEND", view.findViewById(R.id.checboxAmigos))
+                setupMarkerChangeListener("SONG", view.findViewById(R.id.checboxSongs))
+                setupMarkerChangeListener("PHOTO", view.findViewById(R.id.checkboxPhotos))
             }
+        }
+    }
+
+    private fun setupMarkerChangeListener(markerType: String, checkBox: CheckBox) {
+        checkBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                visibleMarkers.add(markerType)
+            } else {
+                visibleMarkers.remove(markerType)
+            }
+            updateMarkersVisibility()
         }
     }
 
@@ -401,11 +394,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                          "EVENT" -> {
                              icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                          }
-
                          "PHOTO" -> {
                              icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
                          }
-
                          "SONG" -> {
                              icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                          }
@@ -508,6 +499,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             "titulo" to data.title,
             "tipo" to data.type,
             "user" to data.user,
+            "song" to data.song,
             "lugar" to center
         )
 

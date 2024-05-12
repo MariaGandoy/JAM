@@ -10,28 +10,15 @@
         android:layout_height="wrap_content">
 
         <!-- New event form -->
-        <TextView
-            android:id="@+id/newEventTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            android:text="compartir evento"
-            android:textColor="@color/darkGreen"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
         <EditText
             android:id="@+id/eventName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
             android:ems="10"
             android:inputType="text"
             android:hint="Nombre del evento"
-            android:layout_below="@id/newEventTitle"
             android:backgroundTint="@color/darkGreen"/>
 
         <EditText

@@ -8,6 +8,6 @@ data class Post(
     var type: Any?,
     var user: Any?,
     var photo: String?,
-    var song: String?,
+    var song: Any?,
     var location: LatLng?) {}
 

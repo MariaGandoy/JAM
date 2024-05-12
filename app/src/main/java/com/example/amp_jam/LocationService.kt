@@ -167,7 +167,7 @@ class LocationService : Service() {
                     val latitude = lugarPost["latitude"] as Double
                     val longitude = lugarPost["longitude"] as Double
 
-                    posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, null, LatLng(latitude, longitude)))
+                    posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, postData["song"], LatLng(latitude, longitude)))
                 }
             } catch (exception: Exception) {
                 // Handle any errors that may occur

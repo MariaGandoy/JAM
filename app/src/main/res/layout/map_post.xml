@@ -9,15 +9,27 @@
     tools:context=".MainActivity"
     android:background="@drawable/gradient_background">
 
+    <!-- Top Bar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/darkGreen"
+        android:elevation="4dp"
+        app:title="Crear GeoPost"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="@drawable/close" />
+
     <!-- TabLayout -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/darkGreen"
-        app:tabTextColor="@android:color/white"
-        app:tabSelectedTextColor="@android:color/white"
-        app:tabIndicatorColor="@android:color/white"
+        android:background="@color/white"
+        app:tabTextColor="@color/darkGreen"
+        app:tabSelectedTextColor="@color/darkGreen"
+        app:tabIndicatorColor="@color/darkGreen"
+        android:layout_below="@id/toolbar"
         app:tabIndicatorHeight="2dp"/>
 
     <!-- ViewPager -->
@@ -27,5 +39,16 @@
         android:background="@color/white"
         android:layout_height="500dp"
         android:layout_below="@id/tabLayout"/>
+
+    <!-- FIXME open keyboard for editText -->
+    <EditText
+        android:id="@+id/editTextFix"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Fix"
+        android:importantForAutofill="no"
+        tools:targetApi="o"
+        android:inputType="text"
+        android:visibility="gone"/>
 
 </RelativeLayout>

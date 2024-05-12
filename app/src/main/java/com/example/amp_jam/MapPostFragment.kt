@@ -5,11 +5,14 @@ import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 
@@ -34,6 +37,7 @@ class MapPostFragment: DialogFragment() {
             val inflater = requireActivity().layoutInflater
             val view = inflater.inflate(R.layout.map_post, null)
 
+
             val viewPager = view.findViewById<ViewPager>(R.id.viewPager)
             val adapter = MyPagerAdapter(childFragmentManager) // Pass the dialog to the adapter
             viewPager.adapter = adapter
@@ -45,15 +49,23 @@ class MapPostFragment: DialogFragment() {
             auth = FirebaseAuth.getInstance()
             currentUser = auth.currentUser
 
+            // Set toolbar
+            val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+            toolbar.setNavigationOnClickListener  {
+                dismiss()
+            }
+
             builder.setView(view)
                 .setPositiveButton("AÑADIR") { _, _ ->
                     val currentPage = viewPager.currentItem
-                    val currentItemView = adapter.getItem(currentPage).view
+                    val currentFragment = adapter.instantiateItem(viewPager, currentPage) as? Fragment
+                    currentFragment?.view?.let { currentPageView ->
 
-                    when (currentPage) {
-                        0 -> setEventData(currentItemView as View)
-                        1 -> setPhotoData(currentItemView as View)
-                        2 -> setSongData(currentItemView as View)
+                        when (currentPage) {
+                            0 -> setEventData(currentPageView)
+                            1 -> setPhotoData(currentPageView)
+                            2 -> setSongData(currentPageView)
+                        }
                     }
                 }
                 .setNegativeButton("CANCELAR") { _, _ ->
@@ -63,6 +75,7 @@ class MapPostFragment: DialogFragment() {
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
+
 
     private fun setEventData(view: View) {
         Log.d("JAM_NAVIGATION", "[MapPost] Create EVENT")
@@ -76,7 +89,7 @@ class MapPostFragment: DialogFragment() {
             return
         }
 
-        val eventType = "EVENT" // TODO: add SONG and PHOTO
+        val eventType = "EVENT"
         val userEmail = currentUser?.email ?: ""
 
         submitPost(Post(eventName, eventDate, eventType, userEmail, null, null, null))
@@ -85,37 +98,22 @@ class MapPostFragment: DialogFragment() {
     private fun setPhotoData(view: View) {
         Log.d("JAM_NAVIGATION", "[MapPost] Create PHOTO")
 
-        val eventName = view.findViewById<EditText>(R.id.eventName).text.toString()
-        val eventDate = view.findViewById<EditText>(R.id.eventDate).text.toString()
+        // TODO: pillar datos foto
 
-        // Validación básica de nombre y evento
-        if (eventName.isBlank() || eventDate.isBlank()) {
-            Toast.makeText(requireContext(), "Los campos de nombre y fecha no pueden estar vacíos.", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        val eventType = "PHOTO" // TODO: add SONG and PHOTO
+        val eventType = "PHOTO"
         val userEmail = currentUser?.email ?: ""
 
-        submitPost(Post(eventName, eventDate, eventType, userEmail, null, null, null))
+        submitPost(Post(null, null, eventType, userEmail, null, null, null))
     }
 
     private fun setSongData(view: View) {
         Log.d("JAM_NAVIGATION", "[MapPost] Create SONG")
 
-        val eventName = view.findViewById<EditText>(R.id.eventName).text.toString()
-        val eventDate = view.findViewById<EditText>(R.id.eventDate).text.toString()
-
-        // Validación básica de nombre y evento
-        if (eventName.isBlank() || eventDate.isBlank()) {
-            Toast.makeText(requireContext(), "Los campos de nombre y fecha no pueden estar vacíos.", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        val eventType = "SONG" // TODO: add SONG and PHOTO
+        val postSong = view.findViewById<EditText>(R.id.songName).text.toString()
+        val eventType = "SONG"
         val userEmail = currentUser?.email ?: ""
 
-        submitPost(Post(eventName, eventDate, eventType, userEmail, null, null, null))
+        submitPost(Post(null, null, eventType, userEmail, null, postSong, null))
     }
 
     private fun submitPost(data: Post) {
