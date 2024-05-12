@@ -17,9 +17,9 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 
 class LocationService : Service() {
@@ -187,15 +187,30 @@ class LocationService : Service() {
                 .get()
                 .await()
 
-            userUbication = hashMapOf(
-                "id" to id,
-                "lugar" to userResult["lugar"],
-                "user" to userResult["user"]
-            )
+            // Verificar si la foto del usuario está disponible
+            val photoUrl = userResult["photo"] as? String
+            if (!photoUrl.isNullOrEmpty()) {
+                // Si la URL de la foto no está vacía ni es nula, agregarla al mapa
+                userUbication = hashMapOf(
+                    "id" to id,
+                    "lugar" to userResult["lugar"],
+                    "user" to userResult["user"],
+                    "photo" to photoUrl // Agregar la URL de la foto
+                )
+            } else {
+                // Si la URL de la foto está vacía o es nula, agregar un valor predeterminado al mapa
+                userUbication = hashMapOf(
+                    "id" to id,
+                    "lugar" to userResult["lugar"],
+                    "user" to userResult["user"],
+                    "photo" to null // O cualquier otro valor predeterminado que desees
+                )
+            }
         } catch (exception: Exception) {
             // Handle any errors that may occur
         }
 
         return userUbication
     }
+
 }

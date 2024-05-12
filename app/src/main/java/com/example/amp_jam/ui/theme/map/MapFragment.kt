@@ -5,6 +5,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -16,11 +18,12 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.ImageButton
-import android.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.example.amp_jam.GoogleSignInActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.amp_jam.LocationBroadcastReceiver
 import com.example.amp_jam.LocationService
 import com.example.amp_jam.MapPostFragment
@@ -43,11 +46,10 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+
 
 
 /**
@@ -377,6 +379,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         val posts: MutableList<Post>? = mapData["posts"] as? MutableList<Post>
         val friends: ArrayList<HashMap<String, Any?>>? = mapData["friends"] as? ArrayList<HashMap<String, Any?>>
 
+        Log.d("listaklk", friends.toString())
         if (posts !== null && friends !== null) updateMapView(posts, friends)
     }
 
@@ -385,52 +388,76 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         mapMarkers.clear()
 
         // Update posts from firebase
-         posts.forEach { post ->
-             val latitude = post.location?.latitude as Double
-             val longitude = post.location?.longitude as Double
+        posts.forEach { post ->
+            val latitude = post.location?.latitude as Double
+            val longitude = post.location?.longitude as Double
 
-             val postMarkerOptions = MarkerOptions()
-                 .position(LatLng(latitude, longitude))
-                 .title(post.title.toString())
-                 .snippet("Fecha: " + post.date)
-                 .apply {
-                     when (post.type) {
-                         "EVENT" -> {
-                             icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                         }
-                         "PHOTO" -> {
-                             icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
-                         }
-                         "SONG" -> {
-                             icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                         }
-                     }
-                 }
-
-             val marker = mGoogleMap?.addMarker(postMarkerOptions) as Marker
-
-             marker.setTag(post.type)
-             mapMarkers.add(marker)
-         }
-
-        // Update friends from firebase
-        friends.forEach { friend ->
-            val lugar = friend["lugar"] as HashMap<*,*>
-            val latitude = lugar["latitude"] as Double
-            val longitude = lugar["longitude"] as Double
-
-            val userMarkerOptions = MarkerOptions()
+            val postMarkerOptions = MarkerOptions()
                 .position(LatLng(latitude, longitude))
-                .title(friend["user"] as String)
-                .icon(BitmapDescriptorFactory.defaultMarker()) // TODO: change user marker
+                .title(post.title.toString())
+                .snippet("Fecha: " + post.date)
+                .apply {
+                    when (post.type) {
+                        "EVENT" -> {
+                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                        }
+                        "PHOTO" -> {
+                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                        }
+                        "SONG" -> {
+                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                        }
+                    }
+                }
 
-            val marker = mGoogleMap?.addMarker(userMarkerOptions) as Marker
-
-            marker.setTag("FRIEND")
+            val marker = mGoogleMap?.addMarker(postMarkerOptions) as Marker
+            marker.setTag(post.type)
             mapMarkers.add(marker)
         }
 
+        // Update friends from firebase
+        friends.forEach { friend ->
+            val lugar = friend["lugar"] as HashMap<*, *>
+            val latitude = lugar["latitude"] as Double
+            val longitude = lugar["longitude"] as Double
+            val photoUrl = friend["photo"] as String? // Usar safe cast para manejar nulos
+
+            if (!photoUrl.isNullOrEmpty()) {
+                Glide.with(requireContext())
+                    .asBitmap()
+                    .load(photoUrl)
+                    .override(100, 100) // Redimensionar la imagen al tamaño deseado
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            val bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resource)
+
+                            val userMarkerOptions = MarkerOptions()
+                                .position(LatLng(latitude, longitude))
+                                .title(friend["user"] as String)
+                                .icon(bitmapDescriptor)
+
+                            val marker = mGoogleMap?.addMarker(userMarkerOptions) as Marker
+                            marker.setTag("FRIEND")
+                            mapMarkers.add(marker)
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                        }
+                    })
+            } else {
+
+                val userMarkerOptions = MarkerOptions()
+                    .position(LatLng(latitude, longitude))
+                    .title(friend["user"] as String)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)) // Icono predeterminado
+                val marker = mGoogleMap?.addMarker(userMarkerOptions) as Marker
+                marker.setTag("FRIEND")
+                mapMarkers.add(marker)
+            }
+        }
+
         updateMarkersVisibility()
+
     }
 
     private fun registerLocationReceiver() {
