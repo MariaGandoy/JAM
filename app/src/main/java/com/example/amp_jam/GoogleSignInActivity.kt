@@ -120,9 +120,9 @@ class GoogleSignInActivity : Activity() {
                         // User does not exist, add user information to the database
                         val userMap = hashMapOf(
                             "name" to user.displayName,
-                            "email" to user.email
+                            "email" to user.email,
+                            "photo" to user.photoUrl
                         )
-
                         userExists.set(userMap)
                             .addOnSuccessListener {
                                 Log.d(TAG, "User added to Firestore with ID: ${user.uid}")

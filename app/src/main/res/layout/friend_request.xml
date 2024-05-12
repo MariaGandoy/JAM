@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,29 +9,26 @@
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ivory_back"
-        android:text="Solicitudes de amistad recibidas:"
+        android:layout_marginTop="28dp"
+        android:text="Solicitudes recibidas"
         android:textAlignment="center"
-        android:textColor="@color/darkGreen"
-        android:textSize="20sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/black"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        app:layout_constraintHorizontal_bias="0.084"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:id="@+id/scrollView4"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/layout_frame"
         app:layout_constraintTop_toBottomOf="@id/textView8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@id/textView9">
 
         <LinearLayout
@@ -46,30 +42,26 @@
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ivory_back"
-        android:text="Solicitudes de amistad enviadas:"
-        android:textAlignment="center"
-        android:textColor="@color/darkGreen"
-        android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@id/scrollView4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@id/scrollView5"/>
+        android:layout_marginTop="24dp"
+        android:text="Solicitudes enviadas"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@id/scrollView5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scrollView4" />
 
     <ScrollView
         android:id="@+id/scrollView5"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/layout_frame"
         app:layout_constraintTop_toBottomOf="@id/textView9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout

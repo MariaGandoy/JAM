@@ -70,7 +70,7 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
                 // Handle button click action here
                 post.location?.let { location ->
                     SharedPreferencesHelper.setLastCords(context, location);
-                    SharedPreferencesHelper.setMapZoom(context,15f);
+                    SharedPreferencesHelper.setMapZoom(context,17f);
                     navController.navigate(R.id.navigation_map);
                 }
             }

@@ -7,22 +7,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="MissingDefaultResource"
-    android:background="@drawable/gradient_background">
+    android:background="@drawable/gradient_background"
+    android:fitsSystemWindows="true">
 
     <!-- Top menu -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:elevation="4dp"
+        app:title="Añadir amigos"
+        app:titleTextColor="@color/darkGreen"
+        app:navigationIcon="@drawable/arrow_back" />
 
     <!-- Activity content -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/autocompleteUbicationCard"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:backgroundTint="@color/ivory"
             app:cardCornerRadius="30dp"

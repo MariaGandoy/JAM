@@ -3,9 +3,11 @@ package com.example.amp_jam
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,6 +23,8 @@ class AddFriendsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.add_friends)
 
+        setUpBackArrow()
+
         firestore = FirebaseFirestore.getInstance()
         currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
 
@@ -30,6 +34,13 @@ class AddFriendsActivity : ComponentActivity() {
             }
         }
 
+    }
+
+    private fun setUpBackArrow() {
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setNavigationOnClickListener  {
+            finish()
+        }
     }
 
     private fun loadFriends(onComplete: () -> Unit) {
