@@ -1,6 +1,8 @@
 package com.example.amp_jam
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
@@ -43,6 +45,7 @@ import java.util.Arrays
 class CamaraActivity: ComponentActivity() {
 
     private var takePictureButton: Button? = null
+    private var filterButton: Button? = null
     private var textureView: TextureView? = null
     private var cameraId: String? = null
     protected var cameraDevice: CameraDevice? = null
@@ -56,15 +59,25 @@ class CamaraActivity: ComponentActivity() {
     private var mBackgroundHandler: Handler? = null
     private var mBackgroundThread: HandlerThread? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.camara_activity)
         textureView = findViewById<View>(R.id.texture) as TextureView
         assert(textureView != null)
         textureView!!.surfaceTextureListener = textureListener
+
         takePictureButton = findViewById<View>(R.id.btn_takepicture) as Button
         assert(takePictureButton != null)
         takePictureButton!!.setOnClickListener { takePicture() }
+
+        filterButton = findViewById<View>(R.id.btn_sepia) as Button
+        assert(filterButton != null)
+        filterButton!!.setOnClickListener {
+            captureRequestBuilder?.set (CaptureRequest.CONTROL_EFFECT_MODE, CaptureRequest.CONTROL_EFFECT_MODE_SEPIA);
+            Toast.makeText(this@CamaraActivity, "Filtro sepia", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     var textureListener: SurfaceTextureListener = object : SurfaceTextureListener {

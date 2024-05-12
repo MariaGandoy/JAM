@@ -27,4 +27,21 @@
         android:text="Foto"
         android:textStyle="bold"
         android:textColor="@color/ivory"/>
+
+    <Button
+        android:id="@+id/btn_sepia"
+        android:layout_width="51dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="102dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginBottom="16dp"
+        android:layout_toEndOf="@+id/btn_takepicture"
+        android:background="@drawable/custom_round_button_background"
+        android:text="S"
+        android:textColor="@color/ivory"
+        android:textStyle="bold" />
+
 </RelativeLayout>
