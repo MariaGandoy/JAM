@@ -1,8 +1,6 @@
 package com.example.amp_jam
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
@@ -42,7 +40,7 @@ import java.io.OutputStream
 import java.util.Arrays
 
 
-class CamaraActivity: ComponentActivity() {
+class CamaraActivity: ComponentActivity(), PhotoEventFragment.PhotoEventDialogListener {
 
     private var takePictureButton: Button? = null
     private var filterButton: Button? = null
@@ -69,7 +67,14 @@ class CamaraActivity: ComponentActivity() {
 
         takePictureButton = findViewById<View>(R.id.btn_takepicture) as Button
         assert(takePictureButton != null)
-        takePictureButton!!.setOnClickListener { takePicture() }
+        takePictureButton!!.setOnClickListener {
+
+            val photo = takePicture()
+            //Pasar foto y eso
+            val postDialog = PhotoEventFragment()
+            postDialog.listener = this
+            postDialog.showDialog();
+        }
 
         filterButton = findViewById<View>(R.id.btn_sepia) as Button
         assert(filterButton != null)
@@ -142,10 +147,11 @@ class CamaraActivity: ComponentActivity() {
         }
     }
 
-    protected fun takePicture() {
+    protected fun takePicture(): File? {
+
         if (null == cameraDevice) {
             Log.e(TAG, "cameraDevice is null")
-            return
+            return null
         }
         val manager = getSystemService(CAMERA_SERVICE) as CameraManager
         try {
@@ -242,6 +248,8 @@ class CamaraActivity: ComponentActivity() {
         } catch (e: CameraAccessException) {
             e.printStackTrace()
         }
+
+        return file
     }
 
     protected fun createCameraPreview() {
@@ -387,5 +395,10 @@ class CamaraActivity: ComponentActivity() {
         }
 
         private const val REQUEST_CAMERA_PERMISSION = 200
+    }
+
+
+    override fun onEventSubmitted(data: Post) {
+        TODO("Not yet implemented")
     }
 }
