@@ -50,9 +50,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_toEndOf="@+id/shareLocation"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="50dp"
+                android:layout_marginEnd="40dp"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
                 android:checked="true"
@@ -84,9 +83,8 @@
                 android:layout_below="@+id/shareLocation"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="25dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="40dp"
                 android:layout_marginStart="100dp"
-                android:layout_toEndOf="@+id/closeSession"
                 android:src="@drawable/logout" />
 
             <com.google.android.material.divider.MaterialDivider
@@ -113,9 +111,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_toEndOf="@+id/darkMode"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="50dp"
+                android:layout_marginEnd="40dp"
                 android:layout_below="@+id/closeSession"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
@@ -147,9 +144,8 @@
                 android:layout_below="@+id/darkMode"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="25dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="40dp"
                 android:layout_marginStart="80dp"
-                android:layout_toEndOf="@+id/darkMode"
                 android:src="@drawable/delete" />
 
 

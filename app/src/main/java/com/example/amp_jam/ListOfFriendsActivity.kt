@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,10 +23,20 @@ class ListOfFriendsActivity : ComponentActivity() {
         firestore = FirebaseFirestore.getInstance()
         currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
 
+        setUpBackArrow()
+
         if (currentUserUid != null) {
             loadFriendsList()
         } else {
             Log.e("ListOfFriendsActivity", "User ID is null.")
+        }
+    }
+
+    private fun setUpBackArrow() {
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.title = "Amigos"
+        toolbar.setNavigationOnClickListener  {
+            finish()
         }
     }
 
