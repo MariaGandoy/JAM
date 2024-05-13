@@ -1,6 +1,7 @@
 package com.example.amp_jam
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
@@ -40,7 +41,7 @@ import java.io.OutputStream
 import java.util.Arrays
 
 
-class CamaraActivity: ComponentActivity(), PhotoEventFragment.PhotoEventDialogListener {
+class CamaraActivity: ComponentActivity(){
 
     private var takePictureButton: Button? = null
     private var filterButton: Button? = null
@@ -69,11 +70,11 @@ class CamaraActivity: ComponentActivity(), PhotoEventFragment.PhotoEventDialogLi
         assert(takePictureButton != null)
         takePictureButton!!.setOnClickListener {
 
-            val photo = takePicture()
+            //val photo = takePicture()
             //Pasar foto y eso
-            val postDialog = PhotoEventFragment()
-            postDialog.listener = this
-            postDialog.showDialog();
+            val intent = Intent(this, PhotoDialog::class.java)
+            startActivity(intent)
+
         }
 
         filterButton = findViewById<View>(R.id.btn_sepia) as Button
@@ -395,10 +396,5 @@ class CamaraActivity: ComponentActivity(), PhotoEventFragment.PhotoEventDialogLi
         }
 
         private const val REQUEST_CAMERA_PERMISSION = 200
-    }
-
-
-    override fun onEventSubmitted(data: Post) {
-        TODO("Not yet implemented")
     }
 }
