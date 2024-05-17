@@ -245,18 +245,20 @@ class CamaraActivity: ComponentActivity(){
                 },
                 mBackgroundHandler
             )
+            Thread.sleep(1_000)
+            //Lanzar diálogo
+
+            val imageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, Uri.fromFile(file))
+
+            val intent = Intent(this, PhotoDialog::class.java)
+            intent.putExtra("photo", imageBitmap!!)
+
+            startActivity(intent)
+
         } catch (e: CameraAccessException) {
             e.printStackTrace()
         }
-        Thread.sleep(1_000)
-        //Lanzar diálogo
 
-        //val imageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, photo)
-
-        val intent = Intent(this, PhotoDialog::class.java)
-        //intent.putExtra("photo", photo!!)
-
-        startActivity(intent)
     }
 
     protected fun createCameraPreview() {

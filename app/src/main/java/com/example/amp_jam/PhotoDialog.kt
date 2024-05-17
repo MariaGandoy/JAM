@@ -1,6 +1,7 @@
 package com.example.amp_jam;
 
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,8 +15,22 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.annotation.RequiresApi
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class PhotoDialog :  ComponentActivity() {
+
+        interface MapPostDialogListener {
+                fun onPostSubmitted(data: Post)
+        }
+
+        var listener: MapPostDialogListener? = null
+        private lateinit var auth: FirebaseAuth
+        private var currentUser: FirebaseUser? = null
+
         override fun onCreate(savedInstanceState: Bundle?) {
                 // TODO Auto-generated method stub
                 super.onCreate(savedInstanceState)
@@ -26,6 +41,9 @@ class PhotoDialog :  ComponentActivity() {
                 dialog.setContentView(R.layout.photo_event)
                 dialog.setCancelable(true)
                 dialog.setCanceledOnTouchOutside(true)
+
+                auth = FirebaseAuth.getInstance()
+                currentUser = auth.currentUser
 
                 setUpRadioGroupListener(dialog)
                 setUpCreatePost(dialog)
@@ -45,15 +63,26 @@ class PhotoDialog :  ComponentActivity() {
                 }
         }
 
+        @RequiresApi(Build.VERSION_CODES.O)
         private fun setUpCreatePost(dialog: Dialog) {
                 val confirm = dialog.findViewById<Button>(R.id.confirm)
                 confirm.setOnClickListener {
-                        //var bundle :Bundle ?=intent.extras
-                        //var photo = bundle!!.getString("photo")
+                        var bundle :Bundle ?=intent.extras
+                        var photo = bundle!!.getString("photo")
 
-                        //Toast.makeText(this, "Leída foto", Toast.LENGTH_SHORT).show()
+                        val eventName = dialog.findViewById<EditText>(R.id.eventName).text.toString()
 
-                        finish()
+                        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
+                        val eventDate = LocalDateTime.now().format(formatter)
+
+                        // Validación básica de nombre
+                        if (eventName.isBlank()) {
+                                Toast.makeText(this, "El campos de nombre no puede estar vacío.", Toast.LENGTH_LONG).show()                        }
+
+                        val eventType = "EVENT"
+                        val userEmail = currentUser?.email ?: ""
+
+                        submitPost(Post(eventName, eventDate, eventType, userEmail, photo, null, null))
                 }
         }
 
@@ -76,6 +105,11 @@ class PhotoDialog :  ComponentActivity() {
 
                         override fun afterTextChanged(s: Editable?) {}
                 })
+        }
+
+        private fun submitPost(data: Post) {
+                listener?.onPostSubmitted(data)
+                finish()
         }
 
 }
