@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 
 class PhotoDialog :  ComponentActivity() {
@@ -46,12 +47,21 @@ class PhotoDialog :  ComponentActivity() {
 
         private fun setUpCreatePost(dialog: Dialog) {
                 val confirm = dialog.findViewById<Button>(R.id.confirm)
-                //Confirmar post
+                confirm.setOnClickListener {
+                        //var bundle :Bundle ?=intent.extras
+                        //var photo = bundle!!.getString("photo")
+
+                        //Toast.makeText(this, "Leída foto", Toast.LENGTH_SHORT).show()
+
+                        finish()
+                }
         }
 
         private fun setUpExitButton(dialog: Dialog) {
-                val confirm = dialog.findViewById<Button>(R.id.exitButton)
-                //Confirmar post
+                val confirm = dialog.findViewById<ImageButton>(R.id.exitButton)
+                confirm.setOnClickListener {
+                        finish()
+                }
         }
 
         private fun setUpNameEventListener(dialog: Dialog) {

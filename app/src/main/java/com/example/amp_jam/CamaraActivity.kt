@@ -17,10 +17,12 @@ import android.hardware.camera2.TotalCaptureResult
 import android.media.Image
 import android.media.ImageReader
 import android.media.ImageReader.OnImageAvailableListener
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
+import android.provider.MediaStore
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
@@ -33,6 +35,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
+import androidx.core.net.toUri
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -69,12 +72,7 @@ class CamaraActivity: ComponentActivity(){
         takePictureButton = findViewById<View>(R.id.btn_takepicture) as Button
         assert(takePictureButton != null)
         takePictureButton!!.setOnClickListener {
-
-            //val photo = takePicture()
-            //Pasar foto y eso
-            val intent = Intent(this, PhotoDialog::class.java)
-            startActivity(intent)
-
+            takePicture()
         }
 
         filterButton = findViewById<View>(R.id.btn_sepia) as Button
@@ -148,11 +146,10 @@ class CamaraActivity: ComponentActivity(){
         }
     }
 
-    protected fun takePicture(): File? {
+    protected fun takePicture(){
 
         if (null == cameraDevice) {
             Log.e(TAG, "cameraDevice is null")
-            return null
         }
         val manager = getSystemService(CAMERA_SERVICE) as CameraManager
         try {
@@ -224,6 +221,8 @@ class CamaraActivity: ComponentActivity(){
                 ) {
                     super.onCaptureCompleted(session, request, result)
                     Toast.makeText(this@CamaraActivity, "Saved:$file", Toast.LENGTH_SHORT).show()
+                    Log.d("JAM_NAVIGATION", "Saved: $file")
+
                     createCameraPreview()
                 }
             }
@@ -249,8 +248,15 @@ class CamaraActivity: ComponentActivity(){
         } catch (e: CameraAccessException) {
             e.printStackTrace()
         }
+        Thread.sleep(1_000)
+        //Lanzar diálogo
 
-        return file
+        //val imageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, photo)
+
+        val intent = Intent(this, PhotoDialog::class.java)
+        //intent.putExtra("photo", photo!!)
+
+        startActivity(intent)
     }
 
     protected fun createCameraPreview() {
