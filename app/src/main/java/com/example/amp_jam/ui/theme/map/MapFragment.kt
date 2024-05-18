@@ -491,9 +491,19 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         view?.let {
             val mapOverlay = it.findViewById<View>(R.id.mapOverlay)
             val instructionText = it.findViewById<TextView>(R.id.instructionsMarker)
+            val instructionDelete = it.findViewById<TextView>(R.id.mockupDelete)
 
             mapOverlay.visibility = View.VISIBLE
             instructionText.visibility = View.VISIBLE
+            instructionDelete.visibility = View.VISIBLE
+
+            instructionDelete.setOnClickListener {
+                mapOverlay.visibility = View.GONE
+                instructionText.visibility = View.GONE
+                instructionDelete.visibility = View.GONE
+
+                mGoogleMap?.setOnMapLongClickListener(null)
+            }
 
             mGoogleMap?.setOnMapLongClickListener { postPosition ->
                 // Create event marker (quitar cuando se lea de firebase y leer tb nuestro datos de base de datos ¿?)
@@ -519,18 +529,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                     }
 
                 mGoogleMap?.addMarker(markerOptions)
-                postPosition.let { nonNullCenter ->
-                    mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(nonNullCenter, 20f))
-                }
 
                 mapOverlay.visibility = View.GONE
                 instructionText.visibility = View.GONE
+                instructionDelete.visibility = View.GONE
 
                 // Persist to firebase
                 persistPost(postData, postPosition)
             }
         }
-
     }
 
     private fun persistPost(data: Post, center: LatLng?) {
@@ -548,7 +555,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             "fecha" to data.date,
             "titulo" to data.title,
             "tipo" to data.type,
-            "user" to data.user,
             "song" to data.song,
             "lugar" to center
         )

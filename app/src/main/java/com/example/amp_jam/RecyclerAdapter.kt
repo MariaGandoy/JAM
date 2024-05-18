@@ -2,19 +2,20 @@ package com.example.amp_jam
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.text.Html
-import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import android.graphics.BitmapFactory
+import android.util.Base64
 
 class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
@@ -48,7 +49,7 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
         private val postImage = view.findViewById(R.id.postImage) as ImageView
         private val postSong = view.findViewById(R.id.postSong) as ImageView
         private val userAvatar = view.findViewById(R.id.userAvatar) as ImageView
-        private val seeInMapButton = view.findViewById<ImageButton>(R.id.seeInMap)
+        private val postOptions = view.findViewById<ImageView>(R.id.postOptions)
 
         fun bind(post:Post, context: Context, navController: NavController){
             when (post.type) {
@@ -66,28 +67,47 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
                 }
             }
 
-            seeInMapButton.setOnClickListener {
-                // Handle button click action here
-                post.location?.let { location ->
-                    SharedPreferencesHelper.setLastCords(context, location);
-                    SharedPreferencesHelper.setMapZoom(context,17f);
-                    navController.navigate(R.id.navigation_map);
+            postOptions.setOnClickListener {
+                showPopupMenu(post, navController, context, it)
+            }
+        }
+
+        private fun showPopupMenu(post:Post, navController: NavController, context: Context, anchor: View) {
+            val popupMenu = PopupMenu(context, anchor)
+            popupMenu.menuInflater.inflate(R.menu.map_post_options, popupMenu.menu)
+
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.seePostMap -> {
+                        // Redirect to post in map
+                        post.location?.let { location ->
+                            SharedPreferencesHelper.setLastCords(context, location);
+                            SharedPreferencesHelper.setMapZoom(context,17f);
+                            navController.navigate(R.id.navigation_map);
+                        }
+
+                        true
+                    }
+                    else -> false
                 }
             }
+            popupMenu.show()
         }
 
         private fun createEventPost(post:Post, context: Context) {
             // Set event data
-            postText.text = Html.fromHtml("<b>${post.user}</b> creo el evento <b>${post.title}</b> programado para el <b>${post.date}</b>")
+            postText.text = Html.fromHtml("<b>${post.user?.name}</b> creo el evento <b>${post.title}</b> programado para el <b>${post.date}</b>")
             postTime.visibility = View.GONE // TODO: change for a mark of when the post was created
 
-            // Set post user profile pic (TODO: change for user pic)
-            val drawableName = "sample_user"
-            val resourceId = context.resources.getIdentifier(drawableName, "drawable", context.packageName)
-            userAvatar.setImageResource(resourceId)
+            // Set post user profile pic
+            Glide.with(itemView)
+                .load(post.user?.photo)
+                .placeholder(R.drawable.sample_user)
+                .into(userAvatar)
 
             // Set post image (TODO: change for shared pic)
             if (post.photo != null) {
+                val resourceId = context.resources.getIdentifier("sample_photo", "drawable", context.packageName)
                 postImage.visibility = View.VISIBLE
                 postImage.setImageResource(resourceId)
             } else {
@@ -97,13 +117,17 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
         private fun createPhotoPost(post:Post, context: Context) {
             // Set photo data
-            postText.text = Html.fromHtml("<b>${post.user}</b> compartió una foto")
+            postText.text = Html.fromHtml("<b>${post.user?.name}</b> compartió una foto")
             postTime.visibility = View.GONE // TODO: change for a mark of when the post was created
 
-            // Set post user profile pic (TODO: change for user pic)
-            userAvatar.setImageResource(context.resources.getIdentifier("sample_user", "drawable", context.packageName))
+            // Set post user profile pic
+            Glide.with(itemView)
+                .load(post.user?.photo)
+                .placeholder(R.drawable.sample_user)
+                .into(userAvatar)
 
             postImage.visibility = View.VISIBLE
+
             /*
             // Set post image (TODO: change for shared pic)
             if (post.photo != null) {
@@ -112,13 +136,12 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
             } else {
                 postImage.visibility = View.GONE
             }
-
              */
         }
 
         private fun createSongPost(post:Post, context: Context) {
             // Set song data
-            postText.text = Html.fromHtml("<b>${post.user}</b> ha compartido una canción")
+            postText.text = Html.fromHtml("<b>${post.user?.name}</b> compartió una canción")
             postTime.visibility = View.GONE // TODO: change for a mark of when the post was created
 
             // Song link
@@ -130,23 +153,37 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
                 context.startActivity(intent)
             }
 
-            // Set post user profile pic (TODO: change for user pic)
-            val drawableName = "sample_user"
-            val resourceId = context.resources.getIdentifier(drawableName, "drawable", context.packageName)
-            userAvatar.setImageResource(resourceId)
+            // Set post user profile pic
+            Glide.with(itemView)
+                .load(post.user?.photo)
+                .placeholder(R.drawable.sample_user)
+                .into(userAvatar)
 
             postImage.visibility = View.GONE
         }
 
         private fun createAlertPost(post:Post, context: Context) {
             // Set song data
-            postText.text = Html.fromHtml("<b>${post.user}</b> creó una <b>alerta</b>")
+            postText.text = Html.fromHtml("<b>${post.user?.name}</b> creó una <b>alerta</b>")
             postTime.visibility = View.GONE // TODO: change for a mark of when the post was created
 
-            val resourceId = context.resources.getIdentifier("warning", "drawable", context.packageName)
-            userAvatar.setImageResource(resourceId)
+            // Set post user profile pic
+            Glide.with(itemView)
+                .load(post.user?.photo)
+                .placeholder(R.drawable.sample_user)
+                .into(userAvatar)
 
             postImage.visibility = View.GONE
+        }
+
+        private fun stringToBitmap(encodedString: String): Bitmap? {
+            return try {
+                val decodedString = Base64.decode(encodedString, Base64.DEFAULT)
+                BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+            } catch (e: IllegalArgumentException) {
+                e.printStackTrace()
+                null
+            }
         }
     }
 

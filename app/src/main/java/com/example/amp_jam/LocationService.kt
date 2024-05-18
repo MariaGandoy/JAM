@@ -114,6 +114,7 @@ class LocationService : Service() {
         val friends: ArrayList<HashMap<String, Any?>>
     )
 
+    /* Get data from coroutine */
     private suspend fun getFriendsData(): FriendsPostsData {
         val database = FirebaseFirestore.getInstance()
 
@@ -167,7 +168,7 @@ class LocationService : Service() {
                     val latitude = lugarPost["latitude"] as Double
                     val longitude = lugarPost["longitude"] as Double
 
-                    posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, postData["song"], LatLng(latitude, longitude)))
+                    posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], null, null, postData["song"], LatLng(latitude, longitude)))
                 }
             } catch (exception: Exception) {
                 // Handle any errors that may occur
@@ -212,5 +213,4 @@ class LocationService : Service() {
 
         return userUbication
     }
-
 }

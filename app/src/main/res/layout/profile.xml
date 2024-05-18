@@ -9,21 +9,28 @@
     tools:ignore="MissingDefaultResource"
     android:background="@drawable/gradient_background">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Top Bar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:elevation="4dp">
 
         <ImageButton
             android:id="@+id/configurations"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@drawable/custom_round_button_background"
-            android:gravity="center"
             android:src="@drawable/settings"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginEnd="30dp"
-            android:layout_marginTop="20dp"/>
+            android:layout_gravity="end"
+            android:background="@android:color/transparent"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -36,7 +43,7 @@
             android:id="@+id/imageView3"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="20dp"
             android:src="@drawable/sample_user"
             app:shapeAppearanceOverlay="@style/circleImageView"
             app:strokeColor="@android:color/transparent"

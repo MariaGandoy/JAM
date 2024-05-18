@@ -2,11 +2,15 @@ package com.example.amp_jam
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.ImageButton
 import androidx.fragment.app.DialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -15,6 +19,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import java.io.ByteArrayOutputStream
 
 
 class MapPostFragment: DialogFragment() {
@@ -90,9 +95,8 @@ class MapPostFragment: DialogFragment() {
         }
 
         val eventType = "EVENT"
-        val userEmail = currentUser?.email ?: ""
 
-        submitPost(Post(eventName, eventDate, eventType, userEmail, null, null, null))
+        submitPost(Post(eventName, eventDate, eventType, null, null, null, null))
     }
 
     private fun setPhotoData(view: View) {
@@ -101,9 +105,8 @@ class MapPostFragment: DialogFragment() {
         // TODO: pillar datos foto
 
         val eventType = "PHOTO"
-        val userEmail = currentUser?.email ?: ""
 
-        submitPost(Post(null, null, eventType, userEmail, null, null, null))
+        submitPost(Post(null, null, eventType, null, null, null, null))
     }
 
     private fun setSongData(view: View) {
@@ -111,9 +114,8 @@ class MapPostFragment: DialogFragment() {
 
         val postSong = view.findViewById<EditText>(R.id.songName).text.toString()
         val eventType = "SONG"
-        val userEmail = currentUser?.email ?: ""
 
-        submitPost(Post(null, null, eventType, userEmail, null, postSong, null))
+        submitPost(Post( null, null, eventType, null, null, postSong, null))
     }
 
     private fun submitPost(data: Post) {

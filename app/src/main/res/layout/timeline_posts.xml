@@ -14,6 +14,14 @@
         android:layout_margin="10dp"
         android:padding="5dp">
 
+        <ImageView
+            android:id="@+id/postOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/options_menu" />
+
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/userAvatar"
             android:layout_width="50dp"
@@ -29,11 +37,11 @@
             android:id="@+id/postText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/darkGreen"
+            android:textColor="@color/black"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/userAvatar"
             android:text="Post text"
-            android:layout_toStartOf="@+id/seeInMap"
+            android:layout_toStartOf="@+id/postOptions"
             android:textSize="16sp" />
 
         <TextView
@@ -47,14 +55,15 @@
 
         <ImageView
             android:id="@+id/postImage"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="150dp"
             android:layout_below="@id/postTime"
-            android:padding="5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="5dp"
             android:layout_toEndOf="@id/userAvatar"
-            android:layout_toStartOf="@+id/seeInMap"
-            app:layout_constraintEnd_toStartOf="parent"
-            android:src="@drawable/sample_photo" />
+            android:padding="5dp"
+            android:src="@drawable/sample_photo"
+            app:layout_constraintEnd_toStartOf="parent" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/postSong"
@@ -72,15 +81,6 @@
             android:focusable="true"
             android:clickable="true"
             android:visibility="gone"/>
-
-        <ImageButton
-            android:id="@+id/seeInMap"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/custom_round_button_background"
-            android:src="@drawable/find_map"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"/>
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

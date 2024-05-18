@@ -1,22 +1,29 @@
 package com.example.amp_jam.ui.theme.timeline
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.amp_jam.Post
 import com.example.amp_jam.R
 import com.example.amp_jam.RecyclerAdapter
+import com.example.amp_jam.SettingsActivity
+import com.example.amp_jam.User
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 /**
  * A simple [Fragment] subclass.
@@ -39,9 +46,18 @@ class TimelineFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.timeline, container, false)
 
+        setUpSettings(view)
         setUpRecyclerView(view)
-        Log.d("Debugeandoklk", "llego Timeline")
+
         return view
+    }
+
+    private fun setUpSettings(view: View) {
+        val settingsButton = view.findViewById<ImageButton>(R.id.configurations)
+        settingsButton.setOnClickListener {
+            val intent = Intent(activity, SettingsActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun setUpRecyclerView(view: View) {
@@ -52,96 +68,121 @@ class TimelineFragment : Fragment() {
         progressBar = view.findViewById<ProgressBar>(androidx.appcompat.R.id.progress_circular)
         customMessage = view.findViewById<TextView>(R.id.customMessage)
         progressBar.visibility = View.VISIBLE
-        customMessage.visibility = View.GONE
-
-        // Fetch posts asynchronously and set up the adapter when posts are available
-        getPosts { posts ->
-            mAdapter.RecyclerAdapter(posts, requireContext(), findNavController())
-            mRecyclerView.adapter = mAdapter
-            progressBar.visibility = View.GONE
-
-            // Check if posts are available
-            if (posts.isEmpty()) {
-                customMessage.visibility = View.VISIBLE
-                customMessage.text = "No hay ningún post"
-            }
-        }
-    }
-
-    private fun getPosts(callback: (MutableList<Post>) -> Unit) {
-        var posts:MutableList<Post> = ArrayList()
-        val database = FirebaseFirestore.getInstance()
 
         val auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
 
+        // Fetch posts asynchronously and set up the adapter when posts are available
         if (currentUser != null) {
-            database.collection("usuarios")
-                .document(currentUser.uid).collection("posts")
+            getPosts(currentUser) { posts ->
+                mAdapter.RecyclerAdapter(posts, requireContext(), findNavController())
+                mRecyclerView.adapter = mAdapter
+                progressBar.visibility = View.GONE
+
+                // Check if posts are available
+                if (posts.isEmpty()) {
+                    customMessage.visibility = View.VISIBLE
+                    customMessage.text = "No hay ningún post"
+                }
+            }
+        }
+    }
+
+    /* Get posts from coroutine */
+    private fun getPosts(currentUser: FirebaseUser, callback: (MutableList<Post>) -> Unit) {
+        val database = FirebaseFirestore.getInstance()
+        val posts = mutableListOf<Post>()
+
+        lifecycleScope.launch {
+            // Get my posts
+            val userPosts = getUserPosts(currentUser.uid, database)
+            if (userPosts != null) {
+                posts.addAll(userPosts)
+            }
+
+            // Get friends posts
+            val friends = getFriends(currentUser.uid, database)
+            val friendPosts = mutableListOf<Post>()
+            for (friendId in friends) {
+                val postsForFriend = getUserPosts(friendId, database)
+                if (postsForFriend != null) {
+                    friendPosts.addAll(postsForFriend)
+                }
+            }
+
+            posts.addAll(friendPosts)
+            callback(posts)
+        }
+    }
+
+
+
+    private suspend fun getUserPosts(userId: String, database: FirebaseFirestore): MutableList<Post>? {
+        return try {
+            val posts = mutableListOf<Post>()
+            val postsSnapshot =
+                database
+                    .collection("usuarios")
+                    .document(userId)
+                    .collection("posts")
+                    .get()
+                    .await()
+
+            for (postDocument in postsSnapshot) {
+                val postData = postDocument.data
+
+                // Get post location data
+                val lugarPost = postData["lugar"] as HashMap<*, *>
+                val latitude = lugarPost["latitude"] as Double
+                val longitude = lugarPost["longitude"] as Double
+
+                val user = getUser(userId, database)
+                if (user != null) {
+                    posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["foto"], postData["song"], LatLng(latitude, longitude)))
+                }
+            }
+
+            posts
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+        private suspend fun getFriends(userId: String, database: FirebaseFirestore): List<String> {
+        return try {
+            val friends = mutableListOf<String>()
+            val friendsSnapshot = database
+                .collection("usuarios")
+                .document(userId)
+                .collection("friends")
                 .get()
-                .addOnSuccessListener { myResult ->
-                    for (postDocument in myResult) {
-                        val postData = postDocument.data
+                .await()
 
-                        // Get post location data
-                        val lugarPost = postData["lugar"] as HashMap<*,*>
-                        val latitude = lugarPost["latitude"] as Double
-                        val longitude = lugarPost["longitude"] as Double
+            for (friendDocument in friendsSnapshot) {
+                friends.add(friendDocument.id)
+            }
 
-                        posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, postData["song"], LatLng(latitude, longitude)))
-                    }
+            return friends
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 
-                    database.collection("usuarios")
-                        .document(currentUser.uid)
-                        .collection("friends")
-                        .get()
-                        .addOnSuccessListener { usuariosResult ->
-                            val fetchCount = usuariosResult.size()
-                            if (fetchCount == 0) callback(posts)
-                            var fetchedCount = 0
+    private suspend fun getUser(userId: String, database: FirebaseFirestore): User? {
+        return try {
+            val document = database
+                .collection("usuarios")
+                .document(userId)
+                .get()
+                .await()
 
-                            for (usuarioDocument in usuariosResult) {
-                                database.collection("usuarios")
-                                    .document(usuarioDocument.id)
-                                    .collection("posts")
-                                    .get()
-                                    .addOnSuccessListener { postsResult ->
-                                        for (postDocument in postsResult) {
-                                            val postData = postDocument.data
+            val name = document.getString("name")
+            val photo = document.getString("photo")
+            val email = document.getString("email")
 
-                                            // Get post location data
-                                            val lugarPost = postData["lugar"] as HashMap<*,*>
-                                            val latitude = lugarPost["latitude"] as Double
-                                            val longitude = lugarPost["longitude"] as Double
-
-                                            posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], postData["user"], null, postData["song"], LatLng(latitude, longitude)))
-                                        }
-
-                                        fetchedCount++
-                                        // Check if all posts have been fetched
-                                        if (fetchedCount == fetchCount) {
-                                            // Invoke the callback with the fetched posts
-                                            callback(posts)
-                                        }
-                                    }
-                                    .addOnFailureListener { exception ->
-                                        // Handle any errors that may occur
-                                        progressBar.visibility = View.GONE
-                                        customMessage.text = "Error cargando posts"
-                                    }
-                            }
-                        }
-                        .addOnFailureListener { exception ->
-                            // Handle any errors that may occur
-                            progressBar.visibility = View.GONE
-                            customMessage.text = "Error cargando posts"
-                        }
-                }
-                .addOnFailureListener { exception ->
-                    // Handle any errors that may occur
-                    progressBar.visibility = View.GONE
-                    customMessage.text = "Error cargando posts"
-                }
+            return User(name, userId, email, photo)
+        } catch (e: Exception) {
+            null
         }
     }
 }

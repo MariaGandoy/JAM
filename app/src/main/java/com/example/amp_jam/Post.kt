@@ -6,8 +6,8 @@ data class Post(
     var title: Any?,
     var date: Any?,
     var type: Any?,
-    var user: Any?,
-    var photo: String?,
+    var user: User?,
+    var photo: Any?,
     var song: Any?,
     var location: LatLng?) {}
 
