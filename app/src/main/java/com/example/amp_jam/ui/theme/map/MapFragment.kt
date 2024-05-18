@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.location.Location
 import android.location.LocationManager
@@ -399,13 +400,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                 .apply {
                     when (post.type) {
                         "EVENT" -> {
-                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                            val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.event_marker), 150, 150, false)
+                            icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
                         }
                         "PHOTO" -> {
-                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                            val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.photo_marker), 150, 150, false)
+                            icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
                         }
                         "SONG" -> {
-                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                            val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.song_marker), 150, 150, false)
+                            icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
                         }
                     }
                 }
@@ -500,13 +504,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                         snippet("Fecha: " + postData.date)
                         when (postData.type) {
                             "EVENT" -> {
-                                icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                                val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.event_marker), 150, 150, false)
+                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
                             }
                             "PHOTO" -> {
-                                icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                                val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.photo_marker), 150, 150, false)
+                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
                             }
                             "SONG" -> {
-                                icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.song_marker), 150, 150, false)
+                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
                             }
                         }
                     }
