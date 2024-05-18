@@ -90,7 +90,7 @@ class AddFriendsActivity : ComponentActivity() {
                     for (document in documents) {
                         val userId = document.id
                         if (userId != currentUserUid && !sentFriendUserIds.contains(userId) && !friendUserIds.contains(userId)) {
-                            val userName = document.getString("user") ?: "Unknown"
+                            val userName = document.getString("name") ?: "Unknown"
                             addUserToList(userName, userId)
                         }
                     }
