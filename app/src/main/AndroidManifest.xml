@@ -54,7 +54,7 @@
             android:theme="@style/Theme.AMP_JAM" >
         </activity>
         <activity
-            android:name=".AddFriendsActivity"
+            android:name=".ui.theme.friends.AddFriendsActivity"
             android:exported="true"
             android:theme="@style/Theme.AMP_JAM" >
         </activity>
