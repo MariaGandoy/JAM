@@ -1,8 +1,13 @@
 package com.example.amp_jam;
 
 import android.app.Dialog
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -13,24 +18,33 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.dataObjects
+import com.google.firebase.firestore.snapshots
+import java.io.File
+import java.lang.Double.parseDouble
+import java.lang.Float.parseFloat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class PhotoDialog :  ComponentActivity() {
 
-        interface MapPostDialogListener {
-                fun onPostSubmitted(data: Post)
-        }
-
-        var listener: MapPostDialogListener? = null
+        private var mGoogleMap: GoogleMap? = null
         private lateinit var auth: FirebaseAuth
         private var currentUser: FirebaseUser? = null
 
+        @RequiresApi(Build.VERSION_CODES.O)
         override fun onCreate(savedInstanceState: Bundle?) {
                 // TODO Auto-generated method stub
                 super.onCreate(savedInstanceState)
@@ -67,8 +81,13 @@ class PhotoDialog :  ComponentActivity() {
         private fun setUpCreatePost(dialog: Dialog) {
                 val confirm = dialog.findViewById<Button>(R.id.confirm)
                 confirm.setOnClickListener {
+
                         var bundle :Bundle ?=intent.extras
-                        var photo = bundle!!.getString("photo")
+                        var file = bundle!!.getString("photo")
+
+                        val imageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, Uri.fromFile(
+                                File(file)
+                        )).toString()
 
                         val eventName = dialog.findViewById<EditText>(R.id.eventName).text.toString()
 
@@ -77,12 +96,18 @@ class PhotoDialog :  ComponentActivity() {
 
                         // Validación básica de nombre
                         if (eventName.isBlank()) {
-                                Toast.makeText(this, "El campos de nombre no puede estar vacío.", Toast.LENGTH_LONG).show()                        }
+                                Toast.makeText(this, "El campo de nombre no puede estar vacío.", Toast.LENGTH_LONG).show()                        }
 
-                        val eventType = "EVENT"
+                        val eventType = "PHOTO"
                         val userEmail = currentUser?.email ?: ""
 
-                        submitPost(Post(eventName, eventDate, eventType, userEmail, photo, null, null))
+                        //Cambiar foto de null
+                        createPost(Post(eventName, eventDate, eventType, userEmail, imageBitmap, null, null))
+
+                        Thread.sleep(500)
+                        Toast.makeText(this, "Se ha creado el evento", Toast.LENGTH_LONG).show()
+                        Thread.sleep(100)
+                        startActivity(Intent(this, EnterActivity::class.java))
                 }
         }
 
@@ -107,9 +132,98 @@ class PhotoDialog :  ComponentActivity() {
                 })
         }
 
-        private fun submitPost(data: Post) {
-                listener?.onPostSubmitted(data)
-                finish()
+        private fun createPost(postData: Post) {
+           this?.let {
+
+                val database = FirebaseFirestore.getInstance()
+                var center : LatLng?
+                center = mGoogleMap?.cameraPosition?.target
+                database.collection("usuarios").document(currentUser!!.uid).get()
+                        .addOnSuccessListener {
+                                        document ->
+                                if (document != null){
+                                        //save document to val usuari
+                                        val doc = document.data?.entries?.toTypedArray()?.get(1).toString()
+                                        val latitude = doc.split("latitude=").get(1).split(",").get(0)
+                                        val longitude = doc.split("longitude=").get(1).split("}").get(0)
+                                        center = LatLng(parseDouble(latitude), parseDouble(longitude))
+                                        //the log show the correct nickname
+                                        Log.i("JAM_locati","lat: " + latitude + " - long: " + longitude)
+                                }
+                        }
+                        .addOnFailureListener { exception ->
+                                Log.w("JAM_PhotoDialog", "Error getting documents: ", exception)
+                        }
+
+                Thread.sleep(100)
+
+                Log.i("JAM_locati","Center: " + center.toString())
+
+
+                val markerOptions = MarkerOptions()
+                   .apply {
+                           center?.let { position(it) }
+                           title(postData.title.toString())
+                           snippet("Fecha: " + postData.date)
+                           when (postData.type) {
+                                        "EVENT" -> {
+                                                val scaledBitmap =Bitmap.createScaledBitmap(BitmapFactory.decodeResource(
+                                                resources,R.drawable.event_marker), 150, 150, false)
+                                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                                        }
+
+                                        "PHOTO" -> {
+                                                val scaledBitmap =Bitmap.createScaledBitmap(BitmapFactory.decodeResource(
+                                                resources,R.drawable.photo_marker), 150, 150, false)
+                                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                                        }
+
+                                        "SONG" -> {
+                                                val scaledBitmap =Bitmap.createScaledBitmap(BitmapFactory.decodeResource(
+                                                resources,R.drawable.song_marker), 150, 150, false)
+                                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                                        }
+                                }
+                        }
+
+                mGoogleMap?.addMarker(markerOptions)
+                center.let { nonNullCenter ->
+                        mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(nonNullCenter!!, 20f))
+                }
+
+                Log.e("JAM_PhotoDialog", "what is $center")
+                // Persist to firebase
+                persistPost(postData, center)
+
+           }
+        }
+
+
+
+        private fun persistPost(data: Post, center: LatLng?) {
+                val database = FirebaseFirestore.getInstance()
+
+                // Create a reference to the user's posts collection
+                val userPostsCollection = database.collection("usuarios").document(currentUser!!.uid)
+                        .collection("posts")
+
+
+                // Generate a new document ID for the post
+                val newPostDocument = userPostsCollection.document()
+
+                // Prepare the data for the post
+                val postData = hashMapOf(
+                        "fecha" to data.date,
+                        "titulo" to data.title,
+                        "tipo" to data.type,
+                        "user" to data.user,
+                        "foto" to data.photo,
+                        "song" to data.song,
+                        "lugar" to center
+                )
+
+                // Set the post data in the document
+                newPostDocument.set(postData)
         }
 
 }

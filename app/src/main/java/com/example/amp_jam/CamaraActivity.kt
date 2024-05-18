@@ -1,6 +1,8 @@
 package com.example.amp_jam
 
 import android.Manifest
+import android.R.attr.path
+import android.R.string
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
@@ -18,6 +20,7 @@ import android.media.Image
 import android.media.ImageReader
 import android.media.ImageReader.OnImageAvailableListener
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -34,13 +37,15 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.NonNull
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import androidx.core.net.toUri
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Arrays
 
 
@@ -62,6 +67,7 @@ class CamaraActivity: ComponentActivity(){
     private var mBackgroundThread: HandlerThread? = null
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.camara_activity)
@@ -146,6 +152,7 @@ class CamaraActivity: ComponentActivity(){
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     protected fun takePicture(){
 
         if (null == cameraDevice) {
@@ -182,7 +189,12 @@ class CamaraActivity: ComponentActivity(){
                 CaptureRequest.JPEG_ORIENTATION,
                 ORIENTATIONS[rotation]
             )
-            val file = File(Environment.getExternalStorageDirectory().toString() + "/pic.jpg")
+
+            val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).absolutePath.toString()
+            val formatter = DateTimeFormatter.ofPattern("HHmmss")
+            val timeStamp = LocalDateTime.now().format(formatter)
+
+            val file = File( path + "/pic" + timeStamp +".jpg")
             val readerListener: OnImageAvailableListener = object : OnImageAvailableListener {
                 override fun onImageAvailable(reader: ImageReader) {
                     var image: Image? = null
@@ -248,10 +260,9 @@ class CamaraActivity: ComponentActivity(){
             Thread.sleep(1_000)
             //Lanzar diálogo
 
-            val imageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, Uri.fromFile(file))
-
+            val photo = file.absolutePath
             val intent = Intent(this, PhotoDialog::class.java)
-            intent.putExtra("photo", imageBitmap!!)
+            intent.putExtra("photo", photo!!)
 
             startActivity(intent)
 
