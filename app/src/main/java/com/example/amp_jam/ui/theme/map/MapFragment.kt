@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.location.Location
 import android.location.LocationManager
@@ -18,6 +19,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -379,7 +381,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         val posts: MutableList<Post>? = mapData["posts"] as? MutableList<Post>
         val friends: ArrayList<HashMap<String, Any?>>? = mapData["friends"] as? ArrayList<HashMap<String, Any?>>
 
-        Log.d("listaklk", friends.toString())
         if (posts !== null && friends !== null) updateMapView(posts, friends)
     }
 
@@ -399,13 +400,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                 .apply {
                     when (post.type) {
                         "EVENT" -> {
-                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                            val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.event_marker), 150, 150, false)
+                            icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
                         }
                         "PHOTO" -> {
-                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                            val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.photo_marker), 150, 150, false)
+                            icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
                         }
                         "SONG" -> {
-                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                            val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.song_marker), 150, 150, false)
+                            icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
                         }
                     }
                 }
@@ -417,42 +421,44 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
         // Update friends from firebase
         friends.forEach { friend ->
-            val lugar = friend["lugar"] as HashMap<*, *>
-            val latitude = lugar["latitude"] as Double
-            val longitude = lugar["longitude"] as Double
-            val photoUrl = friend["photo"] as String? // Usar safe cast para manejar nulos
+            val lugar = friend["lugar"] as? HashMap<*, *>
 
-            if (!photoUrl.isNullOrEmpty()) {
-                Glide.with(requireContext())
-                    .asBitmap()
-                    .load(photoUrl)
-                    .override(100, 100) // Redimensionar la imagen al tamaño deseado
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            val bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resource)
+            if (lugar != null) {
+                val latitude = lugar["latitude"] as Double
+                val longitude = lugar["longitude"] as Double
+                val photoUrl = friend["photo"] as String? // Usar safe cast para manejar nulos
 
-                            val userMarkerOptions = MarkerOptions()
-                                .position(LatLng(latitude, longitude))
-                                .title(friend["user"] as String)
-                                .icon(bitmapDescriptor)
+                if (!photoUrl.isNullOrEmpty()) {
+                    Glide.with(requireContext())
+                        .asBitmap()
+                        .load(photoUrl)
+                        .override(100, 100) // Redimensionar la imagen al tamaño deseado
+                        .into(object : CustomTarget<Bitmap>() {
+                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                val bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resource)
 
-                            val marker = mGoogleMap?.addMarker(userMarkerOptions) as Marker
-                            marker.setTag("FRIEND")
-                            mapMarkers.add(marker)
-                        }
+                                val userMarkerOptions = MarkerOptions()
+                                    .position(LatLng(latitude, longitude))
+                                    .title(friend["user"] as String)
+                                    .icon(bitmapDescriptor)
 
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                        }
-                    })
-            } else {
+                                val marker = mGoogleMap?.addMarker(userMarkerOptions) as Marker
+                                marker.setTag("FRIEND")
+                                mapMarkers.add(marker)
+                            }
 
-                val userMarkerOptions = MarkerOptions()
-                    .position(LatLng(latitude, longitude))
-                    .title(friend["user"] as String)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)) // Icono predeterminado
-                val marker = mGoogleMap?.addMarker(userMarkerOptions) as Marker
-                marker.setTag("FRIEND")
-                mapMarkers.add(marker)
+                            override fun onLoadCleared(placeholder: Drawable?) {
+                            }
+                        })
+                } else {
+                    val userMarkerOptions = MarkerOptions()
+                        .position(LatLng(latitude, longitude))
+                        .title(friend["user"] as String)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)) // Icono predeterminado
+                    val marker = mGoogleMap?.addMarker(userMarkerOptions) as Marker
+                    marker.setTag("FRIEND")
+                    mapMarkers.add(marker)
+                }
             }
         }
 
@@ -482,36 +488,49 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
     /* Handle posts creation: */
     override fun onPostSubmitted(postData: Post) {
-        val center = mGoogleMap?.cameraPosition?.target
+        view?.let {
+            val mapOverlay = it.findViewById<View>(R.id.mapOverlay)
+            val instructionText = it.findViewById<TextView>(R.id.instructionsMarker)
 
-        // Create event marker (quitar cuando se lea de firebase y leer tb nuestro datos de base de datos ¿?)
-        val markerOptions = MarkerOptions()
-            .apply {
-                center?.let { position(it) }
-                title(postData.title.toString())
-                snippet("Fecha: " + postData.date)
-                when (postData.type) {
-                    "EVENT" -> {
-                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+            mapOverlay.visibility = View.VISIBLE
+            instructionText.visibility = View.VISIBLE
+
+            mGoogleMap?.setOnMapLongClickListener { postPosition ->
+                // Create event marker (quitar cuando se lea de firebase y leer tb nuestro datos de base de datos ¿?)
+                val markerOptions = MarkerOptions()
+                    .apply {
+                        position(postPosition)
+                        title(postData.title.toString())
+                        snippet("Fecha: " + postData.date)
+                        when (postData.type) {
+                            "EVENT" -> {
+                                val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.event_marker), 150, 150, false)
+                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                            }
+                            "PHOTO" -> {
+                                val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.photo_marker), 150, 150, false)
+                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                            }
+                            "SONG" -> {
+                                val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.song_marker), 150, 150, false)
+                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                            }
+                        }
                     }
-                    "PHOTO" -> {
-                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
-                    }
-                    "SONG" -> {
-                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                    }
+
+                mGoogleMap?.addMarker(markerOptions)
+                postPosition.let { nonNullCenter ->
+                    mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(nonNullCenter, 20f))
                 }
+
+                mapOverlay.visibility = View.GONE
+                instructionText.visibility = View.GONE
+
+                // Persist to firebase
+                persistPost(postData, postPosition)
             }
-
-
-        // TODO: remove this and read all events/posts from firebase to draw the map, even our own posts
-        mGoogleMap?.addMarker(markerOptions)
-        center?.let { nonNullCenter ->
-            mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(nonNullCenter, 20f))
         }
 
-        // Persist to firebase
-        persistPost(postData, center)
     }
 
     private fun persistPost(data: Post, center: LatLng?) {

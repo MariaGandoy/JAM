@@ -11,21 +11,12 @@
     android:fitsSystemWindows="true">
 
     <!-- Top menu -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
-        android:elevation="4dp"
-        app:title="Añadir amigos"
-        app:titleTextColor="@color/darkGreen"
-        app:navigationIcon="@drawable/arrow_back" />
 
     <!-- Activity content -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar">
+       >
 
         <androidx.cardview.widget.CardView
             android:id="@+id/autocompleteUbicationCard"
@@ -50,6 +41,8 @@
                 android:backgroundTint="@color/darkGreen"
                 android:hint="Buscar"
                 android:minHeight="48dp"
+                android:inputType="text"
+                android:imeOptions="actionSearch"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

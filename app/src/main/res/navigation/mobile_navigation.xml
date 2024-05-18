@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/navigation_friends"
-        android:name="com.example.amp_jam.ui.theme.friends.FriendsRequestFragment"
+        android:name="com.example.amp_jam.ui.theme.friends.AddFriendsFragment"
         android:label="social"
         tools:layout="@layout/friend_request" />
 

@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.amp_jam.AddFriendsActivity
 import com.example.amp_jam.CamaraActivity
 import com.example.amp_jam.R
 
