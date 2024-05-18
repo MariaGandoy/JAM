@@ -128,4 +128,30 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 
+    <!-- Control marker position dialog -->
+    <View
+        android:id="@+id/mapOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#60000000"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/instructionsMarker"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="16dp"
+        android:background="#90000000"
+        android:textAlignment="center"
+        android:text="Mantén presionado para situar la ubicación del post"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
