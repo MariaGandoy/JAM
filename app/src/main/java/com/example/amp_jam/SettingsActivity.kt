@@ -28,6 +28,7 @@ class SettingsActivity: ComponentActivity() {
         setupDeleteAccount()
         setUpBackArrow()
         setupDarkModeSwitch()
+        setUpShareLocationSwitch()
     }
 
     private fun setUpBackArrow() {
@@ -68,6 +69,35 @@ class SettingsActivity: ComponentActivity() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
+    }
+
+    private fun setUpShareLocationSwitch() {
+        val shareUbication = findViewById<Switch>(R.id.locationSwitch)
+        shareUbication.isChecked =  SharedPreferencesHelper.getShareLocation(this)
+
+        shareUbication.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                SharedPreferencesHelper.setShareLocation(this, true)
+            } else {
+                SharedPreferencesHelper.setShareLocation(this, false)
+                val database = FirebaseFirestore.getInstance()
+                val currentUser = FirebaseAuth.getInstance().currentUser
+
+                var userData = hashMapOf<String, Any?>(
+                    "lugar" to null
+                )
+
+                // Update location to null
+                if (currentUser != null) {
+                    database.collection("usuarios").document(currentUser!!.uid)
+                        .update(userData)
+                        .addOnFailureListener { e ->
+                            Log.d("Firestore", "Error updating user data")
+                        }
+                }
+            }
+        }
+
     }
 
 
@@ -137,10 +167,5 @@ class SettingsActivity: ComponentActivity() {
                 .show()
         }
     }
-
-
-
-
-
 
 }

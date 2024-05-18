@@ -566,14 +566,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
     private fun persistUbication(location: LatLng?) {
         val database = FirebaseFirestore.getInstance()
 
-        // TODO: Change to update location, not create new everytime
-        var userData = hashMapOf(
-            "user" to currentUser!!.email,
+        var userData = hashMapOf<String, Any?>(
             "lugar" to location
         )
 
-        if (currentUser != null) {
-            // Update the document in Firestore
+        // Update the document in Firestore if share location is true in settings
+        if (currentUser != null && SharedPreferencesHelper.getShareLocation(requireContext())) {
             database.collection("usuarios").document(currentUser!!.uid)
                 .update(userData)
                 .addOnFailureListener { e ->

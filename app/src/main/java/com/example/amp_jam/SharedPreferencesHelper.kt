@@ -8,6 +8,7 @@ object SharedPreferencesHelper {
     private val PREF_NAME = "MyAppPrefs"
 
     private val KEY_DEFAULT_EMAIL = "defaultEmail"
+    private val KEY_SHARE_LOCATION = "shareLocation"
     private val KEY_LAST_CORDS = "lastCords"
     private val KEY_LAST_ZOOM = "mapZoom"
 
@@ -23,6 +24,20 @@ object SharedPreferencesHelper {
         val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
         return sharedPreferences.getString(KEY_DEFAULT_EMAIL, null)
+    }
+
+    fun setShareLocation(context: Context, shareLocation: Boolean) {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(KEY_SHARE_LOCATION, shareLocation)
+        editor.apply()
+    }
+
+    fun getShareLocation(context: Context): Boolean {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+        return sharedPreferences.getBoolean(KEY_SHARE_LOCATION, true)
     }
 
     fun setLastCords(context: Context, cords: LatLng) {

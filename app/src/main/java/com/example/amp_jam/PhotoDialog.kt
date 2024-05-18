@@ -99,10 +99,9 @@ class PhotoDialog :  ComponentActivity() {
                                 Toast.makeText(this, "El campo de nombre no puede estar vacío.", Toast.LENGTH_LONG).show()                        }
 
                         val eventType = "PHOTO"
-                        val userEmail = currentUser?.email ?: ""
 
                         //Cambiar foto de null
-                        createPost(Post(eventName, eventDate, eventType, userEmail, imageBitmap, null, null))
+                        createPost(Post(eventName, eventDate, eventType, null, imageBitmap, null, null))
 
                         Thread.sleep(500)
                         Toast.makeText(this, "Se ha creado el evento", Toast.LENGTH_LONG).show()
