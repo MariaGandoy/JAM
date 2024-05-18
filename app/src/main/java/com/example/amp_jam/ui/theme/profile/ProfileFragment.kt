@@ -1,38 +1,28 @@
 package com.example.amp_jam.ui.theme.profile
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Switch
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.amp_jam.AddFriendsActivity
 import com.example.amp_jam.ListOfFriendsActivity
-import com.example.amp_jam.MainActivity
 import com.example.amp_jam.Post
 import com.example.amp_jam.R
 import com.example.amp_jam.RecyclerAdapter
 import com.example.amp_jam.SettingsActivity
 import com.google.android.gms.maps.model.LatLng
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 
 
@@ -67,7 +57,6 @@ class ProfileFragment : Fragment() {
         firestore = FirebaseFirestore.getInstance()
 
         setUpSettings(view)
-        setupAddFriends(view)
         loadUserProfileData(view)
 
         val settingsButton = view.findViewById<ImageButton>(R.id.configurations)
@@ -89,15 +78,7 @@ class ProfileFragment : Fragment() {
     }
 
 
-    private fun setupAddFriends(view: View) {
-        val addBtn = view.findViewById<ImageButton>(R.id.button5)
-        addBtn.setOnClickListener {
-            Log.d("JAM_NAVIGATION", "[ProfileFragment] Click ADD FRIENDS MENU EVENT button")
-            val intent = Intent(activity, AddFriendsActivity::class.java)
-            startActivity(intent)
 
-        }
-    }
 
     private fun loadUserProfileData(view: View) {
         val currentUser = auth.currentUser

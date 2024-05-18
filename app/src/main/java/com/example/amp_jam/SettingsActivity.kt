@@ -13,6 +13,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import android.widget.Switch
+import androidx.appcompat.app.AppCompatDelegate
+import android.content.res.Configuration
 
 
 class SettingsActivity: ComponentActivity() {
@@ -24,6 +27,7 @@ class SettingsActivity: ComponentActivity() {
         setupLogOut()
         setupDeleteAccount()
         setUpBackArrow()
+        setupDarkModeSwitch()
     }
 
     private fun setUpBackArrow() {
@@ -50,6 +54,22 @@ class SettingsActivity: ComponentActivity() {
                 .show()
         }
     }
+
+
+    private fun setupDarkModeSwitch() {
+        val darkModeSwitch = findViewById<Switch>(R.id.darkModeSwitch)
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        darkModeSwitch.isChecked = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+
+        darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+    }
+
 
     private fun setupDeleteAccount() {
         val toolbarLogout = findViewById<ImageView>(R.id.deleteAccountButton)
