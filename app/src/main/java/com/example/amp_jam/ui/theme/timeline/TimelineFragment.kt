@@ -128,6 +128,7 @@ class TimelineFragment : Fragment() {
                     .get()
                     .await()
 
+            val user = getUser(userId, database)
             for (postDocument in postsSnapshot) {
                 val postData = postDocument.data
 
@@ -136,7 +137,6 @@ class TimelineFragment : Fragment() {
                 val latitude = lugarPost["latitude"] as Double
                 val longitude = lugarPost["longitude"] as Double
 
-                val user = getUser(userId, database)
                 if (user != null) {
                     posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["foto"], postData["song"], LatLng(latitude, longitude)))
                 }
