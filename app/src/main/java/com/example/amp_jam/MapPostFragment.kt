@@ -2,13 +2,10 @@ package com.example.amp_jam
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.fragment.app.DialogFragment
@@ -19,7 +16,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import java.io.ByteArrayOutputStream
 
 
 class MapPostFragment: DialogFragment() {
@@ -94,19 +90,41 @@ class MapPostFragment: DialogFragment() {
             return
         }
 
+        val filesImage = view.findViewById<ImageButton>(R.id.addFromFiles)
+        val filesBitmap = (filesImage.drawable as? BitmapDrawable)?.bitmap
+
+        val cameraImage = view.findViewById<ImageButton>(R.id.addFromCamera)
+        val cameraBitmap = (cameraImage.drawable as? BitmapDrawable)?.bitmap
+
+        val photoBitmap = when {
+            filesBitmap != null -> filesBitmap
+            cameraBitmap != null -> cameraBitmap
+            else -> null
+        }
+
         val eventType = "EVENT"
 
-        submitPost(Post(eventName, eventDate, eventType, null, null, null, null))
+        submitPost(Post(eventName, eventDate, eventType, null, photoBitmap, null, null))
     }
 
     private fun setPhotoData(view: View) {
         Log.d("JAM_NAVIGATION", "[MapPost] Create PHOTO")
 
-        // TODO: pillar datos foto
+        val filesImage = view.findViewById<ImageButton>(R.id.addFromFiles)
+        val filesBitmap = (filesImage.drawable as? BitmapDrawable)?.bitmap
+
+        val cameraImage = view.findViewById<ImageButton>(R.id.addFromCamera)
+        val cameraBitmap = (cameraImage.drawable as? BitmapDrawable)?.bitmap
+
+        val photoBitmap = when {
+            filesBitmap != null -> filesBitmap
+            cameraBitmap != null -> cameraBitmap
+            else -> null
+        }
 
         val eventType = "PHOTO"
 
-        submitPost(Post(null, null, eventType, null, null, null, null))
+        submitPost(Post(null, null, eventType, null, photoBitmap, null, null))
     }
 
     private fun setSongData(view: View) {

@@ -138,7 +138,7 @@ class TimelineFragment : Fragment() {
                 val longitude = lugarPost["longitude"] as Double
 
                 if (user != null) {
-                    posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["foto"], postData["song"], LatLng(latitude, longitude)))
+                    posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["photo"], postData["song"], LatLng(latitude, longitude)))
                 }
             }
 

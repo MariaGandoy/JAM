@@ -2,7 +2,6 @@ package com.example.amp_jam
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.text.Html
 import android.view.LayoutInflater
@@ -14,8 +13,6 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import android.graphics.BitmapFactory
-import android.util.Base64
 
 class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
@@ -105,11 +102,13 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
                 .placeholder(R.drawable.sample_user)
                 .into(userAvatar)
 
-            // Set post image (TODO: change for shared pic)
+            // Set post image
             if (post.photo != null) {
-                val resourceId = context.resources.getIdentifier("sample_photo", "drawable", context.packageName)
                 postImage.visibility = View.VISIBLE
-                postImage.setImageResource(resourceId)
+                Glide.with(context)
+                    .load(post.photo)
+                    .placeholder(R.drawable.sample_photo)
+                    .into(postImage)
             } else {
                 postImage.visibility = View.GONE
             }
@@ -126,17 +125,13 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
                 .placeholder(R.drawable.sample_user)
                 .into(userAvatar)
 
-            postImage.visibility = View.VISIBLE
-
-            /*
-            // Set post image (TODO: change for shared pic)
+            // Set post image
             if (post.photo != null) {
-                postImage.visibility = View.VISIBLE
-                postImage.setImageResource(resourceId)
-            } else {
-                postImage.visibility = View.GONE
+                Glide.with(context)
+                    .load(post.photo)
+                    .placeholder(R.drawable.sample_photo)
+                    .into(postImage)
             }
-             */
         }
 
         private fun createSongPost(post:Post, context: Context) {
@@ -174,16 +169,6 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
                 .into(userAvatar)
 
             postImage.visibility = View.GONE
-        }
-
-        private fun stringToBitmap(encodedString: String): Bitmap? {
-            return try {
-                val decodedString = Base64.decode(encodedString, Base64.DEFAULT)
-                BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-            } catch (e: IllegalArgumentException) {
-                e.printStackTrace()
-                null
-            }
         }
     }
 

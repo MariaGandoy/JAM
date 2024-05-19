@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.location.Location
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -51,7 +52,8 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-
+import com.google.firebase.storage.FirebaseStorage
+import java.io.ByteArrayOutputStream
 
 
 /**
@@ -556,11 +558,22 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             "titulo" to data.title,
             "tipo" to data.type,
             "song" to data.song,
-            "lugar" to center
+            "lugar" to center,
         )
 
-        // Set the post data in the document
-        newPostDocument.set(postData)
+        // Store post image if not null
+        if (data.photo != null) {
+            val imageName = "${currentUser!!.uid}_${System.currentTimeMillis()}.jpg"
+
+            persisBitmap(data.photo as Bitmap, imageName) { imageUrl ->
+                // Set the post data in the document after saving the preference to the photo
+                postData["photo"] = imageUrl
+                newPostDocument.set(postData)
+            }
+        } else {
+            // Set the post data in the document
+            newPostDocument.set(postData)
+        }
     }
 
     private fun persistUbication(location: LatLng?) {
@@ -579,6 +592,31 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                 }
         }
 
+    }
+
+    private fun persisBitmap(bitmap: Bitmap, imageName: String, callback: (Uri?) -> Unit) {
+        val storageRef = FirebaseStorage.getInstance().reference
+        val imageRef = storageRef.child(imageName)
+
+        val byteArray = bitmapToByteArray(bitmap)
+        val uploadTask = imageRef.putBytes(byteArray)
+        uploadTask.addOnSuccessListener {
+            imageRef.downloadUrl.addOnSuccessListener { uri ->
+                callback(uri) // Use the image name instead of the URL
+            }.addOnFailureListener {
+                callback(null)
+                Log.e("FirebaseStorage", "Failed to get download URL")
+            }
+        }.addOnFailureListener {
+            callback(null)
+            Log.e("FirebaseStorage", "Failed to upload image")
+        }
+    }
+
+    private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+        return byteArrayOutputStream.toByteArray()
     }
 
     override fun onResume() {
