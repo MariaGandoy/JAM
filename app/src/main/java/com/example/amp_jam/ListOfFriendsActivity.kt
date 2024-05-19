@@ -1,8 +1,11 @@
 package com.example.amp_jam
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
@@ -12,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ListOfFriendsActivity : ComponentActivity() {
+
 
     private lateinit var firestore: FirebaseFirestore
     private var currentUserUid: String? = null
@@ -23,24 +27,31 @@ class ListOfFriendsActivity : ComponentActivity() {
         firestore = FirebaseFirestore.getInstance()
         currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
 
-        setUpBackArrow()
+        val searchEditText = findViewById<EditText>(R.id.textInputLayout2)
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (currentUserUid != null) {
+                    loadFriendsList(s.toString())
+                }
+            }
+        })
 
         if (currentUserUid != null) {
-            loadFriendsList()
+            loadFriendsList("")
         } else {
             Log.e("ListOfFriendsActivity", "User ID is null.")
         }
     }
 
-    private fun setUpBackArrow() {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.title = "Amigos"
-        toolbar.setNavigationOnClickListener  {
-            finish()
-        }
-    }
 
-    private fun loadFriendsList() {
+
+    private fun loadFriendsList(filter: String = "") {
         val userContainer = findViewById<LinearLayout>(R.id.usersContainer)
         userContainer.removeAllViews()
         currentUserUid?.let { uid ->
@@ -51,7 +62,7 @@ class ListOfFriendsActivity : ComponentActivity() {
                         Log.d("ListOfFriendsActivity", "No tienes amigos :(")
                     } else {
                         val friendsList = documents.map { it.id }
-                        loadFriendDetails(friendsList)
+                        loadFriendDetails(friendsList, filter)
                     }
                 }
                 .addOnFailureListener { exception ->
@@ -60,15 +71,15 @@ class ListOfFriendsActivity : ComponentActivity() {
         }
     }
 
-
-
-    private fun loadFriendDetails(friendsList: List<String>) {
+    private fun loadFriendDetails(friendsList: List<String>, filter: String) {
         friendsList.forEach { friendId ->
             firestore.collection("usuarios").document(friendId).get()
                 .addOnSuccessListener { friendDoc ->
                     val friendName = friendDoc.getString("name") ?: "Unknown"
-                    runOnUiThread {
-                        addFriendToList(friendName, friendId)
+                    if (filter.isEmpty() || friendName.contains(filter, ignoreCase = true)) {
+                        runOnUiThread {
+                            addFriendToList(friendName, friendId)
+                        }
                     }
                 }
                 .addOnFailureListener { exception ->
