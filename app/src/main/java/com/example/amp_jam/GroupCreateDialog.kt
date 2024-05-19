@@ -32,7 +32,7 @@ class GroupCreateDialog : DialogFragment() {
             builder.setView(view)
                 .setPositiveButton("Aceptar") { dialog, id ->
                     val groupName = view.findViewById<EditText>(R.id.eventName).text.toString()
-                    val selectedFriendsIds = (recyclerView.adapter as? GenericAdapter)?.selectedFriends?.keys?.toList() ?: listOf()
+                    val selectedFriendsIds = (recyclerView.adapter as? FriendsAdapter)?.selectedFriends?.keys?.toList() ?: listOf()
 
                     saveGroup(groupName, selectedFriendsIds)
                 }
@@ -68,7 +68,7 @@ class GroupCreateDialog : DialogFragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        recyclerView.adapter = GenericAdapter(itemList, displayField)
+        recyclerView.adapter = FriendsAdapter(itemList, displayField)
     }
 
     private fun loadFriends() {
