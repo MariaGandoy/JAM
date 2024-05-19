@@ -17,7 +17,7 @@
         android:title="mapa" />
     <item
         android:id="@+id/navigation_friends"
-        android:icon="@drawable/friend_notifications"
+        android:icon="@drawable/add_friends"
         android:title="amigos" />
 
     <item
