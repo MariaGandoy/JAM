@@ -81,12 +81,12 @@ class CamaraActivity: ComponentActivity(){
             takePicture()
         }
 
-        filterButton = findViewById<View>(R.id.btn_sepia) as Button
+        /*filterButton = findViewById<View>(R.id.btn_sepia) as Button
         assert(filterButton != null)
         filterButton!!.setOnClickListener {
             captureRequestBuilder?.set (CaptureRequest.CONTROL_EFFECT_MODE, CaptureRequest.CONTROL_EFFECT_MODE_SEPIA);
             Toast.makeText(this@CamaraActivity, "Filtro sepia", Toast.LENGTH_SHORT).show()
-        }
+        }*/
 
     }
 
