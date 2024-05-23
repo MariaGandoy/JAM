@@ -32,7 +32,9 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.snapshots
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.lang.Double.parseDouble
 import java.lang.Float.parseFloat
@@ -88,7 +90,7 @@ class PhotoDialog :  ComponentActivity() {
 
                         val imageBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, Uri.fromFile(
                                 File(file)
-                        )).toString()
+                        ))
 
                         val eventName = dialog.findViewById<EditText>(R.id.eventName).text.toString()
 
@@ -102,12 +104,7 @@ class PhotoDialog :  ComponentActivity() {
                         val eventType = "PHOTO"
 
                         //Cambiar foto de null
-                        createPost(Post(eventName, eventDate, eventType, null, null, null, null))
-
-                        Thread.sleep(500)
-                        Toast.makeText(this, "Se ha creado el evento", Toast.LENGTH_LONG).show()
-                        Thread.sleep(100)
-                        startActivity(Intent(this, EnterActivity::class.java))
+                        createPost(Post(eventName, eventDate, eventType, null, imageBitmap, null, null))
                 }
         }
 
@@ -144,7 +141,6 @@ class PhotoDialog :  ComponentActivity() {
                                         val latitude = doc.split("latitude=").get(1).split(",").get(0)
                                         val longitude = doc.split("longitude=").get(1).split("}").get(0)
                                         center = LatLng(parseDouble(latitude), parseDouble(longitude))
-                                        Log.i("JAM_locati","lat: " + latitude + " - long: " + longitude)
                                 }
                         }
                         .addOnFailureListener { exception ->
@@ -236,13 +232,56 @@ class PhotoDialog :  ComponentActivity() {
                         "fecha" to data.date,
                         "titulo" to data.title,
                         "tipo" to data.type,
-                        "foto" to data.photo,
                         "song" to data.song,
                         "lugar" to center
                 )
+                Log.e("JAM_photos", "data.photo: " + data.photo)
+                // Store post image if not null
+                if (data.photo != null) {
+                        val imageName = "${currentUser!!.uid}_${System.currentTimeMillis()}.jpg"
 
+                        persisBitmap(data.photo as Bitmap, imageName) { imageUrl ->
+                                // Set the post data in the document after saving the preference to the photo
+                                postData["photo"] = imageUrl
+                                newPostDocument.set(postData)
+                        }
+                } else {
+                        // Set the post data in the document
+                        newPostDocument.set(postData)
+                }
                 // Set the post data in the document
-                newPostDocument.set(postData)
+                //newPostDocument.set(postData)
+
+                Thread.sleep(500)
+                Toast.makeText(this, "Se ha creado el evento", Toast.LENGTH_LONG).show()
+                Thread.sleep(100)
+                startActivity(Intent(this, EnterActivity::class.java))
         }
+
+        private fun persisBitmap(bitmap: Bitmap, imageName: String, callback: (Uri?) -> Unit) {
+                val storageRef = FirebaseStorage.getInstance().reference
+                val imageRef = storageRef.child(imageName)
+
+                val byteArray = bitmapToByteArray(bitmap)
+                val uploadTask = imageRef.putBytes(byteArray)
+                uploadTask.addOnSuccessListener {
+                        imageRef.downloadUrl.addOnSuccessListener { uri ->
+                                callback(uri) // Use the image name instead of the URL
+                        }.addOnFailureListener {
+                                callback(null)
+                                Log.e("FirebaseStorage", "Failed to get download URL")
+                        }
+                }.addOnFailureListener {
+                        callback(null)
+                        Log.e("FirebaseStorage", "Failed to upload image")
+                }
+        }
+
+        private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+                val byteArrayOutputStream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+                return byteArrayOutputStream.toByteArray()
+        }
+
 
 }

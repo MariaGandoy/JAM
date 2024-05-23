@@ -258,11 +258,11 @@ class CamaraActivity: ComponentActivity(){
                 mBackgroundHandler
             )
             Thread.sleep(1_000)
-            //Lanzar diálogo
 
             val photo = file.absolutePath
             val intent = Intent(this, PhotoDialog::class.java)
             intent.putExtra("photo", photo!!)
+            Thread.sleep(1_000)
 
             startActivity(intent)
 
