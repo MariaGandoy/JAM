@@ -113,6 +113,11 @@ class PhotoDialog :  ComponentActivity() {
                 confirm.setOnClickListener {
                         finish()
                 }
+
+                val cancel = dialog.findViewById<Button>(R.id.cancel)
+                cancel.setOnClickListener {
+                        finish()
+                }
         }
 
         private fun setUpNameEventListener(dialog: Dialog) {
