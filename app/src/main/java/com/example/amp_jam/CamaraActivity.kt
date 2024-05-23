@@ -3,6 +3,7 @@ package com.example.amp_jam
 import android.Manifest
 import android.R.attr.path
 import android.R.string
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
@@ -34,6 +35,7 @@ import android.view.TextureView
 import android.view.TextureView.SurfaceTextureListener
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.annotation.NonNull
@@ -51,8 +53,8 @@ import java.util.Arrays
 
 class CamaraActivity: ComponentActivity(){
 
-    private var takePictureButton: Button? = null
-    private var filterButton: Button? = null
+    private var takePictureButton: ImageButton? = null
+    private var backButton: ImageButton? = null
     private var textureView: TextureView? = null
     private var cameraId: String? = null
     protected var cameraDevice: CameraDevice? = null
@@ -67,6 +69,7 @@ class CamaraActivity: ComponentActivity(){
     private var mBackgroundThread: HandlerThread? = null
 
 
+    @SuppressLint("MissingInflatedId")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,18 +78,17 @@ class CamaraActivity: ComponentActivity(){
         assert(textureView != null)
         textureView!!.surfaceTextureListener = textureListener
 
-        takePictureButton = findViewById<View>(R.id.btn_takepicture) as Button
+        takePictureButton = findViewById<View>(R.id.btn_takepicture) as ImageButton
         assert(takePictureButton != null)
         takePictureButton!!.setOnClickListener {
             takePicture()
         }
 
-        /*filterButton = findViewById<View>(R.id.btn_sepia) as Button
-        assert(filterButton != null)
-        filterButton!!.setOnClickListener {
-            captureRequestBuilder?.set (CaptureRequest.CONTROL_EFFECT_MODE, CaptureRequest.CONTROL_EFFECT_MODE_SEPIA);
-            Toast.makeText(this@CamaraActivity, "Filtro sepia", Toast.LENGTH_SHORT).show()
-        }*/
+        backButton = findViewById<View>(R.id.back) as ImageButton
+        assert(backButton != null)
+        backButton!!.setOnClickListener {
+            startActivity(Intent(this, EnterActivity::class.java))
+        }
 
     }
 

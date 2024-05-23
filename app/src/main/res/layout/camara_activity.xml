@@ -9,23 +9,35 @@
     android:orientation="vertical"
     android:background="@color/black"
     tools:context=".CamaraActivity">
+
     <TextureView
         android:id="@+id/texture"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="799dp"
         android:layout_above="@+id/btn_takepicture"
-        android:layout_alignParentTop="true"/>
-    <Button
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="32dp" />
+
+    <ImageButton
         android:id="@+id/btn_takepicture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="57dp"
+        android:layout_height="49dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/custom_button_background"
-        android:text="Foto"
-        android:textStyle="bold"
-        android:textColor="@color/ivory"/>
+        android:background="@drawable/baseline_camera_alt_24" />
+
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="44dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/transparent"
+        android:src="@drawable/arrow_back_ivory"/>
 
 </RelativeLayout>
