@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.snapshots
+import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.lang.Double.parseDouble
 import java.lang.Float.parseFloat
@@ -101,7 +102,7 @@ class PhotoDialog :  ComponentActivity() {
                         val eventType = "PHOTO"
 
                         //Cambiar foto de null
-                        createPost(Post(eventName, eventDate, eventType, null, imageBitmap, null, null))
+                        createPost(Post(eventName, eventDate, eventType, null, null, null, null))
 
                         Thread.sleep(500)
                         Toast.makeText(this, "Se ha creado el evento", Toast.LENGTH_LONG).show()
@@ -131,22 +132,18 @@ class PhotoDialog :  ComponentActivity() {
                 })
         }
 
-        private fun createPost(postData: Post) {
-           this?.let {
-
+        private fun getCoords(): LatLng? {
                 val database = FirebaseFirestore.getInstance()
                 var center : LatLng?
-                center = mGoogleMap?.cameraPosition?.target
+                center = LatLng(0.0, 0.0)
                 database.collection("usuarios").document(currentUser!!.uid).get()
                         .addOnSuccessListener {
                                         document ->
                                 if (document != null){
-                                        //save document to val usuari
                                         val doc = document.data?.entries?.toTypedArray()?.get(1).toString()
                                         val latitude = doc.split("latitude=").get(1).split(",").get(0)
                                         val longitude = doc.split("longitude=").get(1).split("}").get(0)
                                         center = LatLng(parseDouble(latitude), parseDouble(longitude))
-                                        //the log show the correct nickname
                                         Log.i("JAM_locati","lat: " + latitude + " - long: " + longitude)
                                 }
                         }
@@ -154,46 +151,69 @@ class PhotoDialog :  ComponentActivity() {
                                 Log.w("JAM_PhotoDialog", "Error getting documents: ", exception)
                         }
 
-                Thread.sleep(100)
+                return center
+        }
 
-                Log.i("JAM_locati","Center: " + center.toString())
+        private fun createPost(postData: Post) {
+           this?.let {
+                val database = FirebaseFirestore.getInstance()
+                var center : LatLng?
+                center = LatLng(0.0, 0.0)
+                database.collection("usuarios").document(currentUser!!.uid).get()
+                   .addOnSuccessListener {
+                                   document ->
+                           if (document != null){
+                                   val doc = document.data?.entries?.toTypedArray()?.get(1).toString()
+                                   val latitude = doc.split("latitude=").get(1).split(",").get(0)
+                                   val longitude = doc.split("longitude=").get(1).split("}").get(0)
+                                   center = LatLng(parseDouble(latitude), parseDouble(longitude))
+                                   Log.i("JAM_locati","lat: " + latitude + " - long: " + longitude)
+
+                                   Thread.sleep(200)
+
+                                   Log.i("JAM_locati","Center: " + center.toString())
 
 
-                val markerOptions = MarkerOptions()
-                   .apply {
-                           center?.let { position(it) }
-                           title(postData.title.toString())
-                           snippet("Fecha: " + postData.date)
-                           when (postData.type) {
-                                        "EVENT" -> {
-                                                val scaledBitmap =Bitmap.createScaledBitmap(BitmapFactory.decodeResource(
-                                                resources,R.drawable.event_marker), 150, 150, false)
-                                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
-                                        }
+                                   val markerOptions = MarkerOptions()
+                                           .apply {
+                                                   center?.let { position(it) }
+                                                   title(postData.title.toString())
+                                                   snippet("Fecha: " + postData.date)
+                                                   when (postData.type) {
+                                                           "EVENT" -> {
+                                                                   val scaledBitmap =Bitmap.createScaledBitmap(BitmapFactory.decodeResource(
+                                                                           resources,R.drawable.event_marker), 150, 150, false)
+                                                                   icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                                                           }
 
-                                        "PHOTO" -> {
-                                                val scaledBitmap =Bitmap.createScaledBitmap(BitmapFactory.decodeResource(
-                                                resources,R.drawable.photo_marker), 150, 150, false)
-                                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
-                                        }
+                                                           "PHOTO" -> {
+                                                                   val scaledBitmap =Bitmap.createScaledBitmap(BitmapFactory.decodeResource(
+                                                                           resources,R.drawable.photo_marker), 150, 150, false)
+                                                                   icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                                                           }
 
-                                        "SONG" -> {
-                                                val scaledBitmap =Bitmap.createScaledBitmap(BitmapFactory.decodeResource(
-                                                resources,R.drawable.song_marker), 150, 150, false)
-                                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
-                                        }
-                                }
-                        }
+                                                           "SONG" -> {
+                                                                   val scaledBitmap =Bitmap.createScaledBitmap(BitmapFactory.decodeResource(
+                                                                           resources,R.drawable.song_marker), 150, 150, false)
+                                                                   icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                                                           }
+                                                   }
+                                           }
 
-                mGoogleMap?.addMarker(markerOptions)
-                center.let { nonNullCenter ->
-                        mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(nonNullCenter!!, 20f))
-                }
+                                   mGoogleMap?.addMarker(markerOptions)
+                                   center.let { nonNullCenter ->
+                                           mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(nonNullCenter!!, 20f))
+                                   }
 
-                Log.e("JAM_PhotoDialog", "what is $center")
-                // Persist to firebase
-                persistPost(postData, center)
+                                   Log.e("JAM_PhotoDialog", "what is $center")
+                                   // Persist to firebase
+                                   persistPost(postData, center)
 
+                           }
+                   }
+                   .addOnFailureListener { exception ->
+                           Log.w("JAM_PhotoDialog", "Error getting documents: ", exception)
+                   }
            }
         }
 
@@ -201,6 +221,7 @@ class PhotoDialog :  ComponentActivity() {
 
         private fun persistPost(data: Post, center: LatLng?) {
                 val database = FirebaseFirestore.getInstance()
+                Log.i("JAM_locati","Center: " + center.toString())
 
                 // Create a reference to the user's posts collection
                 val userPostsCollection = database.collection("usuarios").document(currentUser!!.uid)
@@ -215,7 +236,6 @@ class PhotoDialog :  ComponentActivity() {
                         "fecha" to data.date,
                         "titulo" to data.title,
                         "tipo" to data.type,
-                        "user" to data.user,
                         "foto" to data.photo,
                         "song" to data.song,
                         "lugar" to center
