@@ -101,7 +101,7 @@
         android:id="@+id/textView2"
         android:layout_width="159dp"
         android:layout_height="34dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="36dp"
         android:text="Registrarse con:"
         android:textAlignment="center"
         android:textColor="@color/darkGreen"
