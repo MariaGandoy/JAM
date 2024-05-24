@@ -154,6 +154,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
+            <TextView
+                android:id="@+id/editProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="30dp"
+                android:layout_below="@+id/deleteAccount"
+                android:text="Editar perfil"
+                android:textColor="@color/black"
+                android:textSize="19sp" />
+
+            <ImageView
+                android:id="@+id/editProfileButton"
+                android:layout_width="40dp"
+                android:layout_height="43dp"
+                android:layout_below="@+id/deleteAccount"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginStart="80dp"
+                android:src="@drawable/account_circle" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_below="@+id/editProfile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
         </RelativeLayout>
 
     </ScrollView>
@@ -165,8 +194,8 @@
         android:layout_below="@+id/scrollView"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="296dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="216dp"
+        android:layout_marginBottom="26dp"
         android:text="© 2024 JAM"
         android:textColor="@color/darkGreen"
         android:textSize="16sp" />
