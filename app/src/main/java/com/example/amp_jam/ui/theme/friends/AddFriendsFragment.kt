@@ -10,12 +10,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.example.amp_jam.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AddFriendsFragment : Fragment() {
@@ -25,28 +27,21 @@ class AddFriendsFragment : Fragment() {
     private var sentFriendUserIds: MutableSet<String> = mutableSetOf()
     private var friendUserIds: MutableSet<String> = mutableSetOf()
     private var receivedFriendUserIds: MutableSet<String> = mutableSetOf()
+    private var lastVisible: DocumentSnapshot? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.add_friends, container, false)
-
-
         firestore = FirebaseFirestore.getInstance()
         currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
         val searchEditText = view.findViewById<EditText>(R.id.textInputLayout2)
         searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // He puesto esto porque si no lo pongo me da un error en el Object
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // He puesto esto porque si no lo pongo me da un error en el Object
-            }
-
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
             override fun afterTextChanged(s: Editable?) {
-                // Buscar
                 loadAllUsers(view, s.toString())
             }
         })
@@ -55,11 +50,23 @@ class AddFriendsFragment : Fragment() {
             loadReceivedFriendRequests {
                 loadFriends {
                     loadAllUsers(view)
+                    setupScrollListener(view)
                 }
             }
         }
 
         return view
+    }
+
+    private fun setupScrollListener(view: View) {
+        val scrollView = view.findViewById<ScrollView>(R.id.scrollView3)
+        scrollView.viewTreeObserver.addOnScrollChangedListener {
+            val viewHeight = scrollView.height
+            val contentHeight = scrollView.getChildAt(0).height
+            if (!isFetching && scrollView.scrollY >= (contentHeight - viewHeight)) {
+                loadAllUsers(view)
+            }
+        }
     }
 
 
@@ -117,29 +124,44 @@ class AddFriendsFragment : Fragment() {
         } ?: onComplete()
     }
 
+    private var isFetching = false
+
     private fun loadAllUsers(view: View, filter: String? = null) {
-        firestore.collection("usuarios")
-            .get()
+        if (isFetching) return // Previene la carga
+        isFetching = true
+
+        var query = firestore.collection("usuarios").limit(14)
+        if (lastVisible != null) {
+            query = query.startAfter(lastVisible!!)
+        }
+
+        query.get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    view.findViewById<LinearLayout>(R.id.usersContainer).removeAllViews()
+                    lastVisible = documents.documents[documents.size() - 1]
+                    if (lastVisible == null) {
+                        view.findViewById<LinearLayout>(R.id.usersContainer).removeAllViews()
+                    }
+
                     for (document in documents) {
                         val userId = document.id
                         val userName = document.getString("name") ?: "Unknown"
 
                         if (userId != currentUserUid && !sentFriendUserIds.contains(userId) && !receivedFriendUserIds.contains(userId) && !friendUserIds.contains(userId)) {
-                            // Aplicar búsqueda (si busco algo claro)
                             if (filter == null || userName.contains(filter, ignoreCase = true)) {
                                 addUserToList(view, userName, userId)
                             }
                         }
                     }
                 }
+                isFetching = false
             }
             .addOnFailureListener { exception ->
                 Log.d("AddFriendsFragment", "Error loading users", exception)
+                isFetching = false
             }
     }
+
 
 
     private fun addUserToList(view: View, userName: String, userId: String) {
