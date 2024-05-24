@@ -81,12 +81,17 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
 
+        view?.let { loadUserProfileData(it) }
+    }
 
 
     private fun loadUserProfileData(view: View) {
         val currentUser = auth.currentUser
         val userNameTextView = view.findViewById<TextView>(R.id.textView3)
+        val lastNameTextView = view.findViewById<TextView>(R.id.textView4)
         val profileImageView = view.findViewById<ImageView>(R.id.imageView3)
         val friendsCountTextView = view.findViewById<TextView>(R.id.textView5)
         progressBar = view.findViewById<ProgressBar>(androidx.appcompat.R.id.progress_circular)
@@ -105,12 +110,15 @@ class ProfileFragment : Fragment() {
             firestore.collection("usuarios").document(currentUser.uid)
                 .get()
                 .addOnSuccessListener { document ->
-                    val name = document.getString("name")
-                    userNameTextView.text = name ?: "@usuario"
+                    val name = document.getString("name") ?: "@usuario"
+                    val lastName = document.getString("lastName") ?: "Apellidos"
+                    userNameTextView.text = name
+                    lastNameTextView.text = lastName
                 }
                 .addOnFailureListener { exception ->
                     Log.d("ProfileFragment", "get failed with ", exception)
                     userNameTextView.text = "@usuario"
+                    lastNameTextView.text = "Apellidos"
                 }
 
             // Load posts
@@ -132,10 +140,11 @@ class ProfileFragment : Fragment() {
                 }
                 .addOnFailureListener {
                     Log.d("ProfileFragment", "Error loading friends count", it)
-                    friendsCountTextView.text = "0 amigos" // Si no hay lsita o hay un error 0
+                    friendsCountTextView.text = "0 amigos"    // Si no hay lsita o hay un error 0
                 }
         } else {
             userNameTextView.text = "@usuario"
+            lastNameTextView.text = "Apellidos"
             friendsCountTextView.text = "0 amigos"
             customMessage.visibility = View.VISIBLE
             customMessage.text = "No tienes actividad reciente"
