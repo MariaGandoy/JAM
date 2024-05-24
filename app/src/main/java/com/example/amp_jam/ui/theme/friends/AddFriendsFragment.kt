@@ -196,7 +196,7 @@ class AddFriendsFragment : Fragment() {
             text = userName + "\n"
             textSize = if (userName.length > 20) 16f else 20f
             setPadding(16, 16, 16, 16)
-            setTextColor(ContextCompat.getColor(requireContext(), R.color.darkGreen))
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         }
 
         // Button para agregar a amigos

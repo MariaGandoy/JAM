@@ -82,6 +82,8 @@ class FriendsRequestFragment : ComponentActivity() {
     }
 
     private fun addUserToScrollView(container: LinearLayout, userName: String, profilePhotoURL: String, userId: String, isReceived: Boolean) {
+        //val userContainer = findViewById<LinearLayout>(R.id.usersContainer)
+
         val userLayout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = LinearLayout.LayoutParams(
@@ -104,11 +106,11 @@ class FriendsRequestFragment : ComponentActivity() {
         // ImageView para la imagen de perfil
         val profilePhotoView = ImageView(this).apply {
             layoutParams = LinearLayout.LayoutParams(
-                250, // Tamaño deseado de la imagen de perfil
-                250
+                25, // Tamaño deseado de la imagen de perfil
+                25
             ).apply {
                 gravity = Gravity.CENTER_VERTICAL
-                marginEnd = 30 // Ajusta el margen entre la imagen y el nombre de usuario
+                marginEnd = 10 // Ajusta el margen entre la imagen y el nombre de usuario
             }
         }
         Glide.with(this)
@@ -124,7 +126,7 @@ class FriendsRequestFragment : ComponentActivity() {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
         }
-        userNameView.setTextColor(getResources().getColor(R.color.darkGreen))
+        userNameView.setTextColor(ContextCompat.getColor(this, R.color.darkGreen))
 
         // Agregar la imagen de perfil y el nombre de usuario al layout de la imagen de perfil
         profilePhotoLayout.addView(profilePhotoView)
@@ -139,27 +141,35 @@ class FriendsRequestFragment : ComponentActivity() {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                gravity = Gravity.END
-            }
+            )
         }
 
         if (isReceived) {
             //Boton de aceptar
             val acceptButton = Button(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    0, // Ancho como 0, pero con peso
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    0.1f // Peso para asegurar que el botón tenga espacio visible
+                )
                 text = "ACEPTAR"
-                background = ContextCompat.getDrawable(context, R.drawable.custom_button_background_2)
+                background = ContextCompat.getDrawable(context, R.drawable.custom_button_background)
                 setOnClickListener { manageFriendRequest(userId, true) }
             }
-            acceptButton.setTextColor(getResources().getColor(R.color.ivory))
+            acceptButton.setTextColor(ContextCompat.getColor(this, R.color.ivory))
 
             //Boton de rechazar
             val rejectButton = Button(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    0, // Ancho como 0, pero con peso
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    0.1f // Peso para asegurar que el botón tenga espacio visible
+                )
                 text = "RECHAZAR"
                 background = ContextCompat.getDrawable(context, R.drawable.custom_button_background_2)
                 setOnClickListener { manageFriendRequest(userId, false) }
             }
-            rejectButton.setTextColor(getResources().getColor(R.color.ivory))
+            rejectButton.setTextColor(ContextCompat.getColor(this, R.color.ivory))
 
             // Agregar los botones al layout
             buttonLayout.addView(acceptButton)
@@ -167,6 +177,11 @@ class FriendsRequestFragment : ComponentActivity() {
         } else {
             //Rechazar si se envió por error
             val cancelButton = Button(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    0, // Ancho como 0, pero con peso
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    0.1f // Peso para asegurar que el botón tenga espacio visible
+                )
                 text = "CANCELAR"
                 background = ContextCompat.getDrawable(context, R.drawable.custom_button_background_2)
                 setOnClickListener { cancelFriendRequest(userId) }
