@@ -1,6 +1,7 @@
 package com.example.amp_jam.ui.theme.friends
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,8 +17,11 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
+import com.example.amp_jam.GoogleSignInActivity
 import com.example.amp_jam.R
+import com.example.amp_jam.SettingsActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -80,11 +84,8 @@ class AddFriendsFragment : Fragment() {
         val settingsButton = view.findViewById<ImageButton>(R.id.btn_notis)
 
         settingsButton.setOnClickListener {
-            val nextFrag = FriendsRequestFragment()
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(((view as ViewGroup).parent as View).id, nextFrag, "findThisFragment")
-                .addToBackStack(null)
-                .commit()
+            val intent = Intent(activity, FriendsRequestFragment::class.java)
+            startActivity(intent)
         }
     }
 

@@ -160,13 +160,14 @@
 
     <TextView
         android:id="@+id/infoApp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="108dp"
+        android:layout_height="53dp"
         android:layout_below="@+id/scrollView"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="296dp"
-        android:layout_marginBottom="10dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="155dp"
+        android:layout_marginTop="371dp"
+        android:layout_marginEnd="145dp"
         android:text="© 2024 JAM"
         android:textColor="@color/darkGreen"
         android:textSize="16sp" />

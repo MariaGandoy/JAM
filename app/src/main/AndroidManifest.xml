@@ -85,6 +85,11 @@
             android:theme="@style/Theme.AppCompat.DayNight.Dialog">
         </activity>
 
+        <activity
+            android:name=".ui.theme.friends.FriendsRequestFragment"
+            android:theme="@style/Theme.AMP_JAM">
+        </activity>
+
         <!-- Services -->
         <service android:name=".LocationService"/>
 

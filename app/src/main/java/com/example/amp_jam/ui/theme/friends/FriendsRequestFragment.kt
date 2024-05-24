@@ -10,6 +10,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -17,35 +19,40 @@ import com.example.amp_jam.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class FriendsRequestFragment : Fragment() {
+class FriendsRequestFragment : ComponentActivity() {
 
     private lateinit var firestore: FirebaseFirestore
     private var currentUserUid: String? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.friend_request, container, false)
+    override fun onCreate(savedInstanceState: Bundle?){
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.friend_request)
+
+        setUpBackArrow()
         currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
         firestore = FirebaseFirestore.getInstance()
-
         if (currentUserUid != null) {
-            refreshFriendRequests(view)
+            refreshFriendRequests()
         }
+    }
 
-        return view
+    private fun setUpBackArrow() {
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setNavigationOnClickListener  {
+            finish()
+        }
     }
 
     // Función para cargar las listas
-    private fun refreshFriendRequests(view: View) {
-        loadFriendRequests(view, "receive_friend", R.id.receivedRequestsContainer)
-        loadFriendRequests(view, "send_friend", R.id.sentRequestsContainer)
+    private fun refreshFriendRequests() {
+        loadFriendRequests("receive_friend", R.id.receivedRequestsContainer)
+        loadFriendRequests("send_friend", R.id.sentRequestsContainer)
     }
 
 
-    private fun loadFriendRequests(view: View, collectionPath: String, containerId: Int) {
-        val container = view.findViewById<LinearLayout>(containerId)
+
+    private fun loadFriendRequests(collectionPath: String, containerId: Int) {
+        val container = findViewById<LinearLayout>(containerId)
         container.removeAllViews() // Limpiar vistas antiguas antes de cargar nuevas IMPORTANTE
         firestore.collection("usuarios").document(currentUserUid!!)
             .collection(collectionPath).get()
@@ -75,7 +82,7 @@ class FriendsRequestFragment : Fragment() {
     }
 
     private fun addUserToScrollView(container: LinearLayout, userName: String, profilePhotoURL: String, userId: String, isReceived: Boolean) {
-        val userLayout = LinearLayout(context).apply {
+        val userLayout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -86,7 +93,7 @@ class FriendsRequestFragment : Fragment() {
         }
 
         // Layout para la imagen de perfil
-        val profilePhotoLayout = LinearLayout(context).apply {
+        val profilePhotoLayout = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -95,7 +102,7 @@ class FriendsRequestFragment : Fragment() {
         }
 
         // ImageView para la imagen de perfil
-        val profilePhotoView = ImageView(context).apply {
+        val profilePhotoView = ImageView(this).apply {
             layoutParams = LinearLayout.LayoutParams(
                 250, // Tamaño deseado de la imagen de perfil
                 250
@@ -104,12 +111,12 @@ class FriendsRequestFragment : Fragment() {
                 marginEnd = 30 // Ajusta el margen entre la imagen y el nombre de usuario
             }
         }
-        Glide.with(requireContext())
+        Glide.with(this)
             .load(profilePhotoURL)
             .into(profilePhotoView)
 
         // TextView para el nombre de usuario
-        val userNameView = TextView(context).apply {
+        val userNameView = TextView(this).apply {
             text = userName
             textSize = 20f
             layoutParams = LinearLayout.LayoutParams(
@@ -127,7 +134,7 @@ class FriendsRequestFragment : Fragment() {
         userLayout.addView(profilePhotoLayout)
 
         // Layout para los botones
-        val buttonLayout = LinearLayout(context).apply {
+        val buttonLayout = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -139,7 +146,7 @@ class FriendsRequestFragment : Fragment() {
 
         if (isReceived) {
             //Boton de aceptar
-            val acceptButton = Button(context).apply {
+            val acceptButton = Button(this).apply {
                 text = "ACEPTAR"
                 background = ContextCompat.getDrawable(context, R.drawable.custom_button_background_2)
                 setOnClickListener { manageFriendRequest(userId, true) }
@@ -147,7 +154,7 @@ class FriendsRequestFragment : Fragment() {
             acceptButton.setTextColor(getResources().getColor(R.color.ivory))
 
             //Boton de rechazar
-            val rejectButton = Button(context).apply {
+            val rejectButton = Button(this).apply {
                 text = "RECHAZAR"
                 background = ContextCompat.getDrawable(context, R.drawable.custom_button_background_2)
                 setOnClickListener { manageFriendRequest(userId, false) }
@@ -159,7 +166,7 @@ class FriendsRequestFragment : Fragment() {
             buttonLayout.addView(rejectButton)
         } else {
             //Rechazar si se envió por error
-            val cancelButton = Button(context).apply {
+            val cancelButton = Button(this).apply {
                 text = "CANCELAR"
                 background = ContextCompat.getDrawable(context, R.drawable.custom_button_background_2)
                 setOnClickListener { cancelFriendRequest(userId) }
@@ -198,7 +205,7 @@ class FriendsRequestFragment : Fragment() {
             }
             null
         }.addOnSuccessListener {
-            refreshFriendRequests(requireView())
+            refreshFriendRequests()
             Log.d("FriendsRequestFragment", "Friend request managed successfully.")
         }.addOnFailureListener { e ->
             Log.e("FriendsRequestFragment", "Error managing friend request", e)
@@ -219,7 +226,7 @@ class FriendsRequestFragment : Fragment() {
 
             null
         }.addOnSuccessListener {
-            refreshFriendRequests(requireView())
+            refreshFriendRequests()
             Log.d("FriendsRequestFragment", "Friend request cancelled successfully.")
         }.addOnFailureListener { e ->
             Log.e("FriendsRequestFragment", "Error cancelling friend request", e)
