@@ -1,5 +1,6 @@
 package com.example.amp_jam.ui.theme.friends
 
+
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,16 +10,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import androidx.fragment.app.Fragment
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
 import com.example.amp_jam.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+
 
 class AddFriendsFragment : Fragment() {
 
@@ -30,6 +33,7 @@ class AddFriendsFragment : Fragment() {
     private var lastVisible: DocumentSnapshot? = null
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,6 +41,8 @@ class AddFriendsFragment : Fragment() {
         val view = inflater.inflate(R.layout.add_friends, container, false)
         firestore = FirebaseFirestore.getInstance()
         currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+
+
         val searchEditText = view.findViewById<EditText>(R.id.textInputLayout2)
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
@@ -45,6 +51,8 @@ class AddFriendsFragment : Fragment() {
                 loadAllUsers(view, s.toString())
             }
         })
+
+        setUpNotification(view)
 
         loadSentFriendRequests {
             loadReceivedFriendRequests {
@@ -66,6 +74,17 @@ class AddFriendsFragment : Fragment() {
             if (!isFetching && scrollView.scrollY >= (contentHeight - viewHeight)) {
                 loadAllUsers(view)
             }
+        }
+    }
+    private fun setUpNotification(view: View) {
+        val settingsButton = view.findViewById<ImageButton>(R.id.btn_notis)
+
+        settingsButton.setOnClickListener {
+            val nextFrag = FriendsRequestFragment()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(((view as ViewGroup).parent as View).id, nextFrag, "findThisFragment")
+                .addToBackStack(null)
+                .commit()
         }
     }
 

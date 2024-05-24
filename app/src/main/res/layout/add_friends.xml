@@ -20,42 +20,56 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/autocompleteUbicationCard"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_width="286dp"
+            android:layout_height="54dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="20dp"
             android:backgroundTint="@color/ivory"
             app:cardCornerRadius="30dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.094"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <EditText
                 android:id="@+id/textInputLayout2"
-                android:layout_width="match_parent"
+                android:layout_width="270dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:backgroundTint="@color/darkGreen"
                 android:hint="Buscar"
-                android:minHeight="48dp"
-                android:inputType="text"
                 android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:minHeight="48dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="TouchTargetSizeCheck"></EditText>
         </androidx.cardview.widget.CardView>
 
+        <ImageButton
+            android:id="@+id/btn_notis"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/friend_notifications"
+            android:backgroundTint="@color/darkGreen"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.928"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ScrollView
             android:id="@+id/scrollView3"
-            android:layout_width="350dp"
-            android:layout_height="0dp"
+            android:layout_width="341dp"
+            android:layout_height="832dp"
             android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
             android:layout_marginTop="5dp"
+            android:layout_marginEnd="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.571"
