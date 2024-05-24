@@ -29,6 +29,7 @@ class SettingsActivity: ComponentActivity() {
         setUpBackArrow()
         setupDarkModeSwitch()
         setUpShareLocationSwitch()
+        setupEditProfileButton()
     }
 
     private fun setUpBackArrow() {
@@ -37,6 +38,14 @@ class SettingsActivity: ComponentActivity() {
             finish()
         }
     }
+    private fun setupEditProfileButton() {
+        val editProfileButton = findViewById<ImageView>(R.id.editProfileButton)
+        editProfileButton.setOnClickListener {
+            val intent = Intent(this, ChangeUserDataActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
 
     private fun setupLogOut() {
         val toolbarLogout = findViewById<ImageView>(R.id.toolbarLogout)
