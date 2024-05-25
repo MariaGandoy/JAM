@@ -30,7 +30,6 @@ class CameraFragment : Fragment() {
         val view = inflater.inflate(R.layout.camera, container, false)
 
         setupCameraButtons(view)
-        Log.d("Debugeandoklk", "llego cAMERA")
         return view
     }
 
