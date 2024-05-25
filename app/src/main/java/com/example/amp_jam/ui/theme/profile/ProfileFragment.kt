@@ -6,16 +6,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.amp_jam.ChangeUserDataActivity
 import com.example.amp_jam.GroupCreateDialog
 import com.example.amp_jam.ListOfFriendsActivity
 import com.example.amp_jam.Post
@@ -58,9 +61,15 @@ class ProfileFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
+        Toast.makeText(this.context, "1", Toast.LENGTH_SHORT).show()
+
         setUpSettings(view)
+        Toast.makeText(this.context, "2", Toast.LENGTH_SHORT).show()
         loadUserProfileData(view)
+        Toast.makeText(this.context, "3", Toast.LENGTH_SHORT).show()
         setupAddGroupsButton(view)
+        Toast.makeText(this.context, "4", Toast.LENGTH_SHORT).show()
+        setupEditProfileButton()
 
         val settingsButton = view.findViewById<ImageButton>(R.id.configurations)
         settingsButton.setOnClickListener {
@@ -147,6 +156,7 @@ class ProfileFragment : Fragment() {
                 }
         } else {
             if (isAdded) {
+                Toast.makeText(this.context, "isAdded", Toast.LENGTH_SHORT).show()
                 userNameTextView.text = "@usuario"
                 lastNameTextView.text = "Apellidos"
                 friendsCountTextView.text = "0 amigos"
@@ -156,6 +166,14 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun setupEditProfileButton() {
+        val editProfileButton = view?.findViewById<ImageView>(R.id.editProfile)
+        editProfileButton?.setOnClickListener {
+            Toast.makeText(this.context, "ENTROO", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), ChangeUserDataActivity::class.java)
+            startActivity(intent)
+        }
+    }
     private fun setUpRecyclerView(view: View, user: User?) {
         mRecyclerView = view.findViewById<RecyclerView>(R.id.postsList)
         mRecyclerView.setHasFixedSize(true)
@@ -163,6 +181,7 @@ class ProfileFragment : Fragment() {
 
         progressBar.visibility = View.VISIBLE
         customMessage.visibility = View.GONE
+        Toast.makeText(this.context, "UE", Toast.LENGTH_SHORT).show()
 
         // Fetch posts asynchronously and set up the adapter when posts are available
         getPosts(user) { posts ->
@@ -175,6 +194,8 @@ class ProfileFragment : Fragment() {
     private fun getPosts(user: User?, callback: (MutableList<Post>) -> Unit) {
         var posts: MutableList<Post> = ArrayList()
 
+        Toast.makeText(this.context, "OLA", Toast.LENGTH_SHORT).show()
+
         val auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
 
@@ -184,6 +205,7 @@ class ProfileFragment : Fragment() {
                 .addOnSuccessListener { documents ->
                     if (isAdded) {
                         if (!documents.isEmpty) {
+                            Toast.makeText(this.context, "Sí hay acitividad reciente", Toast.LENGTH_SHORT).show()
                             for (postDocument in documents) {
                                 val postData = postDocument.data
 
@@ -195,6 +217,7 @@ class ProfileFragment : Fragment() {
                                 posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["photo"], postData["song"], LatLng(latitude, longitude)))
                             }
                         } else {
+                            Toast.makeText(this.context, "No hay acitividad reciente", Toast.LENGTH_SHORT).show()
                             customMessage.visibility = View.VISIBLE
                             customMessage.text = "No tienes actividad reciente"
                         }
@@ -213,7 +236,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupAddGroupsButton(view: View) {
-        val addGroupsButton = view.findViewById<ImageButton>(R.id.addGroups)
+        val addGroupsButton = view.findViewById<Button>(R.id.addGroups)
         addGroupsButton.setOnClickListener {
             val groupCreateDialog = GroupCreateDialog()
             groupCreateDialog.show(requireFragmentManager(), "GroupCreateDialog")
