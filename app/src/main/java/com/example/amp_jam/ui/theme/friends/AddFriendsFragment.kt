@@ -50,7 +50,8 @@ class AddFriendsFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                loadAllUsers(view, s.toString())
+                lastVisible = null
+                loadAllUsers(view, s.toString().trim())
             }
         })
 
@@ -145,13 +146,16 @@ class AddFriendsFragment : Fragment() {
 
     private var isFetching = false
 
-    private fun loadAllUsers(view: View, filter: String? = null) {
+    private fun loadAllUsers(view: View, filter: String? = "") {
         if (isFetching) return
         isFetching = true
 
         var query = firestore.collection("usuarios").limit(14)
-        if (lastVisible != null) {
+        if (lastVisible != null && filter.isNullOrEmpty()) {
             query = query.startAfter(lastVisible!!)
+        } else {
+            lastVisible = null
+            view.findViewById<LinearLayout>(R.id.usersContainer).removeAllViews()
         }
 
         query.get()
@@ -159,21 +163,19 @@ class AddFriendsFragment : Fragment() {
                 if (isAdded) {
                     if (!documents.isEmpty) {
                         lastVisible = documents.documents[documents.size() - 1]
-                        if (lastVisible == null) {
-                            view.findViewById<LinearLayout>(R.id.usersContainer).removeAllViews()
-                        }
 
                         for (document in documents) {
                             val userId = document.id
-                            val userName = document.getString("name") ?: "Unknown"
+                            val userName = (document.getString("name") ?: "Unknown").trim()
                             val profilePhotoURL = document.getString("photo")
                                 ?: Uri.parse("android.resource://"
                                         + getActivity()?.getPackageName() +"/"+R.drawable.sample_user).toString()
 
-                            if (userId != currentUserUid && !sentFriendUserIds.contains(userId) && !receivedFriendUserIds.contains(
-                                    userId
-                                ) && !friendUserIds.contains(userId)
+
+                            if (userId != currentUserUid && !sentFriendUserIds.contains(userId) && !receivedFriendUserIds.contains(userId)
+                                && !friendUserIds.contains(userId) && (filter.isNullOrEmpty() || userName.toLowerCase().contains(filter.trim().toLowerCase()))
                             ) {
+
                                 if (filter == null || userName.contains(
                                         filter,
                                         ignoreCase = true
