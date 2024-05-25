@@ -14,18 +14,18 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
-import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 
 
@@ -36,8 +36,13 @@ import java.util.Calendar
  */
 class MapEventFragment() : Fragment() {
 
+    private val firestore = FirebaseFirestore.getInstance()
     private lateinit var takePictureLauncher: ActivityResultLauncher<Intent>
     private lateinit var pickImageLauncher: ActivityResultLauncher<String>
+
+    private lateinit var groupsView: RecyclerView
+    private val itemList: MutableList<DocumentSnapshot> = mutableListOf()
+
 
     companion object {
         private const val REQUEST_CAMERA_PERMISSION = 1
@@ -93,8 +98,9 @@ class MapEventFragment() : Fragment() {
 
         setUpNameEventListener(view)
         setUpDatePickerDialog(view, requireContext())
-        setUpRadioGroupListener(view)
         setupPhotoButtons(view)
+        setupGroupsView(view)
+        loadGroups()
 
         return view
     }
@@ -137,13 +143,13 @@ class MapEventFragment() : Fragment() {
         }
     }
 
-    private fun setUpRadioGroupListener(view: View) {
-        val radioGroup = view.findViewById<RadioGroup>(R.id.radioGroup)
-        radioGroup.setOnCheckedChangeListener { group, checkedId ->
-            val radioButton = view.findViewById<RadioButton>(checkedId)
-            Log.d("JAM_NAVIGATION", "[MapPost] Notify radio group selection changed to: $checkedId")
-        }
+    private fun setupGroupsView(view: View) {
+        groupsView = view.findViewById<RecyclerView>(R.id.groupsView)
+        groupsView.layoutManager = LinearLayoutManager(context)
+
+        groupsView.adapter = GroupsAdapter(itemList,"name")
     }
+
 
     private fun setupPhotoButtons(view: View) {
         val cameraBtn = view.findViewById<ImageButton>(R.id.addFromCamera)
@@ -188,5 +194,30 @@ class MapEventFragment() : Fragment() {
             }
         }
     }
+
+    private fun loadGroups() {
+        val userUid = FirebaseAuth.getInstance().currentUser?.uid
+        if (userUid != null) {
+            itemList.clear()
+            firestore.collection("usuarios").document(userUid).collection("groups")
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (documents.isEmpty) {
+                        Log.d("GroupCreateDialog", "Groups List: []")
+                    } else {
+                        for (groupDocument in documents) {
+                            itemList.add(groupDocument)
+                            groupsView.adapter?.notifyDataSetChanged()
+                        }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d("GroupCreateDialog", "Error loading friends list", exception)
+                }
+        } else {
+            Log.d("GroupCreateDialog", "User ID is null, unable to load friends")
+        }
+    }
+
 
 }

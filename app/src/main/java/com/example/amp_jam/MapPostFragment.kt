@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 
@@ -102,9 +103,12 @@ class MapPostFragment: DialogFragment() {
             else -> null
         }
 
+        val recyclerView = view.findViewById<RecyclerView>(R.id.groupsView)
+        val selectedGroups = (recyclerView.adapter as? GroupsAdapter)?.selectedGroups?.keys?.toList() ?: listOf()
+
         val eventType = "EVENT"
 
-        submitPost(Post(eventName, eventDate, eventType, null, photoBitmap, null, null))
+        submitPost(Post(eventName, eventDate, eventType, null, photoBitmap, null, null, selectedGroups))
     }
 
     private fun setPhotoData(view: View) {
@@ -122,9 +126,12 @@ class MapPostFragment: DialogFragment() {
             else -> null
         }
 
+        val recyclerView = view.findViewById<RecyclerView>(R.id.groupsView)
+        val selectedGroups = (recyclerView.adapter as? GroupsAdapter)?.selectedGroups?.keys?.toList() ?: listOf()
+
         val eventType = "PHOTO"
 
-        submitPost(Post(null, null, eventType, null, photoBitmap, null, null))
+        submitPost(Post(null, null, eventType, null, photoBitmap, null, null, selectedGroups))
     }
 
     private fun setSongData(view: View) {
@@ -133,7 +140,10 @@ class MapPostFragment: DialogFragment() {
         val postSong = view.findViewById<EditText>(R.id.songName).text.toString()
         val eventType = "SONG"
 
-        submitPost(Post( null, null, eventType, null, null, postSong, null))
+        val recyclerView = view.findViewById<RecyclerView>(R.id.groupsView)
+        val selectedGroups = (recyclerView.adapter as? GroupsAdapter)?.selectedGroups?.keys?.toList() ?: listOf()
+
+        submitPost(Post( null, null, eventType, null, null, postSong, null, selectedGroups))
     }
 
     private fun submitPost(data: Post) {

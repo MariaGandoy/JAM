@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +28,12 @@ class GroupCreateDialog : DialogFragment() {
 
             setupRecyclerView(view)
             loadFriends()
+
+            // Set toolbar
+            val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+            toolbar.setNavigationOnClickListener  {
+                dismiss()
+            }
 
             // Configurando la vista del diálogo y los botones
             builder.setView(view)

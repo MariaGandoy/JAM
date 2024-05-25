@@ -21,30 +21,17 @@
                         android:id="@+id/addFromCamera"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
-                        android:layout_margin="10dp"
-                        android:background="@android:color/transparent"
+                        android:layout_marginEnd="20dp"
                         android:src="@drawable/take_photo" />
 
                     <ImageButton
                         android:id="@+id/addFromFiles"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
-                        android:layout_margin="10dp"
-                        android:background="@android:color/transparent"
+                        android:layout_marginStart="10dp"
                         android:src="@drawable/add_photo" />
 
                 </LinearLayout>
-
-                <EditText
-                    android:id="@+id/photoText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:ems="10"
-                    android:inputType="text"
-                    android:hint="Pie de foto"
-                    android:layout_below="@id/imageButtonsContainer"
-                    android:backgroundTint="@color/darkGreen"/>
 
                 <!-- Friends to notify -->
                 <TextView
@@ -54,44 +41,22 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:text="compartir con"
+                    android:text="compartir sólo con"
                     android:textColor="@color/darkGreen"
-                    android:layout_below="@id/photoText"
+                    android:layout_below="@id/imageButtonsContainer"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <RadioGroup
-                    android:id="@+id/radioGroup"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/groupsView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/newEventNotify"
+                    android:layout_height="100dp"
                     android:layout_marginStart="20dp"
-                    android:background="#024CAF50"
-                    app:layout_constraintVertical_bias="0.24000001">
-
-                    <RadioButton
-                        android:id="@+id/radioButton1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="false"
-                        android:text="Amigos" />
-
-                    <RadioButton
-                        android:id="@+id/radioButton2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="Familia" />
-
-                    <RadioButton
-                        android:id="@+id/radioButton3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="false"
-                        android:text="Equipo" />
-
-                </RadioGroup>
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_below="@id/newEventNotify"
+                    app:layout_constraintVertical_bias="0.0" />
 
     </RelativeLayout>
 

@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 
@@ -136,6 +137,12 @@ class ProfileFragment : Fragment() {
                     }
                 }
 
+            // Load posts
+            lifecycleScope.launch {
+                val user = getUser(currentUser.uid, firestore)
+                setUpRecyclerView(view, user)
+            }
+
             // Load friends count
             firestore.collection("usuarios").document(currentUser.uid).collection("friends")
                 .get()
@@ -181,7 +188,6 @@ class ProfileFragment : Fragment() {
 
         progressBar.visibility = View.VISIBLE
         customMessage.visibility = View.GONE
-        Toast.makeText(this.context, "UE", Toast.LENGTH_SHORT).show()
 
         // Fetch posts asynchronously and set up the adapter when posts are available
         getPosts(user) { posts ->
@@ -194,8 +200,6 @@ class ProfileFragment : Fragment() {
     private fun getPosts(user: User?, callback: (MutableList<Post>) -> Unit) {
         var posts: MutableList<Post> = ArrayList()
 
-        Toast.makeText(this.context, "OLA", Toast.LENGTH_SHORT).show()
-
         val auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
 
@@ -205,7 +209,6 @@ class ProfileFragment : Fragment() {
                 .addOnSuccessListener { documents ->
                     if (isAdded) {
                         if (!documents.isEmpty) {
-                            Toast.makeText(this.context, "Sí hay acitividad reciente", Toast.LENGTH_SHORT).show()
                             for (postDocument in documents) {
                                 val postData = postDocument.data
 
@@ -214,10 +217,9 @@ class ProfileFragment : Fragment() {
                                 val latitude = lugarPost["latitude"] as Double
                                 val longitude = lugarPost["longitude"] as Double
 
-                                posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["photo"], postData["song"], LatLng(latitude, longitude)))
+                                posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["photo"], postData["song"], LatLng(latitude, longitude), postData["shareWith"]))
                             }
                         } else {
-                            Toast.makeText(this.context, "No hay acitividad reciente", Toast.LENGTH_SHORT).show()
                             customMessage.visibility = View.VISIBLE
                             customMessage.text = "No tienes actividad reciente"
                         }

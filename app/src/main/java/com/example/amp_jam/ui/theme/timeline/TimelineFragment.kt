@@ -2,6 +2,7 @@ package com.example.amp_jam.ui.theme.timeline
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,6 +40,8 @@ class TimelineFragment : Fragment() {
 
     lateinit var customMessage: TextView
 
+    private lateinit var currentUser: FirebaseUser
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,7 +73,7 @@ class TimelineFragment : Fragment() {
         progressBar.visibility = View.VISIBLE
 
         val auth = FirebaseAuth.getInstance()
-        val currentUser = auth.currentUser
+        currentUser = auth.currentUser!!
 
         // Fetch posts asynchronously and set up the adapter when posts are available
         if (currentUser != null) {
@@ -140,8 +143,13 @@ class TimelineFragment : Fragment() {
                 val latitude = lugarPost["latitude"] as Double
                 val longitude = lugarPost["longitude"] as Double
 
+                // Get post restrictions
+                val shareWith = postData["share"] as? List<String> ?: emptyList()
+
                 if (user != null) {
-                    posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["photo"], postData["song"], LatLng(latitude, longitude)))
+                    if (userId == currentUser.uid || shareWith.isEmpty() || shareWith.contains(currentUser.uid)) {
+                        posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["photo"], postData["song"], LatLng(latitude, longitude), postData["shareWith"]))
+                    }
                 }
             }
 

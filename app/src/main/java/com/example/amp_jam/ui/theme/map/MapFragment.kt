@@ -69,7 +69,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
     private var mapMarkers: MutableList<Marker> = ArrayList()
 
-    private var visibleMarkers = mutableListOf("FRIEND", "EVENT", "PHOTO", "SONG")
+    private var visibleMarkers = mutableListOf("FRIEND", "EVENT", "PHOTO", "SONG", "ALERT")
 
     private lateinit var autocompleteFragment: AutocompleteSupportFragment
 
@@ -392,33 +392,41 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
         // Update posts from firebase
         posts.forEach { post ->
-            val latitude = post.location?.latitude as Double
-            val longitude = post.location?.longitude as Double
+            val shareWith = post.shareWith as? List<String> ?: emptyList()
 
-            val postMarkerOptions = MarkerOptions()
-                .position(LatLng(latitude, longitude))
-                .title(post.title.toString())
-                .snippet("Fecha: " + post.date)
-                .apply {
-                    when (post.type) {
-                        "EVENT" -> {
-                            val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.event_marker), 150, 150, false)
-                            icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
-                        }
-                        "PHOTO" -> {
-                            val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.photo_marker), 150, 150, false)
-                            icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
-                        }
-                        "SONG" -> {
-                            val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.song_marker), 150, 150, false)
-                            icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+            if (post.user!!.id == currentUser!!.uid || shareWith.isEmpty() || shareWith.contains(currentUser!!.uid)) {
+                val latitude = post.location?.latitude as Double
+                val longitude = post.location?.longitude as Double
+
+                val postMarkerOptions = MarkerOptions()
+                    .position(LatLng(latitude, longitude))
+                    .title(post.title.toString())
+                    .snippet("Fecha: " + post.date)
+                    .apply {
+                        when (post.type) {
+                            "EVENT" -> {
+                                val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.event_marker), 150, 150, false)
+                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                            }
+                            "PHOTO" -> {
+                                val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.photo_marker), 150, 150, false)
+                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                            }
+                            "SONG" -> {
+                                val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.song_marker), 150, 150, false)
+                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                            }
+                            "ALERT" -> {
+                                val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.alert_marker), 150, 150, false)
+                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                            }
                         }
                     }
-                }
 
-            val marker = mGoogleMap?.addMarker(postMarkerOptions) as Marker
-            marker.setTag(post.type)
-            mapMarkers.add(marker)
+                val marker = mGoogleMap?.addMarker(postMarkerOptions) as Marker
+                marker.setTag(post.type)
+                mapMarkers.add(marker)
+            }
         }
 
         // Update friends from firebase
@@ -527,6 +535,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                                 val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.song_marker), 150, 150, false)
                                 icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
                             }
+                            "ALERT" -> {
+                                val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.alert_marker), 150, 150, false)
+                                icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                            }
                         }
                     }
 
@@ -559,6 +571,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
             "tipo" to data.type,
             "song" to data.song,
             "lugar" to center,
+            "share" to data.shareWith,
         )
 
         // Store post image if not null

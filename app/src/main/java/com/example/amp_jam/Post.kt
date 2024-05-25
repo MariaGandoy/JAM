@@ -9,5 +9,6 @@ data class Post(
     var user: User?,
     var photo: Any?,
     var song: Any?,
-    var location: LatLng?) {}
+    var location: LatLng?,
+    var shareWith: Any?) {}
 

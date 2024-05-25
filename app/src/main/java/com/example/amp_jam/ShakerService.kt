@@ -1,11 +1,19 @@
 package com.example.amp_jam
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.location.LocationManager
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.*
 import kotlin.math.sqrt
 
@@ -22,9 +30,16 @@ class ShakerService(private val context: Context) : SensorEventListener {
     private var currentAcceleration = 0f
     private var lastAcceleration = 0f
 
+    private lateinit var auth: FirebaseAuth
+    private var currentUser: FirebaseUser? = null
+
+
     fun startReading() {
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL)
+
+        auth = FirebaseAuth.getInstance()
+        currentUser = auth.currentUser
 
         job = coroutineScope.launch {
             while (isActive) {
@@ -62,11 +77,51 @@ class ShakerService(private val context: Context) : SensorEventListener {
         acceleration = acceleration * 0.9f + delta
 
         // Display a Toast message if
-        // acceleration value is over 12
-        if (acceleration > 12) {
+        // acceleration value is over 17
+        if (acceleration > 17) {
+            createAlert()
+        }
+    }
 
-            //Esto cambiarlo por
-            Toast.makeText(this.context, "Shake event detected", Toast.LENGTH_SHORT).show()
+    private fun createAlert() {
+        val database = FirebaseFirestore.getInstance()
+
+        // Create a reference to the user's posts collection
+        val userPostsCollection = database.collection("usuarios").document(currentUser!!.uid)
+            .collection("posts")
+
+        // Generate a new document ID for the post
+        val newPostDocument = userPostsCollection.document()
+
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        } else {
+            val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+            if (location != null) {
+                val latLng = LatLng(location.latitude, location.longitude)
+
+                // Prepare the data for the post
+                val postData = hashMapOf(
+                    "fecha" to null,
+                    "titulo" to null,
+                    "tipo" to "ALERT",
+                    "song" to null,
+                    "lugar" to latLng,
+                    "share" to emptyList<String>(),
+                )
+
+                newPostDocument.set(postData)
+                Toast.makeText(this.context, "Has creado una alerta", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

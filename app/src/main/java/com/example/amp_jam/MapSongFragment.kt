@@ -11,6 +11,11 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 /**
@@ -19,6 +24,10 @@ import android.widget.RadioGroup
  * create an instance of this fragment.
  */
 class MapSongFragment() : Fragment() {
+
+    private val firestore = FirebaseFirestore.getInstance()
+    private lateinit var groupsView: RecyclerView
+    private val itemList: MutableList<DocumentSnapshot> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +40,8 @@ class MapSongFragment() : Fragment() {
         val view = inflater.inflate(R.layout.map_song, container, false)
 
         setUpSongTextListener(view)
-        setUpRadioGroupListener(view)
+        setupGroupsView(view)
+        loadGroups()
 
         return view
     }
@@ -49,11 +59,36 @@ class MapSongFragment() : Fragment() {
         })
     }
 
-    private fun setUpRadioGroupListener(view: View) {
-        val radioGroup = view.findViewById<RadioGroup>(R.id.radioGroup)
-        radioGroup.setOnCheckedChangeListener { group, checkedId ->
-            val radioButton = view.findViewById<RadioButton>(checkedId)
-            Log.d("JAM_NAVIGATION", "[MapPost] Notify radio group selection changed to: $checkedId")
+    private fun setupGroupsView(view: View) {
+        groupsView = view.findViewById<RecyclerView>(R.id.groupsView)
+        groupsView.layoutManager = LinearLayoutManager(context)
+
+        groupsView.adapter = GroupsAdapter(itemList, "name")
+    }
+
+
+    private fun loadGroups() {
+        val userUid = FirebaseAuth.getInstance().currentUser?.uid
+        if (userUid != null) {
+            itemList.clear()
+            firestore.collection("usuarios").document(userUid).collection("groups")
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (documents.isEmpty) {
+                        Log.d("GroupCreateDialog", "Groups List: []")
+                    } else {
+                        for (groupDocument in documents) {
+                            itemList.add(groupDocument)
+                            groupsView.adapter?.notifyDataSetChanged()
+                        }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d("GroupCreateDialog", "Error loading friends list", exception)
+                }
+        } else {
+            Log.d("GroupCreateDialog", "User ID is null, unable to load friends")
         }
     }
+
 }

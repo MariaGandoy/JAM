@@ -104,7 +104,7 @@ class PhotoDialog :  ComponentActivity() {
                         val eventType = "PHOTO"
 
                         //Cambiar foto de null
-                        createPost(Post(eventName, eventDate, eventType, null, imageBitmap, null, null))
+                        createPost(Post(eventName, eventDate, eventType, null, imageBitmap, null, null, null))
                 }
         }
 

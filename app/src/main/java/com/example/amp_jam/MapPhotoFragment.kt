@@ -21,6 +21,11 @@ import android.widget.ImageButton
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 /**
@@ -30,8 +35,12 @@ import androidx.core.content.ContextCompat
  */
 class MapPhotoFragment() : Fragment() {
 
+    private val firestore = FirebaseFirestore.getInstance()
     private lateinit var takePictureLauncher: ActivityResultLauncher<Intent>
     private lateinit var pickImageLauncher: ActivityResultLauncher<String>
+
+    private lateinit var groupsView: RecyclerView
+    private val itemList: MutableList<DocumentSnapshot> = mutableListOf()
 
     companion object {
         private const val REQUEST_CAMERA_PERMISSION = 1
@@ -85,32 +94,18 @@ class MapPhotoFragment() : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.map_photo, container, false)
 
-        setUpPhotoTextListener(view)
-        setUpRadioGroupListener(view)
         setupPhotoButtons(view)
+        setupGroupsView(view)
+        loadGroups()
 
         return view
     }
 
-    private fun setUpPhotoTextListener(view: View) {
-        val textInputPhoto = view.findViewById<EditText>(R.id.photoText)
-        textInputPhoto.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+    private fun setupGroupsView(view: View) {
+        groupsView = view.findViewById<RecyclerView>(R.id.groupsView)
+        groupsView.layoutManager = LinearLayoutManager(context)
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                Log.d("JAM_NAVIGATION", "[MapPhoto] Photo text changed to: $s")
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-    }
-
-    private fun setUpRadioGroupListener(view: View) {
-        val radioGroup = view.findViewById<RadioGroup>(R.id.radioGroup)
-        radioGroup.setOnCheckedChangeListener { group, checkedId ->
-            val radioButton = view.findViewById<RadioButton>(checkedId)
-            Log.d("JAM_NAVIGATION", "[MapPost] Notify radio group selection changed to: $checkedId")
-        }
+        groupsView.adapter = GroupsAdapter(itemList, "name")
     }
 
     private fun setupPhotoButtons(view: View) {
@@ -156,4 +151,30 @@ class MapPhotoFragment() : Fragment() {
             }
         }
     }
+
+    private fun loadGroups() {
+        val userUid = FirebaseAuth.getInstance().currentUser?.uid
+        if (userUid != null) {
+            itemList.clear()
+            firestore.collection("usuarios").document(userUid).collection("groups")
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (documents.isEmpty) {
+                        Log.d("GroupCreateDialog", "Groups List: []")
+                    } else {
+                        for (groupDocument in documents) {
+                            itemList.add(groupDocument)
+                            groupsView.adapter?.notifyDataSetChanged()
+                        }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d("GroupCreateDialog", "Error loading friends list", exception)
+                }
+        } else {
+            Log.d("GroupCreateDialog", "User ID is null, unable to load friends")
+        }
+    }
+
+
 }
