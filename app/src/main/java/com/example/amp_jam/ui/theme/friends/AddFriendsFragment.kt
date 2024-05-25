@@ -201,11 +201,7 @@ class AddFriendsFragment : Fragment() {
 
         // Button para agregar a amigos
         val addButton = Button(context).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                0, // Ancho como 0, pero con peso
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                0.1f // Peso para asegurar que el botón tenga espacio visible
-            )
+            layoutParams = LinearLayout.LayoutParams(100, 100)
             text = "+"
             background = ContextCompat.getDrawable(context, R.drawable.custom_round_button_background)
             setOnClickListener {
