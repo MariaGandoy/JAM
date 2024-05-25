@@ -1,21 +1,20 @@
 package com.example.amp_jam
 
-import android.content.Intent
-import android.os.Bundle
-import android.widget.ImageView
-import androidx.appcompat.widget.Toolbar
-import androidx.activity.ComponentActivity
 import android.app.AlertDialog
+import android.content.Context
+import android.content.Intent
+import android.content.res.Configuration
+import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import android.widget.ImageView
+import android.widget.Switch
+import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.Toolbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import android.widget.Switch
-import androidx.appcompat.app.AppCompatDelegate
-import android.content.res.Configuration
 
 
 class SettingsActivity: ComponentActivity() {
@@ -54,16 +53,27 @@ class SettingsActivity: ComponentActivity() {
                 .setMessage("¿Estás seguro de que deseas cerrar sesión?")
                 .setPositiveButton("Sí") { _, _ ->
                     Firebase.auth.signOut()
+                    clearUserSession()
 
                     val intent = Intent(this, MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
-                    this.finish()
+                    finish()
                 }
                 .setNegativeButton("No", null)
                 .show()
         }
     }
+
+    private fun clearUserSession() {
+        val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            remove("user_id")
+            putBoolean("isLoggedIn", false)
+            apply()
+        }
+    }
+
 
 
     private fun setupDarkModeSwitch() {

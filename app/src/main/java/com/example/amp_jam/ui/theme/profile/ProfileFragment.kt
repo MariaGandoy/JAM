@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.Switch
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -27,7 +26,7 @@ import com.example.amp_jam.User
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.tasks.await
 
 
@@ -69,7 +68,6 @@ class ProfileFragment : Fragment() {
             startActivity(intent)
         }
 
-        Log.d("Debugeandoklk", "llego Profile")
         return view
     }
 
@@ -87,6 +85,10 @@ class ProfileFragment : Fragment() {
         view?.let { loadUserProfileData(it) }
     }
 
+    override fun onStop() {
+        super.onStop()
+        lifecycleScope.cancel()
+    }
 
     private fun loadUserProfileData(view: View) {
         val currentUser = auth.currentUser
@@ -110,44 +112,47 @@ class ProfileFragment : Fragment() {
             firestore.collection("usuarios").document(currentUser.uid)
                 .get()
                 .addOnSuccessListener { document ->
-                    val name = document.getString("name") ?: "@usuario"
-                    val lastName = document.getString("lastName") ?: "Apellidos"
-                    userNameTextView.text = name
-                    lastNameTextView.text = lastName
+                    if (isAdded) {
+                        val name = document.getString("name") ?: "@usuario"
+                        val lastName = document.getString("lastName") ?: "Apellidos"
+                        userNameTextView.text = name
+                        lastNameTextView.text = lastName
+                    }
                 }
                 .addOnFailureListener { exception ->
-                    Log.d("ProfileFragment", "get failed with ", exception)
-                    userNameTextView.text = "@usuario"
-                    lastNameTextView.text = "Apellidos"
+                    if (isAdded) {
+                        Log.d("ProfileFragment", "get failed with ", exception)
+                        userNameTextView.text = "@usuario"
+                        lastNameTextView.text = "Apellidos"
+                    }
                 }
 
-            // Load posts
-            lifecycleScope.launch {
-                val user = getUser(currentUser.uid, firestore)
-                setUpRecyclerView(view, user)
-            }
-
+            // Load friends count
             firestore.collection("usuarios").document(currentUser.uid).collection("friends")
                 .get()
                 .addOnSuccessListener { documents ->
-
-                    friendsCountTextView.text = "${documents.size()} amigos"
-                    friendsCountTextView.setOnClickListener {
-                        val intent = Intent(activity, ListOfFriendsActivity::class.java)
-                        startActivity(intent)
+                    if (isAdded) {
+                        friendsCountTextView.text = "${documents.size()} amigos"
+                        friendsCountTextView.setOnClickListener {
+                            val intent = Intent(activity, ListOfFriendsActivity::class.java)
+                            startActivity(intent)
+                        }
                     }
-
                 }
                 .addOnFailureListener {
-                    Log.d("ProfileFragment", "Error loading friends count", it)
-                    friendsCountTextView.text = "0 amigos"    // Si no hay lsita o hay un error 0
+                    if (isAdded) {
+                        Log.d("ProfileFragment", "Error loading friends count", it)
+                        friendsCountTextView.text = "0 amigos"
+                    }
                 }
         } else {
-            userNameTextView.text = "@usuario"
-            lastNameTextView.text = "Apellidos"
-            friendsCountTextView.text = "0 amigos"
-            customMessage.visibility = View.VISIBLE
-            customMessage.text = "No tienes actividad reciente"
+            if (isAdded) {
+                userNameTextView.text = "@usuario"
+                lastNameTextView.text = "Apellidos"
+                friendsCountTextView.text = "0 amigos"
+                customMessage.visibility = View.VISIBLE
+                customMessage.text = "No tienes actividad reciente"
+            }
         }
     }
 
@@ -168,7 +173,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun getPosts(user: User?, callback: (MutableList<Post>) -> Unit) {
-        var posts:MutableList<Post> = ArrayList()
+        var posts: MutableList<Post> = ArrayList()
 
         val auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
@@ -177,32 +182,36 @@ class ProfileFragment : Fragment() {
             firestore.collection("usuarios").document(currentUser.uid).collection("posts")
                 .get()
                 .addOnSuccessListener { documents ->
-                    if (!documents.isEmpty) {
-                        for (postDocument in documents) {
-                            val postData = postDocument.data
+                    if (isAdded) {
+                        if (!documents.isEmpty) {
+                            for (postDocument in documents) {
+                                val postData = postDocument.data
 
-                            // Get post location data
-                            val lugarPost = postData["lugar"] as HashMap<*,*>
-                            val latitude = lugarPost["latitude"] as Double
-                            val longitude = lugarPost["longitude"] as Double
+                                // Get post location data
+                                val lugarPost = postData["lugar"] as HashMap<*, *>
+                                val latitude = lugarPost["latitude"] as Double
+                                val longitude = lugarPost["longitude"] as Double
 
-                            posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["photo"], postData["song"], LatLng(latitude, longitude)))
+                                posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["photo"], postData["song"], LatLng(latitude, longitude)))
+                            }
+                        } else {
+                            customMessage.visibility = View.VISIBLE
+                            customMessage.text = "No tienes actividad reciente"
                         }
-                    } else {
-                        customMessage.visibility = View.VISIBLE
-                        customMessage.text = "No tienes actividad reciente"
-                    }
 
-                    callback(posts)
+                        callback(posts)
+                    }
                 }
-                .addOnFailureListener {
-                    // Handle any errors that may occur
-                    progressBar.visibility = View.GONE
-                    customMessage.text = "Error al cargar los posts"
-                    Log.d("ProfileFragment", "Error loading posts", it)
+                .addOnFailureListener { exception ->
+                    if (isAdded) {
+                        progressBar.visibility = View.GONE
+                        customMessage.text = "Error al cargar los posts"
+                        Log.d("ProfileFragment", "Error loading posts", exception)
+                    }
                 }
         }
     }
+
     private fun setupAddGroupsButton(view: View) {
         val addGroupsButton = view.findViewById<ImageButton>(R.id.addGroups)
         addGroupsButton.setOnClickListener {

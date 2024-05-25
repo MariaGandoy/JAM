@@ -37,7 +37,6 @@ class AddFriendsFragment : Fragment() {
     private var lastVisible: DocumentSnapshot? = null
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,8 +48,8 @@ class AddFriendsFragment : Fragment() {
 
         val searchEditText = view.findViewById<EditText>(R.id.textInputLayout2)
         searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 loadAllUsers(view, s.toString())
             }
@@ -80,6 +79,7 @@ class AddFriendsFragment : Fragment() {
             }
         }
     }
+
     private fun setUpNotification(view: View) {
         val settingsButton = view.findViewById<ImageButton>(R.id.btn_notis)
 
@@ -147,7 +147,7 @@ class AddFriendsFragment : Fragment() {
     private var isFetching = false
 
     private fun loadAllUsers(view: View, filter: String? = null) {
-        if (isFetching) return // Previene la carga
+        if (isFetching) return
         isFetching = true
 
         var query = firestore.collection("usuarios").limit(14)
@@ -157,31 +157,41 @@ class AddFriendsFragment : Fragment() {
 
         query.get()
             .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    lastVisible = documents.documents[documents.size() - 1]
-                    if (lastVisible == null) {
-                        view.findViewById<LinearLayout>(R.id.usersContainer).removeAllViews()
-                    }
+                if (isAdded) {
+                    if (!documents.isEmpty) {
+                        lastVisible = documents.documents[documents.size() - 1]
+                        if (lastVisible == null) {
+                            view.findViewById<LinearLayout>(R.id.usersContainer).removeAllViews()
+                        }
 
-                    for (document in documents) {
-                        val userId = document.id
-                        val userName = document.getString("name") ?: "Unknown"
+                        for (document in documents) {
+                            val userId = document.id
+                            val userName = document.getString("name") ?: "Unknown"
 
-                        if (userId != currentUserUid && !sentFriendUserIds.contains(userId) && !receivedFriendUserIds.contains(userId) && !friendUserIds.contains(userId)) {
-                            if (filter == null || userName.contains(filter, ignoreCase = true)) {
-                                addUserToList(view, userName, userId)
+                            if (userId != currentUserUid && !sentFriendUserIds.contains(userId) && !receivedFriendUserIds.contains(
+                                    userId
+                                ) && !friendUserIds.contains(userId)
+                            ) {
+                                if (filter == null || userName.contains(
+                                        filter,
+                                        ignoreCase = true
+                                    )
+                                ) {
+                                    addUserToList(view, userName, userId)
+                                }
                             }
                         }
                     }
+                    isFetching = false
                 }
-                isFetching = false
             }
             .addOnFailureListener { exception ->
-                Log.d("AddFriendsFragment", "Error loading users", exception)
-                isFetching = false
+                if (isAdded) {
+                    Log.d("AddFriendsFragment", "Error loading users", exception)
+                    isFetching = false
+                }
             }
     }
-
 
 
     private fun addUserToList(view: View, userName: String, userId: String) {
@@ -203,9 +213,12 @@ class AddFriendsFragment : Fragment() {
         val addButton = Button(context).apply {
             layoutParams = LinearLayout.LayoutParams(100, 100)
             text = "+"
-            background = ContextCompat.getDrawable(context, R.drawable.custom_round_button_background)
+            background =
+                ContextCompat.getDrawable(context, R.drawable.custom_round_button_background)
             setOnClickListener {
-                addFriend(userId)
+                if (isAdded) {
+                    addFriend(userId)
+                }
             }
         }
         addButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.ivory))
@@ -226,27 +239,40 @@ class AddFriendsFragment : Fragment() {
 
     private fun addFriend(friendUserId: String) {
         val currentUser = FirebaseAuth.getInstance().currentUser
-        if (currentUser != null && friendUserId != currentUser.uid) {
-            // Implementar adiciones de amigo como antes, pero ahora refrescar la lista
+        if (currentUser != null && friendUserId != currentUser.uid && isAdded) {
             firestore.collection("usuarios").document(currentUser.uid)
                 .collection("send_friend").document(friendUserId).set(mapOf("added" to true))
                 .addOnSuccessListener {
-                    Log.d("AddFriendsFragment", "Friend added to send_friend successfully: $friendUserId")
-                    loadSentFriendRequests {
-                        loadAllUsers(requireView()) // Recargar usuarios después de añadir a un amigo
+                    Log.d(
+                        "AddFriendsFragment",
+                        "Friend added to send_friend successfully: $friendUserId"
+                    )
+                    if (isAdded) {
+                        loadSentFriendRequests {
+                            loadAllUsers(requireView()) // Recargar usuarios después de añadir a un amigo
+                        }
                     }
                 }
-                .addOnFailureListener {
-                    Log.e("AddFriendsFragment", "Failed to add to send_friend", it)
+                .addOnFailureListener { exception ->
+                    if (isAdded) {
+                        Log.e("AddFriendsFragment", "Failed to add to send_friend", exception)
+                    }
                 }
-            // Añadir a receive_friend del otro usuario
+
             firestore.collection("usuarios").document(friendUserId)
                 .collection("receive_friend").document(currentUser.uid).set(mapOf("added" to true))
                 .addOnSuccessListener {
-                    Log.d("AddFriendsFragment", "Friend added to receive_friend successfully: ${currentUser.uid}")
+                    if (isAdded) {
+                        Log.d(
+                            "AddFriendsFragment",
+                            "Friend added to receive_friend successfully: ${currentUser.uid}"
+                        )
+                    }
                 }
-                .addOnFailureListener {
-                    Log.e("AddFriendsFragment", "Failed to add to receive_friend", it)
+                .addOnFailureListener { exception ->
+                    if (isAdded) {
+                        Log.e("AddFriendsFragment", "Failed to add to receive_friend", exception)
+                    }
                 }
         }
     }
