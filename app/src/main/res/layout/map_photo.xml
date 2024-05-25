@@ -22,14 +22,14 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_marginEnd="20dp"
-                        android:src="@drawable/take_photo" />
+                        android:background="@drawable/take_photo" />
 
                     <ImageButton
                         android:id="@+id/addFromFiles"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_marginStart="10dp"
-                        android:src="@drawable/add_photo" />
+                        android:background="@drawable/add_photo" />
 
                 </LinearLayout>
 
