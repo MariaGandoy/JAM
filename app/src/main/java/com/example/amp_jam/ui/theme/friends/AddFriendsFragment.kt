@@ -2,26 +2,26 @@ package com.example.amp_jam.ui.theme.friends
 
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import com.example.amp_jam.GoogleSignInActivity
+import com.bumptech.glide.Glide
 import com.example.amp_jam.R
-import com.example.amp_jam.SettingsActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -167,6 +167,9 @@ class AddFriendsFragment : Fragment() {
                         for (document in documents) {
                             val userId = document.id
                             val userName = document.getString("name") ?: "Unknown"
+                            val profilePhotoURL = document.getString("photo")
+                                ?: Uri.parse("android.resource://"
+                                        + getActivity()?.getPackageName() +"/"+R.drawable.sample_user).toString()
 
                             if (userId != currentUserUid && !sentFriendUserIds.contains(userId) && !receivedFriendUserIds.contains(
                                     userId
@@ -177,7 +180,7 @@ class AddFriendsFragment : Fragment() {
                                         ignoreCase = true
                                     )
                                 ) {
-                                    addUserToList(view, userName, userId)
+                                    addUserToList(view, userName, profilePhotoURL, userId)
                                 }
                             }
                         }
@@ -194,8 +197,23 @@ class AddFriendsFragment : Fragment() {
     }
 
 
-    private fun addUserToList(view: View, userName: String, userId: String) {
+    private fun addUserToList(view: View, userName: String, photo: String, userId: String) {
         val userContainer = view.findViewById<LinearLayout>(R.id.usersContainer)
+
+        // ImageView para la imagen de perfil
+        val profilePhotoView = ImageView(context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                125, // Tamaño deseado de la imagen de perfil
+                125
+            ).apply {
+                gravity = Gravity.CENTER_VERTICAL
+                marginEnd = 10 // Ajusta el margen entre la imagen y el nombre de usuario
+            }
+            setPadding(20, 0, 10, 0)
+        }
+        Glide.with(this)
+            .load(photo)
+            .into(profilePhotoView)
 
         val textView = TextView(context).apply {
             layoutParams = LinearLayout.LayoutParams(
@@ -204,8 +222,8 @@ class AddFriendsFragment : Fragment() {
                 0.7f // Peso menor para dar más espacio al botón
             )
             text = userName + "\n"
-            textSize = if (userName.length > 20) 16f else 20f
-            setPadding(16, 16, 16, 16)
+            textSize = if (userName.length > 25) 16f else 20f
+            setPadding(16, 50, 16, 0)
             setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
         }
 
@@ -230,6 +248,8 @@ class AddFriendsFragment : Fragment() {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
             orientation = LinearLayout.HORIZONTAL
+
+            addView(profilePhotoView)
             addView(textView)
             addView(addButton)
         }

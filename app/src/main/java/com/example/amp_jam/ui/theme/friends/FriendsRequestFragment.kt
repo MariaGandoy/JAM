@@ -13,9 +13,6 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginEnd
-import androidx.core.view.marginLeft
-import androidx.core.view.marginRight
 import com.bumptech.glide.Glide
 import com.example.amp_jam.R
 import com.google.firebase.auth.FirebaseAuth
