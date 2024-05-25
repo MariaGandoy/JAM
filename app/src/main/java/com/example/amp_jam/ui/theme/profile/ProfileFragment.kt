@@ -70,7 +70,7 @@ class ProfileFragment : Fragment() {
         Toast.makeText(this.context, "3", Toast.LENGTH_SHORT).show()
         setupAddGroupsButton(view)
         Toast.makeText(this.context, "4", Toast.LENGTH_SHORT).show()
-        setupEditProfileButton()
+        setupEditProfileButton(view)
 
         val settingsButton = view.findViewById<ImageButton>(R.id.configurations)
         settingsButton.setOnClickListener {
@@ -171,14 +171,14 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun setupEditProfileButton() {
-        val editProfileButton = view?.findViewById<ImageView>(R.id.editProfile)
-        editProfileButton?.setOnClickListener {
-            Toast.makeText(this.context, "ENTROO", Toast.LENGTH_SHORT).show()
-            val intent = Intent(requireContext(), ChangeUserDataActivity::class.java)
+    private fun setupEditProfileButton(view: View) {
+        val editProfileButton = view.findViewById<Button>(R.id.editProfile)
+        editProfileButton.setOnClickListener {
+            val intent = Intent(activity, ChangeUserDataActivity::class.java)
             startActivity(intent)
         }
     }
+
     private fun setUpRecyclerView(view: View, user: User?) {
         mRecyclerView = view.findViewById<RecyclerView>(R.id.postsList)
         mRecyclerView.setHasFixedSize(true)
