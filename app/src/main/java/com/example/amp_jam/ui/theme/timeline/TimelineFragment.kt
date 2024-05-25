@@ -75,14 +75,16 @@ class TimelineFragment : Fragment() {
         // Fetch posts asynchronously and set up the adapter when posts are available
         if (currentUser != null) {
             getPosts(currentUser) { posts ->
-                mAdapter.RecyclerAdapter(posts, requireContext(), findNavController())
-                mRecyclerView.adapter = mAdapter
-                progressBar.visibility = View.GONE
+                if (isAdded) { // Check if Fragment is still added to its activity
+                    mAdapter.RecyclerAdapter(posts, requireContext(), findNavController())
+                    mRecyclerView.adapter = mAdapter
+                    progressBar.visibility = View.GONE
 
-                // Check if posts are available
-                if (posts.isEmpty()) {
-                    customMessage.visibility = View.VISIBLE
-                    customMessage.text = "No hay ningún post"
+                    // Check if posts are available
+                    if (posts.isEmpty()) {
+                        customMessage.visibility = View.VISIBLE
+                        customMessage.text = "No hay ningún post"
+                    }
                 }
             }
         }
@@ -91,9 +93,10 @@ class TimelineFragment : Fragment() {
     /* Get posts from coroutine */
     private fun getPosts(currentUser: FirebaseUser, callback: (MutableList<Post>) -> Unit) {
         val database = FirebaseFirestore.getInstance()
-        val posts = mutableListOf<Post>()
 
         lifecycleScope.launch {
+            val posts = mutableListOf<Post>()
+
             // Get my posts
             val userPosts = getUserPosts(currentUser.uid, database)
             if (userPosts != null) {
@@ -102,16 +105,16 @@ class TimelineFragment : Fragment() {
 
             // Get friends posts
             val friends = getFriends(currentUser.uid, database)
-            val friendPosts = mutableListOf<Post>()
             for (friendId in friends) {
                 val postsForFriend = getUserPosts(friendId, database)
                 if (postsForFriend != null) {
-                    friendPosts.addAll(postsForFriend)
+                    posts.addAll(postsForFriend)
                 }
             }
 
-            posts.addAll(friendPosts)
-            callback(posts)
+            if (isAdded) { // Check if Fragment is still added to its activity before updating UI
+                callback(posts)
+            }
         }
     }
 
