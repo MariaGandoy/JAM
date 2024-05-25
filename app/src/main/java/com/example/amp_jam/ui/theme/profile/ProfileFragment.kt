@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.Switch
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -28,7 +27,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 
@@ -70,7 +68,6 @@ class ProfileFragment : Fragment() {
             startActivity(intent)
         }
 
-        Log.d("Debugeandoklk", "llego Profile")
         return view
     }
 
