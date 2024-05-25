@@ -19,7 +19,6 @@ class LoginActivity : ComponentActivity() {
 
     // Referencia a Firebase Authentication
     private lateinit var auth: FirebaseAuth
-    private val GOOGLE_SIGN_IN = 100
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login)
@@ -101,9 +100,11 @@ class LoginActivity : ComponentActivity() {
         val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             putString("user_id", FirebaseAuth.getInstance().currentUser?.uid)
+            putBoolean("isLoggedIn", true)
             apply()
         }
     }
+
 
     private fun clearUserSession() {
         val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
