@@ -34,6 +34,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.525" />
 
+    <ImageButton
+        android:id="@+id/changePicture"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"
+        app:layout_constraintTop_toBottomOf="@+id/lastName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/add_photo" />
+
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"

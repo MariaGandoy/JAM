@@ -191,13 +191,11 @@
         android:id="@+id/infoApp"
         android:layout_width="108dp"
         android:layout_height="53dp"
-        android:layout_below="@+id/scrollView"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="216dp"
-        android:layout_marginBottom="26dp"
         android:text="© 2024 JAM"
         android:textColor="@color/darkGreen"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </RelativeLayout>

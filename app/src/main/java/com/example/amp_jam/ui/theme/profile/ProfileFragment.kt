@@ -111,22 +111,20 @@ class ProfileFragment : Fragment() {
 
         if (currentUser != null) {
             // Load user profile picture and name
-            currentUser.photoUrl?.let {
-                Glide.with(requireContext())
-                    .load(it)
-                    .placeholder(R.drawable.sample_user)
-                    .into(profileImageView)
-            } ?: profileImageView.setImageResource(R.drawable.sample_user)
-
-            // Load user name
             firestore.collection("usuarios").document(currentUser.uid)
                 .get()
                 .addOnSuccessListener { document ->
                     if (isAdded) {
                         val name = document.getString("name") ?: "@usuario"
                         val lastName = document.getString("lastName") ?: "Apellidos"
+                        val photo = document.getString("photo")
+
                         userNameTextView.text = name
                         lastNameTextView.text = lastName
+                        Glide.with(requireContext())
+                            .load(photo)
+                            .placeholder(R.drawable.sample_user)
+                            .into(profileImageView)
                     }
                 }
                 .addOnFailureListener { exception ->
