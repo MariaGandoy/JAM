@@ -49,6 +49,8 @@ import java.io.OutputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Arrays
+import androidx.appcompat.app.AlertDialog
+
 
 
 class CamaraActivity: ComponentActivity(){
@@ -144,15 +146,18 @@ class CamaraActivity: ComponentActivity(){
     }
 
     protected fun stopBackgroundThread() {
-        mBackgroundThread!!.quitSafely()
-        try {
-            mBackgroundThread!!.join()
-            mBackgroundThread = null
-            mBackgroundHandler = null
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
+        mBackgroundThread?.let {
+            it.quitSafely()
+            try {
+                it.join()
+                mBackgroundThread = null
+                mBackgroundHandler = null
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
+            }
         }
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     protected fun takePicture(){
@@ -277,69 +282,63 @@ class CamaraActivity: ComponentActivity(){
     protected fun createCameraPreview() {
         try {
             val texture = textureView!!.surfaceTexture!!
-            texture.setDefaultBufferSize(imageDimension!!.width, imageDimension!!.height)
-            val surface = Surface(texture)
-            captureRequestBuilder =
-                cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
-            captureRequestBuilder!!.addTarget(surface)
-            cameraDevice!!.createCaptureSession(
-                Arrays.asList<Surface>(surface),
-                object : CameraCaptureSession.StateCallback() {
-                    override fun onConfigured(@NonNull cameraCaptureSession: CameraCaptureSession) {
-                        //The camera is already closed
-                        if (null == cameraDevice) {
-                            return
+            if (imageDimension != null) {
+                texture.setDefaultBufferSize(imageDimension!!.width, imageDimension!!.height)
+                val surface = Surface(texture)
+                captureRequestBuilder =
+                    cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
+                captureRequestBuilder!!.addTarget(surface)
+                cameraDevice!!.createCaptureSession(
+                    Arrays.asList(surface),
+                    object : CameraCaptureSession.StateCallback() {
+                        override fun onConfigured(@NonNull cameraCaptureSession: CameraCaptureSession) {
+                            if (null == cameraDevice) {
+                                return
+                            }
+                            cameraCaptureSessions = cameraCaptureSession
+                            updatePreview()
                         }
-                        // When the session is ready, we start displaying the preview.
-                        cameraCaptureSessions = cameraCaptureSession
-                        updatePreview()
-                    }
 
-                    override fun onConfigureFailed(@NonNull cameraCaptureSession: CameraCaptureSession) {
-                        Toast.makeText(
-                            this@CamaraActivity,
-                            "Configuration change",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                },
-                null
-            )
+                        override fun onConfigureFailed(@NonNull cameraCaptureSession: CameraCaptureSession) {
+                            Toast.makeText(this@CamaraActivity, "Configuration change", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    mBackgroundHandler
+                )
+            } else {
+                Log.e(TAG, "Error: imageDimension is null")
+            }
         } catch (e: CameraAccessException) {
-            e.printStackTrace()
+            Log.e(TAG, "createCameraPreview CameraAccessException", e)
         }
     }
+
 
     private fun openCamera() {
-        val manager = getSystemService(CAMERA_SERVICE) as CameraManager
-        Log.e(TAG, "is camera open")
+        val manager = getSystemService(android.content.Context.CAMERA_SERVICE) as CameraManager
         try {
             cameraId = manager.cameraIdList[0]
-            val characteristics = manager.getCameraCharacteristics( manager.cameraIdList[0] )
-            val map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!
-            imageDimension = map.getOutputSizes(SurfaceTexture::class.java)[0]
-            // Add permission for camera and let user grant the permission
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.CAMERA
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(
-                    this@CamaraActivity,
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
                     arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    REQUEST_CAMERA_PERMISSION
-                )
+                    REQUEST_CAMERA_PERMISSION)
                 return
             }
-            manager.openCamera(manager.cameraIdList[0], stateCallback, null)
+            val characteristics = manager.getCameraCharacteristics(cameraId!!)
+            val configurationMap = characteristics.get(
+                CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
+            )
+            imageDimension = configurationMap?.getOutputSizes(SurfaceTexture::class.java)?.get(0)
+            manager.openCamera(cameraId!!, stateCallback, mBackgroundHandler)
         } catch (e: CameraAccessException) {
-            e.printStackTrace()
+            Log.e(TAG, "Exception in openCamera", e)
         }
-        Log.e(TAG, "openCamera X")
     }
+
+
+
 
     protected fun updatePreview() {
         if (null == cameraDevice) {
@@ -368,35 +367,63 @@ class CamaraActivity: ComponentActivity(){
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        @NonNull permissions: Array<String>,
-        @NonNull grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
-            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                // close the app
-                Toast.makeText(
-                    this@CamaraActivity,
-                    "Sorry!!!, you can't use this app without granting permission",
-                    Toast.LENGTH_LONG
-                ).show()
-                finish()
+            if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                openCamera()
+            } else {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ||
+                    shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    explainPermissionRequirement()
+                } else {
+                    Toast.makeText(this, "Los permisos fueron denegados. Por favor, habilitalos", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
 
+
+    private fun explainPermissionRequirement() {
+        AlertDialog.Builder(this)
+            .setTitle("Permiso necesario")
+            .setMessage("Necesito el permiso de cámara.")
+            .setPositiveButton("Permitir") { dialog, which ->
+                ActivityCompat.requestPermissions(
+                    this@CamaraActivity,
+                    arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    REQUEST_CAMERA_PERMISSION
+                )
+            }
+            .setNegativeButton("Cancelar") { dialog, which ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
+
+
+
     override fun onResume() {
         super.onResume()
         Log.e(TAG, "onResume")
-        startBackgroundThread()
-        if (textureView!!.isAvailable) {
-            openCamera()
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            startBackgroundThread()
+            if (textureView!!.isAvailable) {
+                openCamera()
+            } else {
+                textureView !!.surfaceTextureListener = textureListener
+            }
         } else {
-            textureView!!.surfaceTextureListener = textureListener
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                REQUEST_CAMERA_PERMISSION)
         }
     }
+
 
     override fun onPause() {
         Log.e(TAG, "onPause")
