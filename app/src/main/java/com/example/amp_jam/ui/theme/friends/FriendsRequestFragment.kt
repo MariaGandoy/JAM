@@ -132,9 +132,10 @@ class FriendsRequestFragment : ComponentActivity() {
         if (isReceived) {
             //Boton de aceptar
             val acceptButton = Button(this).apply {
-                layoutParams = LinearLayout.LayoutParams(100, 100)
-                text = "✔"
-                background = ContextCompat.getDrawable(context, R.drawable.custom_round_button_background)
+                layoutParams = LinearLayout.LayoutParams(200, 100)
+                text = "ACEPTAR"
+                textSize = if (userName.length > 25) 10f else 12f
+                background = ContextCompat.getDrawable(context, R.drawable.custom_button_background)
                 setPadding(20, 0, 20, 0)
                 setOnClickListener { manageFriendRequest(userId, true) }
             }
@@ -148,8 +149,9 @@ class FriendsRequestFragment : ComponentActivity() {
 
             //Boton de rechazar
             val rejectButton = Button(this).apply {
-                layoutParams = LinearLayout.LayoutParams(100, 100)
-                text = "✘"
+                layoutParams = LinearLayout.LayoutParams(205, 100)
+                text = "RECHAZAR"
+                textSize = if (userName.length > 25) 10f else 12f
                 background = ContextCompat.getDrawable(context, R.drawable.custom_button_background_2)
                 setPadding(20, 0, 20, 0)
                 setOnClickListener { manageFriendRequest(userId, false) }
@@ -176,8 +178,9 @@ class FriendsRequestFragment : ComponentActivity() {
         } else {
             //Rechazar si se envió por error
             val cancelButton = Button(this).apply {
-                layoutParams = LinearLayout.LayoutParams(100, 100)
-                text = "✘"
+                layoutParams = LinearLayout.LayoutParams(200, 100)
+                text = "CANCELAR"
+                textSize = if (userName.length > 25) 10f else 12f
                 background = ContextCompat.getDrawable(context, R.drawable.custom_button_background_2)
                 setPadding(20, 0, 20, 0)
                 setOnClickListener { cancelFriendRequest(userId) }

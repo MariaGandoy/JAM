@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -35,6 +36,7 @@ class ChangeUserDataActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.change_data)
         setUpChangePicture()
+        setUpBackArrow()
 
         nameEditText = findViewById(R.id.name)
         lastNameEditText = findViewById(R.id.lastName)
@@ -44,6 +46,13 @@ class ChangeUserDataActivity : AppCompatActivity() {
 
         saveButton.setOnClickListener {
             saveUserData()
+        }
+    }
+
+    private fun setUpBackArrow() {
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setNavigationOnClickListener  {
+            finish()
         }
     }
 

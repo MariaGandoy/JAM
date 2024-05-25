@@ -3,7 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:fitsSystemWindows="true">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/arrow_back"
+        app:title="Modificar datos"
+        app:titleTextColor="@color/darkGreen" />
+
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="76dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="180dp"
+        android:text=" Nombre:"
+        android:textColor="@color/quantum_grey"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.301"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/name"
@@ -17,8 +46,20 @@
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.885" />
+        app:layout_constraintVertical_bias="0.803" />
 
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="76dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="28dp"
+        android:text=" Apellidos:"
+        android:textColor="@color/quantum_grey"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.301"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/name" />
 
     <EditText
         android:id="@+id/lastName"
@@ -32,37 +73,45 @@
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.525" />
+        app:layout_constraintVertical_bias="0.586" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="76dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="56dp"
+        android:text=" Imagen:"
+        android:textColor="@color/quantum_grey"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.462"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lastName" />
 
     <ImageButton
         android:id="@+id/changePicture"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true"
-        app:layout_constraintTop_toBottomOf="@+id/lastName"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="84dp"
+        android:background="@drawable/baseline_image_search_24"
+        android:backgroundTint="@color/darkGreen"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/add_photo" />
-
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Modificar datos personales:"
-        app:layout_constraintBottom_toTopOf="@+id/name"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/lastName" />
 
     <Button
         android:id="@+id/button5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="128dp"
+        android:layout_width="137dp"
+        android:layout_height="61dp"
+        android:layout_marginBottom="188dp"
+        android:background="@drawable/custom_button_background"
         android:text="Guardar"
+        android:textColor="@color/ivory"
+        android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
