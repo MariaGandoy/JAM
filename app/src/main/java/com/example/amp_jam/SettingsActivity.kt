@@ -74,8 +74,6 @@ class SettingsActivity: ComponentActivity() {
         }
     }
 
-
-
     private fun setupDarkModeSwitch() {
         val darkModeSwitch = findViewById<Switch>(R.id.darkModeSwitch)
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
@@ -166,7 +164,8 @@ class SettingsActivity: ComponentActivity() {
                                     user?.delete()?.addOnCompleteListener { task ->
                                         if (task.isSuccessful) {
                                             Log.d("DeleteAccount", "Cuenta eliminada con éxito.")
-                                            Firebase.auth.signOut()
+                                            clearUserSession()
+                                            FirebaseAuth.getInstance().signOut() // Cerrar sesión después de eliminar la cuenta
                                             val intent = Intent(this@SettingsActivity, MainActivity::class.java)
                                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                             startActivity(intent)
@@ -186,5 +185,6 @@ class SettingsActivity: ComponentActivity() {
                 .show()
         }
     }
+
 
 }

@@ -28,20 +28,16 @@ class LoginActivity : ComponentActivity() {
         FirebaseApp.initializeApp(this)
         SharedPreferencesHelper.clearMapConfiguration(this)
 
-        // Inicializar Firebase Auth
         auth = FirebaseAuth.getInstance()
 
-        // Obtener referencias a los EditText y al botón de "Entrar"
         val emailEditText = findViewById<EditText>(R.id.editTextTextEmailAddress)
         val passwordEditText = findViewById<EditText>(R.id.editTextTextPassword)
         val loginButton = findViewById<Button>(R.id.button)
         val googleButton = findViewById<ImageButton>(R.id.googleButton)
 
-        // Configurar datos de usuario por defecto
         val defaultEmail = SharedPreferencesHelper.getDefaultEmail(this)
         if (defaultEmail != null) emailEditText.setText(defaultEmail)
 
-        // Configurar el Listener para manejar el clic del botón de "Entrar"
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
