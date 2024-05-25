@@ -1,6 +1,7 @@
 package com.example.amp_jam
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,17 +9,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class GoogleSignInActivity : Activity() {
 
     private lateinit var auth: FirebaseAuth
-
     private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,16 +28,13 @@ class GoogleSignInActivity : Activity() {
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
-
-        auth = Firebase.auth
+        auth = FirebaseAuth.getInstance()
 
         signIn()
-
     }
 
     override fun onStart() {
         super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
         Log.d(TAG, "CURRENT USER: " + currentUser.toString())
         updateUI(currentUser)
@@ -48,19 +43,16 @@ class GoogleSignInActivity : Activity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 if (task != null){
                     Log.d(TAG, "task " + task.toString())
                 }
-                // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)!!
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e)
             }
         }
@@ -71,13 +63,12 @@ class GoogleSignInActivity : Activity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
+                    saveUserSession()
                     updateDB(user)
                     updateUI(user)
                 } else {
-                    // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
                     updateUI(null)
                 }
@@ -86,7 +77,6 @@ class GoogleSignInActivity : Activity() {
 
     private fun signIn() {
         googleSignInClient.signOut().addOnCompleteListener(this) {
-            // Start the sign-in intent after sign-out is completed
             val signInIntent = googleSignInClient.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }
@@ -94,21 +84,19 @@ class GoogleSignInActivity : Activity() {
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
-            // Si el usuario ha iniciado sesión correctamente, se podría redirigir a otra Activity
-            val name = user.displayName // Nombre del usuario
-            val email = user.email // Correo electrónico del usuario
+            val name = user.displayName
+            val email = user.email
             Log.d(TAG, "updateUIGoogle: User is logged in")
             Log.d(TAG, "Nombre: $name")
             Log.d(TAG, "Correo electrónico: $email")
             startActivity(Intent(this, EnterActivity::class.java))
         } else {
-            // Mantener al usuario en la LoginActivity o mostrar algún mensaje según sea necesario
             Log.d(TAG, "updateUIGoogle: No user is logged in")
         }
     }
 
     private fun updateDB(user: FirebaseUser?) {
-        var db = FirebaseFirestore.getInstance()
+        val db = FirebaseFirestore.getInstance()
 
         user?.let {
             val userExists = db.collection("usuarios").document(user.uid)
@@ -117,7 +105,6 @@ class GoogleSignInActivity : Activity() {
                     if (document.exists()) {
                         Log.d(TAG, "User already exists in the database")
                     } else {
-                        // User does not exist, add user information to the database
                         val userMap = hashMapOf(
                             "name" to user.displayName,
                             "email" to user.email,
@@ -135,6 +122,15 @@ class GoogleSignInActivity : Activity() {
                 .addOnFailureListener { e ->
                     Log.e(TAG, "Error checking user existence in Firestore", e)
                 }
+        }
+    }
+
+    private fun saveUserSession() {
+        val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putString("user_id", FirebaseAuth.getInstance().currentUser?.uid)
+            putBoolean("isLoggedIn", true)
+            apply()
         }
     }
 

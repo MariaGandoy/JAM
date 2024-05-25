@@ -9,16 +9,17 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.auth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class LoginActivity : ComponentActivity() {
 
     // Referencia a Firebase Authentication
     private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login)
@@ -105,15 +106,12 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
-
     private fun clearUserSession() {
         val sharedPref = getSharedPreferences("user_session", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             remove("user_id")
+            putBoolean("isLoggedIn", false)
             apply()
         }
     }
-
-    // Si se quiere implementar el registro de usuarios nuevos, se puede agregar una función similar aquí
-    // o podemos acceder al signup de la otra actividad y llamarla desde un botón de "Crear cuenta"
 }
