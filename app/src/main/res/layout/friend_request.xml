@@ -55,6 +55,19 @@
     </ScrollView>
 
     <TextView
+        android:id="@+id/noRequests"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:text="No tienes solicitudes de amistad"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView8"
+        app:layout_constraintBottom_toTopOf="@id/textView9"
+        android:visibility="gone"/>
+
+    <TextView
         android:id="@+id/textView9"
         android:layout_width="110dp"
         android:layout_height="28dp"
@@ -89,4 +102,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" />
     </ScrollView>
+
+    <TextView
+        android:id="@+id/noRequestsSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:text="No has enviado ninguna solicitud"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView9"
+        android:visibility="gone"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

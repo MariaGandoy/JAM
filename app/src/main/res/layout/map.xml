@@ -104,6 +104,13 @@
                 android:checked="true"/>
 
             <CheckBox
+                android:id="@+id/checboxAlerts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alertas"
+                android:checked="true"/>
+
+            <CheckBox
                 android:id="@+id/checboxAmigos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -201,6 +201,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                 setupMarkerChangeListener("EVENT", view.findViewById(R.id.checkboxEvents))
                 setupMarkerChangeListener("FRIEND", view.findViewById(R.id.checboxAmigos))
                 setupMarkerChangeListener("SONG", view.findViewById(R.id.checboxSongs))
+                setupMarkerChangeListener("ALERT", view.findViewById(R.id.checboxAlerts))
                 setupMarkerChangeListener("PHOTO", view.findViewById(R.id.checkboxPhotos))
             }
         }
@@ -465,10 +466,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                             }
                         })
                 } else {
+                    val sampleBitmap = BitmapFactory.decodeResource(resources, R.drawable.sample_user)
+                    val resizedBitmap = Bitmap.createScaledBitmap(sampleBitmap, 100, 100, false)
+                    val bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(resizedBitmap)
+
                     val userMarkerOptions = MarkerOptions()
                         .position(LatLng(latitude, longitude))
                         .title(friend["user"] as String)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)) // Icono predeterminado
+                        .icon(bitmapDescriptor) // Icono predeterminado
+
                     val marker = mGoogleMap?.addMarker(userMarkerOptions) as Marker
                     marker.setTag("FRIEND")
                     mapMarkers.add(marker)
@@ -564,6 +570,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         // Create a reference to the user's posts collection
         val userPostsCollection = database.collection("usuarios").document(currentUser!!.uid)
             .collection("posts")
+
 
         // Generate a new document ID for the post
         val newPostDocument = userPostsCollection.document()

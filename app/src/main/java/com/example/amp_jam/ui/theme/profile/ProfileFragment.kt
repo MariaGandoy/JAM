@@ -62,14 +62,9 @@ class ProfileFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        Toast.makeText(this.context, "1", Toast.LENGTH_SHORT).show()
-
         setUpSettings(view)
-        Toast.makeText(this.context, "2", Toast.LENGTH_SHORT).show()
         loadUserProfileData(view)
-        Toast.makeText(this.context, "3", Toast.LENGTH_SHORT).show()
         setupAddGroupsButton(view)
-        Toast.makeText(this.context, "4", Toast.LENGTH_SHORT).show()
         setupEditProfileButton(view)
 
         val settingsButton = view.findViewById<ImageButton>(R.id.configurations)

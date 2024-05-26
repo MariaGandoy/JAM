@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -59,6 +60,17 @@ class FriendsRequestFragment : ComponentActivity() {
         firestore.collection("usuarios").document(currentUserUid!!)
             .collection(collectionPath).get()
             .addOnSuccessListener { documents ->
+                // Feedback in case no requests
+                if (documents.isEmpty) {
+                    if (collectionPath == "receive_friend") {
+                        val noRequests = findViewById<TextView>(R.id.noRequests)
+                        noRequests.visibility = View.VISIBLE
+                    } else {
+                        val noRequestsSend = findViewById<TextView>(R.id.noRequestsSend)
+                        noRequestsSend.visibility = View.VISIBLE
+                    }
+                }
+
                 for (document in documents) {
                     val userId = document.id
                     fetchUserDetailsAndAddToView(container, userId, collectionPath == "receive_friend")
@@ -114,7 +126,12 @@ class FriendsRequestFragment : ComponentActivity() {
 
         // TextView para el nombre de usuario
         val userNameView = TextView(this).apply {
-            text = userName + " "
+            val displayUserName = if (userName.length > 8) {
+                userName.substring(0, 8) + "... "
+            } else {
+                "$userName "
+            }
+            text = displayUserName
             textSize = 18f
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -132,7 +149,7 @@ class FriendsRequestFragment : ComponentActivity() {
         if (isReceived) {
             //Boton de aceptar
             val acceptButton = Button(this).apply {
-                layoutParams = LinearLayout.LayoutParams(200, 100)
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 100)
                 text = "ACEPTAR"
                 textSize = if (userName.length > 25) 10f else 12f
                 background = ContextCompat.getDrawable(context, R.drawable.custom_button_background)
@@ -142,14 +159,14 @@ class FriendsRequestFragment : ComponentActivity() {
             acceptButton.setTextColor(ContextCompat.getColor(this, R.color.ivory))
 
             val textView2 = TextView(this).apply {
-                text = "  "
+                text = " "
                 textSize = 20f
                 setPadding(16, 0, 0, 16)
             }
 
             //Boton de rechazar
             val rejectButton = Button(this).apply {
-                layoutParams = LinearLayout.LayoutParams(205, 100)
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 100)
                 text = "RECHAZAR"
                 textSize = if (userName.length > 25) 10f else 12f
                 background = ContextCompat.getDrawable(context, R.drawable.custom_button_background_2)
@@ -178,7 +195,7 @@ class FriendsRequestFragment : ComponentActivity() {
         } else {
             //Rechazar si se envió por error
             val cancelButton = Button(this).apply {
-                layoutParams = LinearLayout.LayoutParams(200, 100)
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 100)
                 text = "CANCELAR"
                 textSize = if (userName.length > 25) 10f else 12f
                 background = ContextCompat.getDrawable(context, R.drawable.custom_button_background_2)
