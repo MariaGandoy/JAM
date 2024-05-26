@@ -234,6 +234,8 @@ class AddFriendsFragment : Fragment() {
             text = "+"
             background =
                 ContextCompat.getDrawable(context, R.drawable.custom_round_button_background)
+            gravity = Gravity.CENTER
+            setPadding(0, 0, 0, 0)
             setOnClickListener {
                 if (isAdded) {
                     addFriend(userId)

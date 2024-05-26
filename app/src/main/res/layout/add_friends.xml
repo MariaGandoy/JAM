@@ -13,7 +13,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/autocompleteUbicationCard"
-        android:layout_width="305dp"
+        android:layout_width="0dp"
         android:layout_height="47dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="24dp"
@@ -40,13 +40,13 @@
     <Button
         android:id="@+id/btn_notis"
         android:layout_width="50dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="28dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/friend_notifications"
         android:backgroundTint="@color/darkGreen"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/autocompleteUbicationCard"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
@@ -66,6 +66,8 @@
             android:id="@+id/usersContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:orientation="vertical" />
     </ScrollView>
 
