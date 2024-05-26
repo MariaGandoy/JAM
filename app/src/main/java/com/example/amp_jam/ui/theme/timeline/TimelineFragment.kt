@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import com.google.firebase.firestore.Query
 
 /**
  * A simple [Fragment] subclass.
@@ -131,6 +132,7 @@ class TimelineFragment : Fragment() {
                     .collection("usuarios")
                     .document(userId)
                     .collection("posts")
+                    .orderBy("fecha", Query.Direction.ASCENDING)
                     .get()
                     .await()
 
