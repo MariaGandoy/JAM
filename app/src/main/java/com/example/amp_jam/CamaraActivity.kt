@@ -380,7 +380,7 @@ class CamaraActivity: ComponentActivity(){
                 // close the app
                 Toast.makeText(
                     this@CamaraActivity,
-                    "Sorry!!!, you can't use this app without granting permission",
+                    "Lo siento!!!, No puede acceder aquí si no nos das permisos",
                     Toast.LENGTH_LONG
                 ).show()
                 finish()
