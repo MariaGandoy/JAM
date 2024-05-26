@@ -21,6 +21,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
@@ -405,25 +406,31 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
                 val postMarkerOptions = MarkerOptions()
                     .position(LatLng(latitude, longitude))
-                    .title(post.title.toString())
-                    .snippet("Fecha: " + post.date)
                     .apply {
                         when (post.type) {
                             "EVENT" -> {
                                 val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.event_marker), 150, 150, false)
                                 icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                                title("Evento " + post.title.toString() + " creado para el " + post.date)
+                                snippet(post.timestamp.toString())
                             }
                             "PHOTO" -> {
                                 val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.photo_marker), 150, 150, false)
                                 icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                                title("Foto " + post.photo.toString() )
+                                snippet(post.timestamp.toString())
                             }
                             "SONG" -> {
                                 val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.song_marker), 150, 150, false)
                                 icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                                title("Canción " + post.song.toString())
+                                snippet(post.timestamp.toString())
                             }
                             "ALERT" -> {
                                 val scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(resources, R.drawable.alert_marker), 150, 150, false)
                                 icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                                title("Alerta creada por " + (post.user?.name ?: "ti"))
+                                snippet(post.timestamp.toString())
                             }
                         }
                     }
@@ -473,7 +480,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                     val userMarkerOptions = MarkerOptions()
                         .position(LatLng(latitude, longitude))
                         .title(friend["user"] as String)
-                        .icon(bitmapDescriptor) // Icono predeterminado
+                        .icon(bitmapDescriptor)
 
                     val marker = mGoogleMap?.addMarker(userMarkerOptions) as Marker
                     marker.setTag("FRIEND")
@@ -483,7 +490,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         }
 
         updateMarkersVisibility()
-
     }
 
     private fun registerLocationReceiver() {

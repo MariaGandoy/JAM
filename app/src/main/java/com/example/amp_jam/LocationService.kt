@@ -73,7 +73,7 @@ class LocationService : Service() {
                     // Get posts
                     val posts: MutableList<Post> = ArrayList()
                     posts.addAll(friendsData.posts)
-                    posts.addAll(getUserPosts(null))
+                    posts.addAll(getUserPosts(null, null))
 
                     // Get friends location
                     val friends = friendsData.friends
@@ -134,7 +134,7 @@ class LocationService : Service() {
                     .await()
 
                 for (document in documents) {
-                    val friendPosts = getUserPosts(document.id)
+                    val friendPosts = getUserPosts(document.id, document.getString("name"))
                     friends.add(getUserUbication(document.id))
                     posts.addAll(friendPosts)
                 }
@@ -146,7 +146,7 @@ class LocationService : Service() {
         return FriendsPostsData(posts, friends)
     }
 
-    private suspend fun getUserPosts(id: String?): MutableList<Post> {
+    private suspend fun getUserPosts(id: String?, name: String?): MutableList<Post> {
         // Determine the userId to use
         val userId = id ?: FirebaseAuth.getInstance().currentUser?.uid
 
@@ -168,9 +168,9 @@ class LocationService : Service() {
                     val latitude = lugarPost["latitude"] as Double
                     val longitude = lugarPost["longitude"] as Double
 
-                    val user = User(null, userId, null, null)
+                    val user = User(name, userId, null, null)
 
-                    posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, null, postData["song"], LatLng(latitude, longitude), postData["share"], postData["timestamp"]))
+                    posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["photo"], postData["song"], LatLng(latitude, longitude), postData["share"], postData["timestamp"]))
                 }
             } catch (exception: Exception) {
                 // Handle any errors that may occur

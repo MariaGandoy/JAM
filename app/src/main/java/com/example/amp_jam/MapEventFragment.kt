@@ -139,6 +139,7 @@ class MapEventFragment() : Fragment() {
                 year, month, day
             )
 
+            datePickerDialog.datePicker.minDate = calendar.timeInMillis
             datePickerDialog.show()
         }
     }

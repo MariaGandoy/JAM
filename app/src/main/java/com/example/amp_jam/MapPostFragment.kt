@@ -62,7 +62,9 @@ class MapPostFragment: DialogFragment() {
                 dismiss()
             }
 
-            builder.setView(view)
+
+
+            val dialog = builder.setView(view)
                 .setPositiveButton("AÑADIR") { _, _ ->
                     val currentPage = viewPager.currentItem
                     val currentFragment = adapter.instantiateItem(viewPager, currentPage) as? Fragment
@@ -78,8 +80,35 @@ class MapPostFragment: DialogFragment() {
                 .setNegativeButton("CANCELAR") { _, _ ->
                     Log.d("JAM_NAVIGATION", "[MapPost] Cancel post")
                 }
+                    .create()
 
-            builder.create()
+            dialog.setOnShowListener {
+                val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                positiveButton.setOnClickListener {
+                    val currentPage = viewPager.currentItem
+                    val currentFragment = adapter.instantiateItem(viewPager, currentPage) as? Fragment
+                    currentFragment?.view?.let { currentPageView ->
+
+                        val isDataValid = when (currentPage) {
+                            0 -> validateEventData(currentPageView)
+                            1 -> validatePhotoData(currentPageView)
+                            2 -> validateSongData(currentPageView)
+                            else -> false
+                        }
+
+                        if (isDataValid) {
+                            when (currentPage) {
+                                0 -> setEventData(currentPageView)
+                                1 -> setPhotoData(currentPageView)
+                                2 -> setSongData(currentPageView)
+                            }
+                            dialog.dismiss()
+                        }
+                    }
+                }
+            }
+
+            dialog
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
@@ -90,12 +119,6 @@ class MapPostFragment: DialogFragment() {
 
         val eventName = view.findViewById<EditText>(R.id.eventName).text.toString()
         val eventDate = view.findViewById<EditText>(R.id.eventDate).text.toString()
-
-        // Validación básica de nombre y evento
-        if (eventName.isBlank() || eventDate.isBlank()) {
-            Toast.makeText(requireContext(), "Los campos de nombre y fecha no pueden estar vacíos.", Toast.LENGTH_LONG).show()
-            return
-        }
 
         val filesImage = view.findViewById<ImageButton>(R.id.addFromFiles)
         val filesBitmap = (filesImage.drawable as? BitmapDrawable)?.bitmap
@@ -118,6 +141,18 @@ class MapPostFragment: DialogFragment() {
         val eventType = "EVENT"
 
         submitPost(Post(eventName, eventDate, eventType, null, photoBitmap, null, null, selectedGroups, creationTime))
+    }
+
+    private fun validateEventData(view: View): Boolean {
+        val eventName = view.findViewById<EditText>(R.id.eventName).text.toString()
+        val eventDate = view.findViewById<EditText>(R.id.eventDate).text.toString()
+
+        return if (eventName.isEmpty() || eventDate.isEmpty()) {
+            Toast.makeText(context,"El nombre y la fecha no pueden estar vacíos", Toast.LENGTH_SHORT).show()
+            false
+        } else {
+            true
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -147,6 +182,18 @@ class MapPostFragment: DialogFragment() {
         submitPost(Post(null, null, eventType, null, photoBitmap, null, null, selectedGroups, creationTime))
     }
 
+    private fun validatePhotoData(view: View): Boolean {
+        val filesImage = view.findViewById<ImageButton>(R.id.addFromFiles)
+        val cameraImage = view.findViewById<ImageButton>(R.id.addFromCamera)
+
+        return if (filesImage == null && cameraImage == null) {
+            Toast.makeText(context,"La imagen no puede estar vacía", Toast.LENGTH_SHORT).show()
+            false
+        } else {
+            true
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setSongData(view: View) {
         Log.d("JAM_NAVIGATION", "[MapPost] Create SONG")
@@ -161,6 +208,18 @@ class MapPostFragment: DialogFragment() {
         val creationTime = LocalDateTime.now().format(formatter)
 
         submitPost(Post( null, null, eventType, null, null, postSong, null, selectedGroups, creationTime))
+    }
+
+    private fun validateSongData(view: View): Boolean {
+        val postSong = view.findViewById<EditText>(R.id.songName).text.toString()
+        val substring = "spotify.com"
+
+        return if (postSong.isEmpty() || !postSong.contains(substring)) {
+            Toast.makeText(context,"El link no puede estar vacío y debe ser válido", Toast.LENGTH_SHORT).show()
+            false
+        } else {
+            true
+        }
     }
 
     private fun submitPost(data: Post) {
