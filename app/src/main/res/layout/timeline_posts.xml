@@ -65,6 +65,7 @@
             android:src="@drawable/sample_photo"
             app:layout_constraintEnd_toStartOf="parent" />
 
+
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/postSong"
             android:layout_width="150dp"

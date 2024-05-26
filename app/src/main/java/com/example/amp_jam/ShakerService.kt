@@ -8,13 +8,17 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.location.LocationManager
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.sqrt
 
 class ShakerService(private val context: Context) : SensorEventListener {
@@ -76,13 +80,14 @@ class ShakerService(private val context: Context) : SensorEventListener {
         val delta: Float = currentAcceleration - lastAcceleration
         acceleration = acceleration * 0.9f + delta
 
-        // Display a Toast message if
-        // acceleration value is over 17
-        if (acceleration > 17) {
+        // Display a Toast message and create alert if
+        // acceleration value is over 20
+        if (acceleration > 20) {
             createAlert()
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun createAlert() {
         val database = FirebaseFirestore.getInstance()
 
@@ -118,6 +123,11 @@ class ShakerService(private val context: Context) : SensorEventListener {
                     "lugar" to latLng,
                     "share" to emptyList<String>(),
                 )
+
+                // Set post timestamp
+                val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
+                val creationTime = LocalDateTime.now().format(formatter)
+                postData["timestamp"] = creationTime
 
                 newPostDocument.set(postData)
                 Toast.makeText(this.context, "Has creado una alerta", Toast.LENGTH_SHORT).show()

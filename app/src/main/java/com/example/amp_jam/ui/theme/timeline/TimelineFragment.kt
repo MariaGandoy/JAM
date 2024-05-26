@@ -150,7 +150,7 @@ class TimelineFragment : Fragment() {
 
                 if (user != null) {
                     if (userId == currentUser.uid || shareWith.isEmpty() || shareWith.contains(currentUser.uid)) {
-                        posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["photo"], postData["song"], LatLng(latitude, longitude), postData["shareWith"]))
+                        posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["photo"], postData["song"], LatLng(latitude, longitude), postData["shareWith"], postData["timestamp"]))
                     }
                 }
             }

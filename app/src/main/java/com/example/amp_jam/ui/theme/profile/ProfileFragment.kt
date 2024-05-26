@@ -215,7 +215,7 @@ class ProfileFragment : Fragment() {
                                 val latitude = lugarPost["latitude"] as Double
                                 val longitude = lugarPost["longitude"] as Double
 
-                                posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["photo"], postData["song"], LatLng(latitude, longitude), postData["shareWith"]))
+                                posts.add(Post(postData["titulo"], postData["fecha"], postData["tipo"], user, postData["photo"], postData["song"], LatLng(latitude, longitude), postData["shareWith"], postData["timestamp"]))
                             }
                         } else {
                             customMessage.visibility = View.VISIBLE

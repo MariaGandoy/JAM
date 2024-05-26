@@ -94,7 +94,13 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
         private fun createEventPost(post:Post, context: Context) {
             // Set event data
             postText.text = Html.fromHtml("<b>${post.user?.name}</b> creo el evento <b>${post.title}</b> programado para el <b>${post.date}</b>")
-            postTime.visibility = View.GONE // TODO: change for a mark of when the post was created
+
+            // Set post creation timestamp
+            if (post.timestamp != null) {
+                postTime.text = post.timestamp.toString()
+            } else {
+                postTime.visibility = View.GONE
+            }
 
             // Set post user profile pic
             Glide.with(itemView)
@@ -117,7 +123,13 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
         private fun createPhotoPost(post:Post, context: Context) {
             // Set photo data
             postText.text = Html.fromHtml("<b>${post.user?.name}</b> compartió una foto")
-            postTime.visibility = View.GONE // TODO: change for a mark of when the post was created
+
+            // Set post creation timestamp
+            if (post.timestamp != null) {
+                postTime.text = post.timestamp.toString()
+            } else {
+                postTime.visibility = View.GONE
+            }
 
             // Set post user profile pic
             Glide.with(itemView)
@@ -137,7 +149,14 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
         private fun createSongPost(post:Post, context: Context) {
             // Set song data
             postText.text = Html.fromHtml("<b>${post.user?.name}</b> compartió una canción")
-            postTime.visibility = View.GONE // TODO: change for a mark of when the post was created
+
+            // Set post creation timestamp
+            if (post.timestamp != null) {
+                postTime.text = post.timestamp.toString()
+            } else {
+                postTime.visibility = View.GONE
+            }
+
 
             // Song link
             postSong.visibility = View.VISIBLE
@@ -160,7 +179,13 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
         private fun createAlertPost(post:Post, context: Context) {
             // Set song data
             postText.text = Html.fromHtml("<b>${post.user?.name}</b> creó una <b>alerta</b>")
-            postTime.visibility = View.GONE // TODO: change for a mark of when the post was created
+
+            // Set post creation timestamp
+            if (post.timestamp != null) {
+                postTime.text = post.timestamp.toString()
+            } else {
+                postTime.visibility = View.GONE
+            }
 
             // Set post user profile pic
             Glide.with(itemView)

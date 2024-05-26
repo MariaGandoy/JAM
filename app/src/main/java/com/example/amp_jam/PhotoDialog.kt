@@ -101,15 +101,15 @@ class PhotoDialog :  ComponentActivity() {
                                 File(file)
                         ))
 
-                        // val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
-                        // val eventDate = LocalDateTime.now().format(formatter)
-
                         val recyclerView = dialog.findViewById<RecyclerView>(R.id.groupsView)
                         val selectedGroups = (recyclerView.adapter as? GroupsAdapter)?.selectedGroups?.keys?.toList() ?: listOf()
 
+                        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
+                        val creationTime = LocalDateTime.now().format(formatter)
+
                         val eventType = "PHOTO"
 
-                        createPost(Post(null, null, eventType, null, imageBitmap, null, null, selectedGroups))
+                        createPost(Post(null, null, eventType, null, imageBitmap, null, null, selectedGroups, creationTime))
                 }
         }
 
@@ -200,6 +200,7 @@ class PhotoDialog :  ComponentActivity() {
                         )
 
                 Log.e("JAM_photos", "data.photo: " + data.photo)
+
                 // Store post image if not null
                 if (data.photo != null) {
                         val imageName = "${currentUser!!.uid}_${System.currentTimeMillis()}.jpg"

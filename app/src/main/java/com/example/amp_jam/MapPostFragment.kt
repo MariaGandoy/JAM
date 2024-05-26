@@ -3,6 +3,7 @@ package com.example.amp_jam
 import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,11 +13,14 @@ import androidx.fragment.app.DialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 class MapPostFragment: DialogFragment() {
@@ -33,6 +37,7 @@ class MapPostFragment: DialogFragment() {
         super.onCreate(savedInstanceState)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
@@ -79,6 +84,7 @@ class MapPostFragment: DialogFragment() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setEventData(view: View) {
         Log.d("JAM_NAVIGATION", "[MapPost] Create EVENT")
 
@@ -106,11 +112,15 @@ class MapPostFragment: DialogFragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.groupsView)
         val selectedGroups = (recyclerView.adapter as? GroupsAdapter)?.selectedGroups?.keys?.toList() ?: listOf()
 
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
+        val creationTime = LocalDateTime.now().format(formatter)
+
         val eventType = "EVENT"
 
-        submitPost(Post(eventName, eventDate, eventType, null, photoBitmap, null, null, selectedGroups))
+        submitPost(Post(eventName, eventDate, eventType, null, photoBitmap, null, null, selectedGroups, creationTime))
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setPhotoData(view: View) {
         Log.d("JAM_NAVIGATION", "[MapPost] Create PHOTO")
 
@@ -129,11 +139,15 @@ class MapPostFragment: DialogFragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.groupsView)
         val selectedGroups = (recyclerView.adapter as? GroupsAdapter)?.selectedGroups?.keys?.toList() ?: listOf()
 
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
+        val creationTime = LocalDateTime.now().format(formatter)
+
         val eventType = "PHOTO"
 
-        submitPost(Post(null, null, eventType, null, photoBitmap, null, null, selectedGroups))
+        submitPost(Post(null, null, eventType, null, photoBitmap, null, null, selectedGroups, creationTime))
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setSongData(view: View) {
         Log.d("JAM_NAVIGATION", "[MapPost] Create SONG")
 
@@ -143,7 +157,10 @@ class MapPostFragment: DialogFragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.groupsView)
         val selectedGroups = (recyclerView.adapter as? GroupsAdapter)?.selectedGroups?.keys?.toList() ?: listOf()
 
-        submitPost(Post( null, null, eventType, null, null, postSong, null, selectedGroups))
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
+        val creationTime = LocalDateTime.now().format(formatter)
+
+        submitPost(Post( null, null, eventType, null, null, postSong, null, selectedGroups, creationTime))
     }
 
     private fun submitPost(data: Post) {
