@@ -406,13 +406,23 @@ class CamaraActivity: ComponentActivity(){
         super.onPause()
     }
 
+    override fun onStop(){
+        super.onStop()
+        closeCamera()
+    }
+
+    override fun onDestroy(){
+        super.onDestroy()
+        closeCamera()
+    }
+
     companion object {
         private const val TAG = "AndroidCameraApi"
         private val ORIENTATIONS = SparseIntArray()
 
         init {
-            ORIENTATIONS.append(Surface.ROTATION_0, 90)
-            ORIENTATIONS.append(Surface.ROTATION_90, 0)
+            ORIENTATIONS.append(Surface.ROTATION_0, 0)
+            ORIENTATIONS.append(Surface.ROTATION_90, 90)
             ORIENTATIONS.append(Surface.ROTATION_180, 270)
             ORIENTATIONS.append(Surface.ROTATION_270, 180)
         }
