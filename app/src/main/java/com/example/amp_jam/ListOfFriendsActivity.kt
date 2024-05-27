@@ -1,5 +1,6 @@
 package com.example.amp_jam
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.service.voice.VoiceInteractionSession.VisibleActivityCallback
@@ -18,6 +19,7 @@ import androidx.activity.ComponentActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.example.amp_jam.ui.theme.friends.FriendsRequestFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -33,6 +35,8 @@ class ListOfFriendsActivity : ComponentActivity() {
 
         firestore = FirebaseFirestore.getInstance()
         currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+
+        setUpNotification()
 
         val searchEditText = findViewById<EditText>(R.id.textInputLayout2)
         searchEditText.addTextChangedListener(object : TextWatcher {
@@ -56,6 +60,14 @@ class ListOfFriendsActivity : ComponentActivity() {
         }
     }
 
+    private fun setUpNotification() {
+        val settingsButton = findViewById<Button>(R.id.btn_notis)
+
+        settingsButton.setOnClickListener {
+            val intent = Intent(this, FriendsRequestFragment::class.java)
+            startActivity(intent)
+        }
+    }
 
 
     private fun loadFriendsList(filter: String = "") {

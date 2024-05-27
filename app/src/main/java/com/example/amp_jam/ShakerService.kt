@@ -20,6 +20,8 @@ import kotlinx.coroutines.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.sqrt
+import android.os.Handler
+import android.os.Looper
 
 class ShakerService(private val context: Context) : SensorEventListener {
 
@@ -37,6 +39,8 @@ class ShakerService(private val context: Context) : SensorEventListener {
     private lateinit var auth: FirebaseAuth
     private var currentUser: FirebaseUser? = null
 
+    private var alertCreated = false
+    private val handler = Handler(Looper.getMainLooper())
 
     fun startReading() {
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
@@ -82,7 +86,7 @@ class ShakerService(private val context: Context) : SensorEventListener {
 
         // Display a Toast message and create alert if
         // acceleration value is over 20
-        if (acceleration > 20) {
+        if (acceleration > 20 && !alertCreated) {
             createAlert()
         }
     }
@@ -131,6 +135,11 @@ class ShakerService(private val context: Context) : SensorEventListener {
 
                 newPostDocument.set(postData)
                 Toast.makeText(this.context, "Has creado una alerta", Toast.LENGTH_SHORT).show()
+                alertCreated = true
+
+                handler.postDelayed({
+                    alertCreated = false
+                }, 5000)
             }
         }
     }

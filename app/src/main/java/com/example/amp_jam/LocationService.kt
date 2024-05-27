@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -134,7 +135,12 @@ class LocationService : Service() {
                     .await()
 
                 for (document in documents) {
-                    val friendPosts = getUserPosts(document.id, document.getString("name"))
+                    val user = database.collection("usuarios")
+                        .document(document.id)
+                        .get()
+                        .await()
+
+                    val friendPosts = getUserPosts(document.id, user.getString("name"))
                     friends.add(getUserUbication(document.id))
                     posts.addAll(friendPosts)
                 }

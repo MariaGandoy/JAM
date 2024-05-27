@@ -184,9 +184,12 @@ class MapPostFragment: DialogFragment() {
 
     private fun validatePhotoData(view: View): Boolean {
         val filesImage = view.findViewById<ImageButton>(R.id.addFromFiles)
-        val cameraImage = view.findViewById<ImageButton>(R.id.addFromCamera)
+        val fileBitmap = (filesImage.drawable as? BitmapDrawable)?.bitmap
 
-        return if (filesImage == null && cameraImage == null) {
+        val cameraImage = view.findViewById<ImageButton>(R.id.addFromCamera)
+        val cameraBitmap = (cameraImage.drawable as? BitmapDrawable)?.bitmap
+
+        return if (fileBitmap == null && cameraBitmap == null) {
             Toast.makeText(context,"La imagen no puede estar vacía", Toast.LENGTH_SHORT).show()
             false
         } else {

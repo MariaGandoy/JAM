@@ -80,6 +80,7 @@ class TimelineFragment : Fragment() {
         if (currentUser != null) {
             getPosts(currentUser) { posts ->
                 if (isAdded) { // Check if Fragment is still added to its activity
+                    posts.sortWith(compareByDescending(nullsFirst()) { it.timestamp as Comparable<Any>? })
                     mAdapter.RecyclerAdapter(posts, requireContext(), findNavController())
                     mRecyclerView.adapter = mAdapter
                     progressBar.visibility = View.GONE

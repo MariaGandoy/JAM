@@ -22,6 +22,7 @@ import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
@@ -90,11 +91,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
 
     private lateinit var shakerService: ShakerService
 
+    private lateinit var progressBar: ProgressBar
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.map, container, false)
+        progressBar = view.findViewById<ProgressBar>(R.id.progress_circular)
+        if (mapMarkers.isEmpty()) progressBar.visibility = View.VISIBLE
 
         // Retrieve current user
         auth = FirebaseAuth.getInstance()
@@ -376,6 +381,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
     }
 
     override fun onLocationReceived(mapData: HashMap<Any, Any>) {
+        if (progressBar.visibility == View.VISIBLE) {
+            progressBar.visibility = View.GONE
+        }
+
         // Accessing the location
         val location: Location? = mapData["currentLocation"] as? Location
 

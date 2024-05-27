@@ -184,6 +184,7 @@ class ProfileFragment : Fragment() {
 
         // Fetch posts asynchronously and set up the adapter when posts are available
         getPosts(user) { posts ->
+            posts.sortWith(compareByDescending(nullsFirst()) { it.timestamp as Comparable<Any>? })
             mAdapter.RecyclerAdapter(posts, requireContext(), findNavController())
             mRecyclerView.adapter = mAdapter
             progressBar.visibility = View.GONE
