@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -21,10 +20,8 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -58,8 +55,9 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 /**
@@ -391,7 +389,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
         if (location !== null) {
             val myLocation = LatLng(location.latitude, location.longitude)
 
-            persistUbication(myLocation)
+            CoroutineScope(Dispatchers.IO).launch {
+                persistUbication(myLocation)
+            }
         }
 
         // Accessing map data (friends and posts)
@@ -574,7 +574,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationBroadcastReceiver.Lo
                 instructionDelete.visibility = View.GONE
 
                 // Persist to firebase
-                persistPost(postData, postPosition)
+                CoroutineScope(Dispatchers.IO).launch {
+                    persistPost(postData, postPosition)
+                }
             }
         }
     }

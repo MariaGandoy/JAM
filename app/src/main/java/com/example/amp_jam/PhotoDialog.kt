@@ -199,7 +199,10 @@ class PhotoDialog :  ComponentActivity() {
                         "share" to data.shareWith
                         )
 
-                Log.e("JAM_photos", "data.photo: " + data.photo)
+                // Set post timestamp
+                val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
+                val creationTime = LocalDateTime.now().format(formatter)
+                postData["timestamp"] = creationTime
 
                 // Store post image if not null
                 if (data.photo != null) {
