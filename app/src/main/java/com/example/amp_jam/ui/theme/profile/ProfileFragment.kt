@@ -176,7 +176,7 @@ class ProfileFragment : Fragment() {
 
     private fun setUpRecyclerView(view: View, user: User?) {
         mRecyclerView = view.findViewById<RecyclerView>(R.id.postsList)
-        mRecyclerView.setHasFixedSize(true)
+        // mRecyclerView.setHasFixedSize(true)
         mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         progressBar.visibility = View.VISIBLE

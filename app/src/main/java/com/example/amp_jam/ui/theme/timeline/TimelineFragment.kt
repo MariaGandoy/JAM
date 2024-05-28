@@ -66,7 +66,7 @@ class TimelineFragment : Fragment() {
 
     private fun setUpRecyclerView(view: View) {
         mRecyclerView = view.findViewById<RecyclerView>(R.id.postsList)
-        mRecyclerView.setHasFixedSize(true)
+        // mRecyclerView.setHasFixedSize(true)
         mRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         progressBar = view.findViewById<ProgressBar>(androidx.appcompat.R.id.progress_circular)
